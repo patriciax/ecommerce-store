@@ -1,0 +1,26 @@
+{
+  "COMMON": {
+    "LOADING": "Cargando...",
+    "TOGGLE_DARK_MODE": "Activar el modo oscuro",
+    "LOGOUT": "Cerrar sesión",
+    "CART":"Carrito"
+  },
+  "LOGIN": {
+    "LOGIN": "Iniciar sesión",
+    "RESET_PASSWORD": "Recuperar contraseña",
+    "FORGOT_PASS": "Olvidaste tu contraseña?",
+    "ENTER": "Ingresar",
+    "SUCCESS": "Has iniciado sesión correctamente",
+    "UNAUTHORIZED": "Usuario o contraseña incorrectos",
+    "SESSION_EXPIRED": "Sesión expirada, inicie sesión nuevamente."
+  },
+
+  "VALIDATIONS": {
+    "REQUIRED": "Este campo es requerido",
+    "EMAIL": "Este campo debe ser un correo electrónico válido",
+    "MINLENGTH": "Este campo debe tener al menos {n} caracteres",
+    "MAXLENGTH": "Este campo debe tener como máximo {n} caracteres",
+    "SAMEASPASSWORD": "Las contraseñas no coinciden",
+    "NOT_AVAILABLE": "El correo no está disponible"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "COMMON": {
+    "LOADING": "Loading...",
+    "TOGGLE_DARK_MODE": "Toggle dark mode",
+    "LOGOUT": "Logout",
+    "CART": "Cart"
+  },
+  "VALIDATIONS": {
+    "REQUIRED": "This field is required",
+    "EMAIL": "This field must be a valid email",
+    "MINLENGTH": "This field must be at least {n} characters long",
+    "MAXLENGTH": "This field must be at most {n} characters long",
+    "SAMEASPASSWORD": "The password and the confirmation password must be the same",
+    "NOT_AVAILABLE": "The email is not available"
+  }
+}
