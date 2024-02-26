@@ -3,7 +3,8 @@
     "LOADING": "Loading...",
     "TOGGLE_DARK_MODE": "Toggle dark mode",
     "LOGOUT": "Logout",
-    "CART": "Cart"
+    "CART": "Cart",
+    "GIFT_CART": "Gift cart",
   },
   "VALIDATIONS": {
     "REQUIRED": "This field is required",

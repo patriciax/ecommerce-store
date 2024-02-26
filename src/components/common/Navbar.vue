@@ -1,10 +1,26 @@
 <script setup lang="ts">
 import { XMarkIcon, ShoppingCartIcon, HeartIcon, UserIcon, Bars3BottomLeftIcon } from '@heroicons/vue/24/outline'
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import Btn from '@/components/common/Btn.vue'
+import {getAllCategoriesMenu} from '@/api/repositories/category.repository'
 import InputSearch from '@/components/common/InputSearch.vue'
 
 const filter = ref('')
+const mainCategories = ref([])
+const subCategories = ref([])
+const finalCategories = ref([])
+
+onMounted(async() => {
+
+  const response = await getAllCategoriesMenu()
+  if(response.status === "success"){
+    mainCategories.value = response.data?.mainCategories
+    subCategories.value = response.data?.subCategories
+    finalCategories.value = response.data?.finalCategories
+  }
+
+})
+
 </script>
 <template>
   <header>
@@ -24,173 +40,28 @@ const filter = ref('')
           <span
             class="menu m-auto flex lg:gap-8 [&>li>a]:relative [&>li>a]:text-center [&>li>a]:text-lg [&>li>a]:font-medium [&>li>a]:transition [&>li>a]:duration-200 [&>li>a]:ease-in-out"
           >
-            <li class="group inline-block">
+            <li class="group inline-block" v-for="mainCategory in mainCategories">
               <button class="h-full border-b-4 border-transparent p-3 text-lg uppercase hover:border-b-4 hover:border-gray-900">
                 <!---CATEGORIA PADRE------>
-                <h4>Mujer</h4>
+                <h4>{{ $i18n.locale.toLowerCase() == 'es_es' ? mainCategory?.name : mainCategory?.englishName }}</h4>
               </button>
               <ul class="absolute left-0 hidden w-full border-y bg-gray-100 text-gray-800 ring-0 group-hover:block">
                 <div class="m-auto mx-auto grid max-w-screen-xl px-4 py-5 text-sm dark:text-gray-400 md:grid-cols-6 md:px-6">
-                  <ul class="mx-auto space-y-1 sm:mb-4 md:mb-0" aria-labelledby="mega-menu-full-cta-button">
+                  <ul v-for="subCategory in subCategories.filter(category => category.parent_id == mainCategory._id )" class="mx-auto space-y-1 sm:mb-4 md:mb-0" aria-labelledby="mega-menu-full-cta-button">
                     <li>
                       <!---SUBCATEGORIA------>
-                      <h3 href="#" class="font-bold uppercase">NUEVO Y TENDENCIA</h3>
+                      <h3 href="#" class="font-bold uppercase">{{ $i18n.locale.toLowerCase() == 'es_es' ? subCategory?.name : subCategory?.englishName }}</h3>
                     </li>
                     <li class="flex flex-col gap-2 text-sm">
                       <!---ITEMS DE SUBCATEGORIA------>
-                      <a href="#" class="hover:underline"> Lorem ipsum asmet</a>
-                      <a href="#" class="hover:underline"> Lorem ipsum asmet</a>
-                      <a href="#" class="hover:underline"> Lorem ipsum asmet</a>
+                      <a v-for="finalCategory in finalCategories.filter(category => category.parent_id == subCategory._id)" href="#" class="hover:underline">{{ $i18n.locale.toLowerCase() == 'es_es'? finalCategory?.name : finalCategory?.englishName }}</a>
                     </li>
                   </ul>
-                  <ul class="mx-auto space-y-1 sm:mb-4 md:mb-0" aria-labelledby="mega-menu-full-cta-button">
-                    <li>
-                      <!---SUBCATEGORIA------>
-                      <h3 href="#" class="font-bold uppercase">ZAPATOS</h3>
-                    </li>
-                    <li class="flex flex-col gap-2 text-sm">
-                      <!---ITEMS DE SUBCATEGORIA------>
-                      <a href="#" class="hover:underline"> Lorem ipsum asmet</a>
-                      <a href="#" class="hover:underline"> Lorem ipsum asmet</a>
-                      <a href="#" class="hover:underline"> Lorem ipsum asmet</a>
-                      <a href="#" class="hover:underline"> Lorem ipsum asmet</a>
-
-                      <a href="#" class="hover:underline"> Lorem ipsum asmet</a>
-                    </li>
-                  </ul>
-                  <ul class="mx-auto space-y-1 sm:mb-4 md:mb-0" aria-labelledby="mega-menu-full-cta-button">
-                    <li>
-                      <!---SUBCATEGORIA------>
-                      <h3 href="#" class="font-bold uppercase">ROPA</h3>
-                    </li>
-                    <li class="flex flex-col gap-2 text-sm">
-                      <!---ITEMS DE SUBCATEGORIA------>
-                      <a href="#" class="hover:underline"> Lorem ipsum asmet</a>
-                      <a href="#" class="hover:underline"> Lorem ipsum asmet</a>
-                    </li>
-                  </ul>
-                  <ul class="mx-auto space-y-1 sm:mb-4 md:mb-0" aria-labelledby="mega-menu-full-cta-button">
-                    <li>
-                      <!---SUBCATEGORIA------>
-                      <h3 href="#" class="font-bold uppercase">ACCESORIOS</h3>
-                    </li>
-                    <li class="flex flex-col gap-2 text-sm">
-                      <!---ITEMS DE SUBCATEGORIA------>
-                      <a href="#" class="hover:underline"> Lorem ipsum asmet</a>
-                    </li>
-                  </ul>
-                  <ul class="mx-auto space-y-1 sm:mb-4 md:mb-0" aria-labelledby="mega-menu-full-cta-button">
-                    <li>
-                      <!---SUBCATEGORIA------>
-                      <h3 href="#" class="font-bold uppercase">DEPORTE</h3>
-                    </li>
-                    <li class="flex flex-col gap-2 text-sm">
-                      <!---ITEMS DE SUBCATEGORIA------>
-                      <a href="#" class="hover:underline"> Lorem ipsum asmet</a>
-                      <a href="#" class="hover:underline"> Lorem ipsum asmet</a>
-                      <a href="#" class="hover:underline"> Lorem ipsum asmet</a>
-
-                      <a href="#" class="hover:underline"> Lorem ipsum asmet</a>
-                    </li>
-                  </ul>
-                  <ul class="mx-auto space-y-1 sm:mb-4 md:mb-0" aria-labelledby="mega-menu-full-cta-button">
-                    <li>
-                      <!---SUBCATEGORIA------>
-                      <h3 href="#" class="font-bold uppercase">ROPA INTERIOR</h3>
-                    </li>
-                    <li class="flex flex-col gap-2 text-sm">
-                      <!---ITEMS DE SUBCATEGORIA------>
-                      <a href="#" class="hover:underline"> Lorem ipsum asmet</a>
-                      <a href="#" class="hover:underline"> Lorem ipsum asmet</a>
-                    </li>
-                  </ul>
+                  
                 </div>
               </ul>
             </li>
-            <li class="group inline-block">
-              <button class="h-full border-b-4 border-transparent p-3 text-lg uppercase hover:border-b-4 hover:border-gray-900">
-                <!---CATEGORIA PADRE------>
-                <h4>Hombre</h4>
-              </button>
-              <ul class="absolute left-0 hidden w-full border-y bg-gray-100 text-gray-800 ring-0 group-hover:block">
-                <div class="m-auto mx-auto grid max-w-screen-xl px-4 py-5 text-sm dark:text-gray-400 md:grid-cols-6 md:px-6">
-                  <ul class="mx-auto space-y-1 sm:mb-4 md:mb-0" aria-labelledby="mega-menu-full-cta-button">
-                    <li>
-                      <!---SUBCATEGORIA------>
-                      <h3 href="#" class="font-bold uppercase">NUEVO Y TENDENCIA</h3>
-                    </li>
-                    <li class="flex flex-col gap-2 text-sm">
-                      <!---ITEMS DE SUBCATEGORIA------>
-                      <a href="#" class="hover:underline"> Lorem ipsum asmet</a>
-                      <a href="#" class="hover:underline"> Lorem ipsum asmet</a>
-                      <a href="#" class="hover:underline"> Lorem ipsum asmet</a>
-                    </li>
-                  </ul>
-                  <ul class="mx-auto space-y-1 sm:mb-4 md:mb-0" aria-labelledby="mega-menu-full-cta-button">
-                    <li>
-                      <!---SUBCATEGORIA------>
-                      <h3 href="#" class="font-bold uppercase">ZAPATOS</h3>
-                    </li>
-                    <li class="flex flex-col gap-2 text-sm">
-                      <!---ITEMS DE SUBCATEGORIA------>
-                      <a href="#" class="hover:underline"> Lorem ipsum asmet</a>
-                      <a href="#" class="hover:underline"> Lorem ipsum asmet</a>
-                      <a href="#" class="hover:underline"> Lorem ipsum asmet</a>
-                      <a href="#" class="hover:underline"> Lorem ipsum asmet</a>
-
-                      <a href="#" class="hover:underline"> Lorem ipsum asmet</a>
-                    </li>
-                  </ul>
-                  <ul class="mx-auto space-y-1 sm:mb-4 md:mb-0" aria-labelledby="mega-menu-full-cta-button">
-                    <li>
-                      <!---SUBCATEGORIA------>
-                      <h3 href="#" class="font-bold uppercase">ROPA</h3>
-                    </li>
-                    <li class="flex flex-col gap-2 text-sm">
-                      <!---ITEMS DE SUBCATEGORIA------>
-                      <a href="#" class="hover:underline"> Lorem ipsum asmet</a>
-                      <a href="#" class="hover:underline"> Lorem ipsum asmet</a>
-                    </li>
-                  </ul>
-                  <ul class="mx-auto space-y-1 sm:mb-4 md:mb-0" aria-labelledby="mega-menu-full-cta-button">
-                    <li>
-                      <!---SUBCATEGORIA------>
-                      <h3 href="#" class="font-bold uppercase">ACCESORIOS</h3>
-                    </li>
-                    <li class="flex flex-col gap-2 text-sm">
-                      <!---ITEMS DE SUBCATEGORIA------>
-                      <a href="#" class="hover:underline"> Lorem ipsum asmet</a>
-                    </li>
-                  </ul>
-                  <ul class="mx-auto space-y-1 sm:mb-4 md:mb-0" aria-labelledby="mega-menu-full-cta-button">
-                    <li>
-                      <!---SUBCATEGORIA------>
-                      <h3 href="#" class="font-bold uppercase">DEPORTE</h3>
-                    </li>
-                    <li class="flex flex-col gap-2 text-sm">
-                      <!---ITEMS DE SUBCATEGORIA------>
-                      <a href="#" class="hover:underline"> Lorem ipsum asmet</a>
-                      <a href="#" class="hover:underline"> Lorem ipsum asmet</a>
-                      <a href="#" class="hover:underline"> Lorem ipsum asmet</a>
-
-                      <a href="#" class="hover:underline"> Lorem ipsum asmet</a>
-                    </li>
-                  </ul>
-                  <ul class="mx-auto space-y-1 sm:mb-4 md:mb-0" aria-labelledby="mega-menu-full-cta-button">
-                    <li>
-                      <!---SUBCATEGORIA------>
-                      <h3 href="#" class="font-bold uppercase">ROPA INTERIOR</h3>
-                    </li>
-                    <li class="flex flex-col gap-2 text-sm">
-                      <!---ITEMS DE SUBCATEGORIA------>
-                      <a href="#" class="hover:underline"> Lorem ipsum asmet</a>
-                      <a href="#" class="hover:underline"> Lorem ipsum asmet</a>
-                    </li>
-                  </ul>
-                </div>
-              </ul>
-            </li>
-
+            
             <li>
               <a href="#"
                 ><h4 class="h-full border-b-4 border-transparent p-3 text-lg hover:border-b-4 hover:border-gray-900">Ofertas del dia</h4></a
@@ -199,7 +70,7 @@ const filter = ref('')
             <li>
               <a href="#"
                 ><h4 class="h-full border-b-4 border-transparent p-3 text-lg hover:border-b-4 hover:border-gray-900">
-                  Tarjeta de regalo
+                 {{  $t('COMMON.GIFT_CART') }}
                 </h4></a
               >
             </li>

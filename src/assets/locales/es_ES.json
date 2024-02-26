@@ -3,7 +3,8 @@
     "LOADING": "Cargando...",
     "TOGGLE_DARK_MODE": "Activar el modo oscuro",
     "LOGOUT": "Cerrar sesión",
-    "CART":"Carrito"
+    "CART":"Carrito",
+    "GIFT_CART": "Tarjeta de regalo"
   },
   "LOGIN": {
     "LOGIN": "Iniciar sesión",
