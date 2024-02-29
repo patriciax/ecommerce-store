@@ -4,7 +4,9 @@
     "TOGGLE_DARK_MODE": "Activar el modo oscuro",
     "LOGOUT": "Cerrar sesión",
     "CART":"Carrito",
-    "GIFT_CART": "Tarjeta de regalo"
+    "GIFT_CART": "Tarjeta de regalo",
+    "ADD_TO_CART":"Agregar al carrito"
+
   },
   "LOGIN": {
     "LOGIN": "Iniciar sesión",
@@ -23,5 +25,10 @@
     "MAXLENGTH": "Este campo debe tener como máximo {n} caracteres",
     "SAMEASPASSWORD": "Las contraseñas no coinciden",
     "NOT_AVAILABLE": "El correo no está disponible"
+  },
+  "HOME": {
+    "NEW_PRODUCTS": "Nuevos productos",
+    "PRODUCTS":"Productos"
+
   }
 }

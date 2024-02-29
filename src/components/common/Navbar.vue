@@ -2,25 +2,25 @@
 import { XMarkIcon, ShoppingCartIcon, HeartIcon, UserIcon, Bars3BottomLeftIcon } from '@heroicons/vue/24/outline'
 import { onMounted, ref } from 'vue'
 import Btn from '@/components/common/Btn.vue'
-import {getAllCategoriesMenu} from '@/api/repositories/category.repository'
+import { getAllCategoriesMenu } from '@/api/repositories/category.repository'
 import InputSearch from '@/components/common/InputSearch.vue'
+import LanguageSelector from './LanguageSelector.vue'
+import CartStore from '@/stores/cart/cart'
 
+const cartStore = CartStore()
 const filter = ref('')
 const mainCategories = ref([])
 const subCategories = ref([])
 const finalCategories = ref([])
 
-onMounted(async() => {
-
+onMounted(async () => {
   const response = await getAllCategoriesMenu()
-  if(response.status === "success"){
+  if (response.status === 'success') {
     mainCategories.value = response.data?.mainCategories
     subCategories.value = response.data?.subCategories
     finalCategories.value = response.data?.finalCategories
   }
-
 })
-
 </script>
 <template>
   <header>
@@ -28,40 +28,50 @@ onMounted(async() => {
       <ul class="navigation relative mx-auto flex flex-wrap items-center justify-between py-2 lg:py-0">
         <label for="check" class="open-menu"><Bars3BottomLeftIcon class="w-6 text-gray-800" /></label>
 
-        <div class="ml-14 w-1/6">
+        <div class="ml-14 xl:ml-12 w-1/6">
           <a class="logo" href="#">
             <h3 class="text-2xl font-bold">LOGO</h3>
           </a>
         </div>
 
-        <section class="flex justify-between lg:w-4/5">
+        <section class="flex justify-between xl:w-4/5">
           <input type="checkbox" id="check" />
 
           <span
-            class="menu m-auto flex lg:gap-8 [&>li>a]:relative [&>li>a]:text-center [&>li>a]:text-lg [&>li>a]:font-medium [&>li>a]:transition [&>li>a]:duration-200 [&>li>a]:ease-in-out"
+            class="menu m-auto flex lg:gap-4 [&>li>a]:relative [&>li>a]:text-center [&>li>a]:text-lg [&>li>a]:font-medium [&>li>a]:transition [&>li>a]:duration-200 [&>li>a]:ease-in-out"
           >
             <li class="group inline-block" v-for="mainCategory in mainCategories">
-              <button class="h-full border-b-4 border-transparent p-3 text-lg uppercase hover:border-b-4 hover:border-gray-900">
+              <button class="h-full border-b-4 border-transparent p-3 uppercase hover:border-b-4 hover:border-gray-900">
                 <!---CATEGORIA PADRE------>
                 <h4>{{ $i18n.locale.toLowerCase() == 'es_es' ? mainCategory?.name : mainCategory?.englishName }}</h4>
               </button>
               <ul class="absolute left-0 hidden w-full border-y bg-gray-100 text-gray-800 ring-0 group-hover:block">
                 <div class="m-auto mx-auto grid max-w-screen-xl px-4 py-5 text-sm dark:text-gray-400 md:grid-cols-6 md:px-6">
-                  <ul v-for="subCategory in subCategories.filter(category => category.parent_id == mainCategory._id )" class="mx-auto space-y-1 sm:mb-4 md:mb-0" aria-labelledby="mega-menu-full-cta-button">
+                  <ul
+                    v-for="subCategory in subCategories.filter((category) => category.parent_id == mainCategory._id)"
+                    class="mx-auto space-y-1 sm:mb-4 md:mb-0"
+                    aria-labelledby="mega-menu-full-cta-button"
+                  >
                     <li>
                       <!---SUBCATEGORIA------>
-                      <h3 href="#" class="font-bold uppercase">{{ $i18n.locale.toLowerCase() == 'es_es' ? subCategory?.name : subCategory?.englishName }}</h3>
+                      <h3 href="#" class="font-bold uppercase">
+                        {{ $i18n.locale.toLowerCase() == 'es_es' ? subCategory?.name : subCategory?.englishName }}
+                      </h3>
                     </li>
                     <li class="flex flex-col gap-2 text-sm">
                       <!---ITEMS DE SUBCATEGORIA------>
-                      <a v-for="finalCategory in finalCategories.filter(category => category.parent_id == subCategory._id)" href="#" class="hover:underline">{{ $i18n.locale.toLowerCase() == 'es_es'? finalCategory?.name : finalCategory?.englishName }}</a>
+                      <a
+                        v-for="finalCategory in finalCategories.filter((category) => category.parent_id == subCategory._id)"
+                        href="#"
+                        class="hover:underline"
+                        >{{ $i18n.locale.toLowerCase() == 'es_es' ? finalCategory?.name : finalCategory?.englishName }}</a
+                      >
                     </li>
                   </ul>
-                  
                 </div>
               </ul>
             </li>
-            
+
             <li>
               <a href="#"
                 ><h4 class="h-full border-b-4 border-transparent p-3 text-lg hover:border-b-4 hover:border-gray-900">Ofertas del dia</h4></a
@@ -70,7 +80,7 @@ onMounted(async() => {
             <li>
               <a href="#"
                 ><h4 class="h-full border-b-4 border-transparent p-3 text-lg hover:border-b-4 hover:border-gray-900">
-                 {{  $t('COMMON.GIFT_CART') }}
+                  {{ $t('COMMON.GIFT_CART') }}
                 </h4></a
               >
             </li>
@@ -87,6 +97,8 @@ onMounted(async() => {
               @clear="filter = ''"
             />
 
+            <LanguageSelector />
+
             <Btn color="secondary" with-icon :text="'Registrarse'" isFull>
               <template #icon>
                 <UserIcon class="w-5" />
@@ -101,7 +113,7 @@ onMounted(async() => {
               <template #icon>
                 <ShoppingCartIcon class="w-5" />
               </template>
-              <span class="text-md h-5 w-5 rounded-full bg-gray-800 text-white group-hover:bg-white group-hover:text-gray-900">2</span>
+              <span class="text-md h-5 w-5 rounded-full bg-gray-800 text-white group-hover:bg-white group-hover:text-gray-900"  v-text="cartStore.quantityInCar"></span>
             </Btn>
           </div>
         </section>

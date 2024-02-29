@@ -1,0 +1,34 @@
+.title_products {
+  @apply mb-6 text-2xl font-bold text-gray-900;
+}
+.c-carouselProduct {
+  .carousel__prev,
+  .carousel__next {
+    top: -9% !important;
+    background: #343434 !important;
+    border-radius: 100% !important;
+  }
+  .carousel__prev,
+  .carousel__next {
+    color: #ffff !important;
+  }
+  .carousel__pagination-button--active::after {
+    background-color: #ffff !important;
+  }
+  .carousel__next {
+    right: 2% !important;
+    @media (max-width: 1380px) {
+      display: none;
+    }
+  }
+  .carousel__prev {
+    left: 91% !important;
+    @media (max-width: 1380px) {
+      display: none;
+    }
+  }
+}
+
+.c-carouselProduct .carousel__slide {
+  // padding: 0 15px;
+}

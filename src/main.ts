@@ -8,7 +8,7 @@ import './assets/styles/main.scss'
 
 import router from './router'
 
-const i18n = createI18n({ locale: localStorage.getItem('lang') || 'en_ES', messages })
+const i18n = createI18n({ locale: localStorage.getItem('lang') || 'es_ES', messages })
 
 const app = createApp(App)
 

@@ -5,6 +5,8 @@
     "LOGOUT": "Logout",
     "CART": "Cart",
     "GIFT_CART": "Gift cart",
+    "ADD_TO_CART":"Add to cart"
+
   },
   "VALIDATIONS": {
     "REQUIRED": "This field is required",
@@ -13,5 +15,9 @@
     "MAXLENGTH": "This field must be at most {n} characters long",
     "SAMEASPASSWORD": "The password and the confirmation password must be the same",
     "NOT_AVAILABLE": "The email is not available"
+  },
+  "HOME": {
+    "NEW_PRODUCTS": "New products",
+    "PRODUCTS":"Products"
   }
 }

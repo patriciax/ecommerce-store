@@ -6,6 +6,7 @@ const colorBtn = {
   primary: 'bg-gray-800 text-white font-bold  hover:bg-opacity-90 flex gap-1 item-pcenter group relative ',
   secondary:
     'bg-white hover:bg-opacity-90 font-bold flex gap-1 item-pcenter group relative hover:bg-gray-700 hover:text-white text-gray-800 flex justify-center',
+    cart:   'bg-gray-100 font-bold flex gap-1 item-pcenter group relative hover:bg-gray-800 hover:text-white text-gray-800 flex justify-center',
 }
 
 const sizeBtn = {
@@ -66,7 +67,7 @@ const classBtn = computed(() => {
       <slot name="icon" />
       <slot />
       <template v-if="props.isTooltip">
-        <div class="hidden absolute -bottom-8 w-fit group-hover:block">
+        <div class="hidden absolute -bottom-8 w-max group-hover:block">
           <div class="mx-auto -mb-1 h-2 w-2 rotate-45 bg-gray-700"></div>
           <p class="rounded-md bg-gray-700 px-4 py-1 text-xs text-white" v-text="props.text" />
         </div>

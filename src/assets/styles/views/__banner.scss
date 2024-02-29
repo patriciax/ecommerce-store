@@ -1,0 +1,24 @@
+.carousel__prev {
+  left: 5% !important;
+}
+
+.carousel__next {
+  right: 5% !important;
+}
+.carousel__prev,
+.carousel__next {
+  color: #2196f3 !important;
+}
+.carousel__pagination-button--active::after {
+  background-color: #03a9f4 !important;
+}
+.carousel__pagination-button::after {
+  background-color: #00000054 ;
+  height: 10px !important;
+  width: 10px !important;
+  border-radius: 100%!important;
+}
+.carousel__pagination {
+  margin: -35px 0 0 !important;
+  position: relative;
+}
