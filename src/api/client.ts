@@ -6,7 +6,7 @@ import {showNotification} from '@/composables/useNotification';
 const router = useRouter()
 
 const setHeaders = () => {
-    const token = localStorage.getItem(import.meta.env.VITE_BEARER_TOKEN_KEY)
+    const token = localStorage.getItem((import.meta as any).env.VITE_BEARER_TOKEN_KEY)
     const headers = {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`
@@ -19,7 +19,7 @@ const setHeaders = () => {
 export const axiosPost = async(url:string, data:object) => {
 
     try{
-        const response = await axios.post(`${import.meta.env.VITE_API_URL}${url}`, data, {
+        const response = await axios.post(`${(import.meta as any).env.VITE_API_URL}${url}`, data, {
             headers: setHeaders()
         })
         
@@ -34,7 +34,7 @@ export const axiosPost = async(url:string, data:object) => {
 export const axiosGet = async(url:string) => {
 
     try{
-        const response = await axios.get(`${import.meta.env.VITE_API_URL}${url}`, {
+        const response = await axios.get(`${(import.meta as any).env.VITE_API_URL}${url}`, {
             headers: setHeaders()
         })
     
@@ -49,7 +49,7 @@ export const axiosGet = async(url:string) => {
 export const axiosPatch = async(url:string, data:object) => {
 
     try{
-        const response = await axios.patch(`${import.meta.env.VITE_API_URL}${url}`, data, {
+        const response = await axios.patch(`${(import.meta as any).env.VITE_API_URL}${url}`, data, {
             headers: setHeaders()
         })
 
@@ -67,7 +67,7 @@ export const axiosDelete = async(url:string) => {
 
     try{
 
-        const response = await axios.delete(`${import.meta.env.VITE_API_URL}${url}`, {
+        const response = await axios.delete(`${(import.meta as any).env.VITE_API_URL}${url}`, {
             headers: setHeaders()
         })
 

@@ -5,7 +5,7 @@
     fundingSource: (window as any).paypal.FUNDING.PAYPAL,
     async createOrder() {
       try {
-        const response = await fetch(`${import.meta.env.BASE_URL}/checkout`, {
+        const response = await fetch(`${(import.meta as any).env.BASE_URL}/checkout`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -41,7 +41,7 @@
     },
     async onApprove(data, actions) {
       try {
-        const response = await fetch(`${import.meta.env.BASE_URL}/checkout/${data.orderID}/capture`, {
+        const response = await fetch(`${(import.meta as any).env.BASE_URL}/checkout/${data.orderID}/capture`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
