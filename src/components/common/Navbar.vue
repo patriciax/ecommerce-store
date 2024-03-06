@@ -6,12 +6,16 @@ import { getAllCategoriesMenu } from '@/api/repositories/category.repository'
 import InputSearch from '@/components/common/InputSearch.vue'
 import LanguageSelector from './LanguageSelector.vue'
 import CartStore from '@/stores/cart/cart'
+import Register from '@/components/views/home/Register.vue'
+import Login from '@/components/views/home/Login.vue'
 
 const cartStore = CartStore()
 const filter = ref('')
 const mainCategories = ref([])
 const subCategories = ref([])
 const finalCategories = ref([])
+const register = ref(false)
+const login = ref(false)
 
 onMounted(async () => {
   const response = await getAllCategoriesMenu()
@@ -28,7 +32,7 @@ onMounted(async () => {
       <ul class="navigation relative mx-auto flex flex-wrap items-center justify-between py-2 lg:py-0">
         <label for="check" class="open-menu"><Bars3BottomLeftIcon class="w-6 text-gray-800" /></label>
 
-        <div class="ml-14 xl:ml-12 w-1/6">
+        <div class="ml-14 w-1/6 xl:ml-12">
           <a class="logo" href="#">
             <h3 class="text-2xl font-bold">LOGO</h3>
           </a>
@@ -74,12 +78,14 @@ onMounted(async () => {
 
             <li>
               <a href="#"
-                ><h4 class="h-full border-b-4 border-transparent p-3 text-lg hover:border-b-4 hover:border-gray-900">Ofertas del dia</h4></a
+                ><h4 class="h-full border-b-4 border-transparent p-3 text-base uppercase hover:border-b-4 hover:border-gray-900">
+                  Ofertas del dia
+                </h4></a
               >
             </li>
             <li>
               <a href="#"
-                ><h4 class="h-full border-b-4 border-transparent p-3 text-lg hover:border-b-4 hover:border-gray-900">
+                ><h4 class="h-full border-b-4 border-transparent p-3 text-base uppercase hover:border-b-4 hover:border-gray-900">
                   {{ $t('COMMON.GIFT_CART') }}
                 </h4></a
               >
@@ -99,7 +105,7 @@ onMounted(async () => {
 
             <LanguageSelector />
 
-            <Btn color="secondary" with-icon :text="'Registrarse'" isFull>
+            <Btn color="secondary" @click="register = true" with-icon :text="$t('COMMON.REGISTER')" isFull>
               <template #icon>
                 <UserIcon class="w-5" />
               </template>
@@ -113,11 +119,17 @@ onMounted(async () => {
               <template #icon>
                 <ShoppingCartIcon class="w-5" />
               </template>
-              <span class="text-md h-5 w-5 rounded-full bg-gray-800 text-white group-hover:bg-white group-hover:text-gray-900"  v-text="cartStore.quantityInCar"></span>
+              <span
+                class="text-md h-5 w-5 rounded-full bg-gray-800 text-white group-hover:bg-white group-hover:text-gray-900"
+                v-text="cartStore.quantityInCar"
+              ></span>
             </Btn>
           </div>
         </section>
       </ul>
     </nav>
   </header>
+
+  <Register v-if="register" @close="register = false" @closeRegister="login = true" />
+  <Login  @close="login = false" />
 </template>

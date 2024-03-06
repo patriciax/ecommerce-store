@@ -5,8 +5,11 @@
     "LOGOUT": "Logout",
     "CART": "Cart",
     "GIFT_CART": "Gift cart",
-    "ADD_TO_CART":"Add to cart"
-
+    "ADD_TO_CART": "Add to cart",
+    "REGISTER": "Register",
+    "CREATE_ACCOUNT": "Create Account",
+    "CREATE_AN_ACCOUNT": "Create an account",
+    "PASSWORD_NOT_SAME": "The passwords are not the same"
   },
   "VALIDATIONS": {
     "REQUIRED": "This field is required",
@@ -14,10 +17,51 @@
     "MINLENGTH": "This field must be at least {n} characters long",
     "MAXLENGTH": "This field must be at most {n} characters long",
     "SAMEASPASSWORD": "The password and the confirmation password must be the same",
-    "NOT_AVAILABLE": "The email is not available"
+    "NOT_AVAILABLE": "The email is not available",
+    "EMAIL_IN_USE": "The email is already in use"
   },
   "HOME": {
     "NEW_PRODUCTS": "New products",
-    "PRODUCTS":"Products"
+    "PRODUCTS": "Products"
+  },
+
+  "FORM": {
+    "NAME_LAST_NAME": "Nombre y Apellido",
+    "NAME": "Name",
+    "LASTNAME": "Last name",
+    "EMAIL": "Email",
+    "PHONE": "Phone",
+    "DATE": "Date of acceptance",
+    "MOVIL": "Movil",
+    "IDENTIFICATION": "Identification",
+    "IDENTIFICATION_TYPE": "Identification",
+    "CODE": "Code",
+    "PRICE": "Price",
+    "IVA": "IVA",
+    "CUSTOM_CODE": "Code",
+    "REAL_PRICE": "Real prrice (without IVA)",
+    "MEMBER_NUMBER": "Member number",
+    "ADDRESS": "Address",
+    "IMAGE": "Image",
+    "COUNTRY": "Country",
+    "REGIONS": "Regions",
+    "NAME_AND_LASTANAME": "Name and lastname",
+    "TITLE": "Title",
+    "DESCRIPTION": "Description",
+    "STATUS": "Status",
+    "RESERVE_TYPE": "Reserve type",
+    "MEMBERSHIP_TYPE": "Membership type",
+    "SELECT_DATE": "Date",
+    "SELECT_HOURS": "Hours",
+    "TO": " to ",
+    "PASSWORD": "Password",
+    "DATE2": "Date",
+    "IDENTIFICATION_2": "Identification",
+    "IDENTIFICATION_3": "Ruc",
+    "PASSPORT": "Passport",
+    "SALES_TO_FINAL_CONSUMERS": "Sales to final consumers",
+    "EXTERIOR_IDENTIFICATION": "Exterior identification",
+    "DATE_HOUR": "Date",
+    "PASSWORD_CONFIRM": "Confirm password"
   }
 }

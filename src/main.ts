@@ -12,7 +12,4 @@ const i18n = createI18n({ locale: localStorage.getItem('lang') || 'es_ES', messa
 
 const app = createApp(App)
 
-app.use(createPinia())
-app.use(router).use(i18n)
-
-app.mount('#app')
+app.use(createPinia()).use(router).use(i18n).mount('#app')

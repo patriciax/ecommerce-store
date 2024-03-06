@@ -1,0 +1,100 @@
+@import 'maz-ui/css/main.css';
+
+.m-phone-number-input {
+  .m-input-wrapper {
+    border: 1px solid #d1d5db !important;
+  }
+
+  .--border-radius .m-input-wrapper {
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+  }
+
+  &.phone-number-error {
+    @apply rounded-lg border border-red-500;
+  }
+  .m-input-label {
+    display: none !important;
+  }
+
+  span.maz-flex-1.maz-truncate {
+    display: none !important;
+  }
+
+  .m-input-wrapper-right {
+    padding-right: 1rem !important;
+    margin-left: -18px;
+  }
+
+  input.m-phone-number-input__input {
+    padding-top: 3px !important;
+  }
+
+  .m-select-input.m-phone-number-input__select.m-input-input {
+    padding-top: 0px !important;
+  }
+
+  .m-phone-number-input__country-flag {
+    bottom: 11px !important;
+    left: 10px !important;
+  }
+  .m-select-list {
+    @apply mt-2;
+    width: 144px;
+  }
+
+  .m-select-list__search-wrapper .m-input-wrapper {
+    box-shadow: none !important;
+    border: 1px solid #0000001f !important;
+    margin-bottom: 10px !important;
+    height: 38px !important;
+  }
+  // .m-input.--is-disabled .m-input-wrapper {
+  //   @apply opacity-100;
+  // }
+}
+.m-phone-number-input:not(.--no-flags) .m-phone-number-input__select .m-input-wrapper .m-select-input {
+  margin-left: -10px;
+}
+.m-input {
+  height: 38px !important;
+}
+
+.dark .m-input-wrapper {
+  border: none !important;
+}
+.dark .m-phone-number-input__select .m-select-input .m-input-wrapper {
+  background-color: rgb(75 85 99 / var(--tw-bg-opacity)) !important;
+}
+.dark .m-phone-number-input__input.--border-radius .m-input-wrapper {
+  background-color: rgb(75 85 99 / var(--tw-bg-opacity)) !important;
+}
+.m-phone-number-input__select .m-select-input .m-input-wrapper {
+  background-color: #fff !important;
+}
+.m-phone-number-input__input.--border-radius .m-input-wrapper {
+  background-color: #fff !important;
+}
+.phone-number-error .m-input-wrapper {
+  border: 1px solid transparent !important;
+}
+.phone-number-error .m-input.--has-label .m-input-input {
+  color: #ef4444 !important;
+}
+.phone-number-error .m-select .m-select-chevron {
+  color: #ef4444 !important;
+}
+.m-phone-number-input__select {
+  width: 105px !important;
+}
+#c-custom-phone-number .m-phone-number-input__select .m-input-wrapper .m-select-input {
+  padding-left: 35px !important;
+}
+.m-phone-number-input__select[data-v-b43ec161] .m-select-input .m-input-wrapper {
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
+}
+.dark .m-input.--has-label .m-input-input {
+
+  border-left: 1px solid #d1d5db;
+}

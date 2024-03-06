@@ -1,0 +1,31 @@
+.c-alert {
+  &__content {
+    @apply shadow-lg flex w-max items-center rounded-lg border  px-4 py-2;
+    &--info {
+     @apply bg-blue-500 border;
+    }
+    &--error {
+      @apply border bg-red-500;
+    }
+    &--success {
+    @apply bg-green-400 border border-transparent bg-opacity-70;
+    }
+    &--warning {
+     @apply bg-orange-500;
+
+      &--terms {
+        @apply py-1 text-xs leading-4 md:text-sm;
+        button {
+          margin-left: 5px !important;
+        }
+      }
+    }
+  }
+  p {
+    @apply max-w-lg ml-4 font-medium text-white;
+  }
+  button {
+    @apply ml-8;
+   
+  }
+}
