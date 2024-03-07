@@ -2,7 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import Product from '../views/SingleProduct.vue'
 import CountryStore from '@/stores/country'
-
+import _storeUser from '@/stores/user'
 
 const router = createRouter({
   history: createWebHistory((import.meta as any).env.BASE_URL),
@@ -29,6 +29,23 @@ router.beforeEach( async(to, from) => {
     await countryStore.getCountry()
   }
 
-})
+  const storeUser=_storeUser()
 
+  if(!storeUser.currentUser && localStorage.getItem((import.meta as any).env.VITE_BEARER_TOKEN_KEY)){
+    await storeUser.getUser()
+  }
+  
+  // if (to.meta.requiresAuth && !storeUser.user) {
+  //   return {
+  //     name: 'login',
+  //     query: { redirect: to.fullPath },
+  //   }
+  // }
+
+  // else if(storeUser.user && to.name === 'login'){
+  //   return {
+  //     name: 'dashboard'
+  //   }
+  // }
+})
 export default router

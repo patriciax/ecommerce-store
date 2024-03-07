@@ -3,14 +3,19 @@ import Modal from '@/components/common/Modal.vue'
 import TextFields from '@/components/common/TextFields.vue'
 import useNotifications from '@/composables/useNotifications'
 import _storeAuth from '@/stores/auth'
+import _storeUser from '@/stores/user'
 import useVuelidate from '@vuelidate/core'
 import { email, required } from '@vuelidate/validators'
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
+import Btn from '@/components/common/Btn.vue'
+
+const emit = defineEmits(['close'])
 
 const { t } = useI18n()
 const { pushNotification } = useNotifications()
 const storeAuth = _storeAuth()
+const storeUser = _storeUser()
 const emailHasError = ref(null)
 const passwordHasError = ref(null)
 const dataForm = ref({
@@ -36,15 +41,15 @@ const setEmailErrors = computed(() => {
   const validator = handlerValidate.value?.['email']?.$errors?.[0]?.$validator
   if (validator == 'required') return t('VALIDATIONS.REQUIRED')
   if (validator == 'email') return t('VALIDATIONS.EMAIL')
-  else if (emailHasError.value) return t('VALIDATIONS.EMAIL_IN_USE')
+  else if (emailHasError.value) return ' '
 
   return undefined
 })
 
 const setPasswordErrors = computed(() => {
-  const validator = handlerValidate.value?.['passwordConfirm']?.$errors?.[0]?.$validator
+  const validator = handlerValidate.value?.['password']?.$errors?.[0]?.$validator
   if (validator == 'required') return t('VALIDATIONS.REQUIRED')
-  else if (passwordHasError.value) return 'Las contraseñas no coinciden'
+  else if (passwordHasError.value) return ' '
 
   return undefined
 })
@@ -53,45 +58,50 @@ const sendForm = async () => {
   const _validate = await handlerValidate.value.$validate()
   if (!_validate) return
 
-  //   if (dataForm.value.password !== dataForm.value.passwordConfirm) {
-  //     passwordHasError.value = true
-  //     pushNotification({
-  //       id: '',
-  //       title: t('COMMON.PASSWORD_NOT_SAME'),
-  //       type: 'error',
-  //     })
-  //     return
-  //   }
-
   await storeAuth.login(dataForm.value)
 
   if (storeAuth.isError) {
     emailHasError.value = true
-    return
+    passwordHasError.value = true
+    pushNotification({
+      id: '',
+      title: 'El email o la contrasena son incorrectos',
+      type: 'error',
+    })
   }
 
   if (storeAuth.isReady) {
-    if (storeAuth.isError) {
-      pushNotification({
-        id: '',
-        title:'error',
-        type: 'error',
-      })
-    }
-    if (storeAuth.isReady) {
-      pushNotification({
-        id: '',
-        title: 'Iniciaste Sesion correctamente',
-        type: 'success',
-      })
-      emit('close')
-    }
+    pushNotification({
+      id: '',
+      title: 'Iniciaste Sesion correctamente',
+      type: 'success',
+    })
+    await storeUser.getUser()
+    emit('close')
   }
 }
+watch(
+  () => dataForm.value.email,
+  (newValue, oldValue) => {
+    if (newValue != oldValue) {
+      emailHasError.value = null
+      passwordHasError.value = null
+    }
+  }
+)
+watch(
+  () => dataForm.value.password,
+  (newValue, oldValue) => {
+    if (newValue != oldValue) {
+      passwordHasError.value = null
+      emailHasError.value = null
+    }
+  }
+)
 </script>
 <template>
-  <Modal size="w-[500px]" @close="$emit('close')">
-    <div class="flex h-[500px] min-h-full flex-col justify-center rounded-lg bg-white px-6 py-6 md:py-12 lg:px-16">
+  <Modal size="w-[675px]" @close="$emit('close')">
+    <div class="flex h-[599px] min-h-full flex-col justify-center rounded-xl bg-white px-6 py-6 md:py-12 lg:px-16">
       <div class="text-center sm:mx-auto sm:w-full sm:max-w-sm">
         <p v-text="' LOGO'" class="hidden md:block" />
         <!-- <img class="mx-auto h-10 w-auto" src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600" alt="Your Company" /> -->
@@ -115,11 +125,7 @@ const sendForm = async () => {
           class="col-span-2 md:col-span-1"
           v-model="dataForm.password"
           isRequired
-          :errorMessage="
-            handlerValidate?.['password']?.$errors?.length > 0
-              ? $t('VALIDATIONS.' + handlerValidate?.['password']?.$errors?.[0]?.$validator?.toUpperCase())
-              : undefined
-          "
+          :errorMessage="setPasswordErrors"
           name="name"
           type="password"
           placeholder="********"
@@ -127,16 +133,11 @@ const sendForm = async () => {
         />
 
         <div class="col-span-2 mt-6">
-          <button
-            type="submit"
-            class="flex w-full justify-center rounded-xl bg-indigo-600 p-3 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-          >
-            Entrar
-          </button>
+          <Btn :isLoading="storeAuth.isLoading" :isDisabled="storeAuth.isLoading" text="Iniciar Sesion" isFull />
         </div>
       </form>
 
-      <p class="mt-6 text-center text-sm text-gray-500 md:mt-10">
+      <p class="mt-6 text-center text-sm text-gray-500 md:mt-10" @click="$emit('register')">
         Aun no tienes cuenta?<a href="#" class="font-semibold leading-6 text-indigo-600 hover:text-indigo-500"> Registrate</a>
       </p>
     </div>

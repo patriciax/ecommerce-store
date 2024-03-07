@@ -1,15 +1,21 @@
 <script setup lang="ts">
 import { XMarkIcon, ShoppingCartIcon, HeartIcon, UserIcon, Bars3BottomLeftIcon } from '@heroicons/vue/24/outline'
+import {ChevronDownIcon } from '@heroicons/vue/24/outline'
 import { onMounted, ref } from 'vue'
 import Btn from '@/components/common/Btn.vue'
 import { getAllCategoriesMenu } from '@/api/repositories/category.repository'
 import InputSearch from '@/components/common/InputSearch.vue'
 import LanguageSelector from './LanguageSelector.vue'
 import CartStore from '@/stores/cart/cart'
-import Register from '@/components/views/home/Register.vue'
-import Login from '@/components/views/home/Login.vue'
+import Register from '@/components/views/home/auth/Register.vue'
+import Login from '@/components/views/home/auth/Login.vue'
+import _storeUser from '@/stores/user'
+import Dropdown from './Dropdown.vue'
+import router from '@/router'
 
 const cartStore = CartStore()
+const storeUser = _storeUser()
+
 const filter = ref('')
 const mainCategories = ref([])
 const subCategories = ref([])
@@ -17,6 +23,11 @@ const finalCategories = ref([])
 const register = ref(false)
 const login = ref(false)
 
+const logout = (_closeDropdown: () => void) => {
+  storeUser.reset()
+  _closeDropdown()
+  router.push({ name: 'home' })
+}
 onMounted(async () => {
   const response = await getAllCategoriesMenu()
   if (response.status === 'success') {
@@ -33,7 +44,7 @@ onMounted(async () => {
         <label for="check" class="open-menu"><Bars3BottomLeftIcon class="w-6 text-gray-800" /></label>
 
         <div class="ml-14 w-1/6 xl:ml-12">
-          <a class="logo" href="#">
+          <a class="logo" href="/">
             <h3 class="text-2xl font-bold">LOGO</h3>
           </a>
         </div>
@@ -93,9 +104,9 @@ onMounted(async () => {
             <label for="check" class="close-menu"><XMarkIcon class="w-4 text-white" /></label>
           </span>
 
-          <div class="mr-5 flex items-center gap-2 lg:mr-14">
+          <div class="mr-5 flex items-center gap-2 lg:mr-10">
             <InputSearch
-              class="mr-4 hidden lg:block"
+              class="mr-4 hidden xl:block"
               id="search"
               v-model="filter"
               name="Search"
@@ -104,8 +115,24 @@ onMounted(async () => {
             />
 
             <LanguageSelector />
+            <Dropdown v-if="storeUser.currentUser">
+              <template v-slot:trigger="{ openDropdown, isOpen }">
+                <button
+                  class="item-pcenter group relative my-2 flex w-max items-center justify-center gap-1 rounded-md bg-white px-2 py-1.5 font-bold text-gray-800 hover:bg-gray-700 hover:bg-opacity-90 hover:text-white"
+                  @click="openDropdown"
+                >
+                  <p v-text="`${storeUser.currentUser?.name} ${storeUser.currentUser?.lastname.charAt(0)}`" class="mr-1 text-base" />
+                  <ChevronDownIcon class="text-gray w-4 transition-all ease-in-out" :class="{ 'rotate-180': isOpen }" />
+                </button>
+              </template>
+              <template v-slot:content="{ closeDropdown }">
+                <button @click="logout(closeDropdown)" class="w-28 py-2 hover:bg-gray-200">
+                  <p>Cerrar sesion</p>
+                </button>
+              </template>
+            </Dropdown>
 
-            <Btn color="secondary" @click="register = true" with-icon :text="$t('COMMON.REGISTER')" isFull>
+            <Btn class="" color="secondary" v-else @click="register = true" with-icon :text="$t('COMMON.REGISTER')">
               <template #icon>
                 <UserIcon class="w-5" />
               </template>
@@ -130,6 +157,6 @@ onMounted(async () => {
     </nav>
   </header>
 
-  <Register v-if="register" @close="register = false" @closeRegister="login = true" />
-  <Login  @close="login = false" />
+  <Register v-if="register" @close="register = false" @closeRegister="login = true" @login="(login = true), (register = false)" />
+  <Login v-if="login" @close="login = false" @register="(login = false), (register = true)" />
 </template>

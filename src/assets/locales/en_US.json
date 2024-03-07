@@ -1,15 +1,21 @@
 {
   "COMMON": {
     "LOADING": "Loading...",
-    "TOGGLE_DARK_MODE": "Toggle dark mode",
+    "TOGGLE_DARK_MODE": "Enable dark mode", 
     "LOGOUT": "Logout",
     "CART": "Cart",
-    "GIFT_CART": "Gift cart",
+    "GIFT_CART": "Gift card",
     "ADD_TO_CART": "Add to cart",
     "REGISTER": "Register",
     "CREATE_ACCOUNT": "Create Account",
     "CREATE_AN_ACCOUNT": "Create an account",
-    "PASSWORD_NOT_SAME": "The passwords are not the same"
+    "SUCCEFULLY_REGISTER": "Register successfully", 
+    "ERROR": "Error",
+    "ERROR_REGISTER": "Error while registering",
+    "PASSWORD_NOT_SAME": "Passwords are not the same", 
+    "NEWS":"News",
+    "RECOMMENDED": "Recommended products", 
+    "POPULAR_NOW": "Popular right now"
   },
   "VALIDATIONS": {
     "REQUIRED": "This field is required",

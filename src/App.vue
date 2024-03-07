@@ -5,6 +5,8 @@ import useNotifications from '@/composables/useNotifications'
 import Alert from './components/common/Alert.vue'
 
 const { notifications, removeNotification } = useNotifications()
+
+
 </script>
 <template>
   <div class="fixed bottom-0 right-0 z-50 m-5">

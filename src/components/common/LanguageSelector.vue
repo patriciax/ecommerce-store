@@ -29,7 +29,7 @@ const selected = computed(() => (currentLocale.value === 'es_ES' ? 'ES' : 'US'))
 <template>
   <Dropdown>
     <template v-slot:trigger="{ openDropdown, isOpen }">
-      <button class="my-2 flex w-full items-center bg-white hover:bg-opacity-90 font-bold  gap-1 item-pcenter group relative hover:bg-gray-700 hover:text-white text-gray-800 py-1.5 rounded-md px-2 justify-center" @click="openDropdown">
+      <button class="my-2 flex items-center bg-white hover:bg-opacity-90 font-bold  gap-1 item-pcenter group relative hover:bg-gray-700 hover:text-white text-gray-800 py-1.5 rounded-md px-2 justify-center" @click="openDropdown">
         <p v-text="selected"  class="mr-1 text-base" />
         <ChevronDownIcon class="text-gray transition-all w-4 ease-in-out" :class="{ 'rotate-180': isOpen }" />
       </button>

@@ -23,12 +23,12 @@ export const axiosPost = async (url: string, data: object) => {
         const response = await axios.post(`${(import.meta as any).env.VITE_API_URL}${url}`, data, {
             headers: setHeaders()
         })
-        console.log("response data", response)
+        // console.log("response data", response)
         //errorHandling(response)
         return {status:response.status,data:response.data}
     } catch (err: any) {
         console.log("response error", err)
-        console.log("response error", err.response.data)
+        // console.log("response error", err.response.data)
         return err.response.data
     }
 

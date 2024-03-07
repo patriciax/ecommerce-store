@@ -1,9 +1,12 @@
 <script setup lang="ts">
 import CartStore from '@/stores/cart/cart'
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { Carousel, Slide, Pagination, Navigation } from 'vue3-carousel'
+import _storeProduct from '@/stores/product'
+import { onMounted } from 'vue'
 
+const productStore = _storeProduct()
 const cartStore = CartStore()
 const router = useRouter()
 
@@ -11,25 +14,46 @@ const currentSlide = ref(0)
 const slideTo = (val) => {
   currentSlide.value = val
 }
-const productsImg = ref([
-  {
-    id: 1,
-    image:
-      'https://images.unsplash.com/photo-1576566588028-4147f3842f27?q=80&w=1964&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-  },
-  {
-    id: 2,
-    image:
-      'https://images.unsplash.com/photo-1598032895455-526c9e347a87?q=80&w=1964&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-  },
-  {
-    id: 3,
-    image:
-      'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?q=80&w=2080&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-  },
-])
+// const productsImg = ref([
+//   {
+//     id: 1,
+//     image:
+//       'https://images.unsplash.com/photo-1576566588028-4147f3842f27?q=80&w=1964&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+//   },
+//   {
+//     id: 2,
+//     image:
+//       'https://images.unsplash.com/photo-1598032895455-526c9e347a87?q=80&w=1964&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+//   },
+//   {
+//     id: 3,
+//     image:
+//       'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?q=80&w=2080&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+//   },
+// ])
+const productsImg = computed(() => {
+  const mainImage = productStore.product?.mainImage
+  const images = productStore.product?.images
+
+  if (images) {
+    let counter = 1
+    const allImages = images.map((image: any) => ({ id: counter++, image: image }))
+    if (mainImage) {
+      allImages.unshift({ id: counter++, image: mainImage })
+    }
+    return allImages
+  } else if (mainImage) {
+    return [{ id: 1, image: mainImage }]
+  } else {
+    return []
+  }
+})
 const goToRoute = () => router.push({ name: 'home' })
 // const goToOrder = () => router.push({ name: 'cart' })
+
+onMounted(async () => {
+  await productStore.getSingleProduct(router.currentRoute.value.params.id)
+})
 </script>
 <template>
   <div class="mx-auto bg-white pb-20 lg:max-w-7xl">
@@ -45,7 +69,7 @@ const goToRoute = () => router.push({ name: 'home' })
           </li>
           <li>
             <div class="flex items-center">
-              <div class="mr-2 text-sm font-medium text-gray-900">name product</div>
+              <div class="mr-2 text-sm font-medium text-gray-900">{{ productStore.product?.name }}</div>
               <svg width="16" height="20" viewBox="0 0 16 20" fill="currentColor" aria-hidden="true" class="h-5 w-4 text-gray-300">
                 <path d="M5.697 4.34L8.98 16.532h1.327L7.025 4.341H5.697z" />
               </svg>
@@ -73,7 +97,11 @@ const goToRoute = () => router.push({ name: 'home' })
 
           <Carousel id="thumbnails" :items-to-show="3" :wrap-around="true" v-model="currentSlide" ref="carousel">
             <Slide v-for="(slide, index) in productsImg" :key="index">
-              <img class="h-40 rounded-lg border border-white hover:border-red-500 cursor-pointer mx-2 w-full object-cover" :src="slide.image" @click="slideTo(slide.id - 1)" />
+              <img
+                class="mx-2 h-40 w-full cursor-pointer rounded-lg border border-white object-cover hover:border-red-500"
+                :src="slide.image"
+                @click="slideTo(slide.id - 1)"
+              />
             </Slide>
           </Carousel>
         </div>

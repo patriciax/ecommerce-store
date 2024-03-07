@@ -12,8 +12,10 @@
     "SUCCEFULLY_REGISTER": "Registro exitoso",
     "ERROR": "Error",
     "ERROR_REGISTER": "Error al registrar",
-    "PASSWORD_NOT_SAME": "Las contraseñas no son iguales"
-
+    "PASSWORD_NOT_SAME": "Las contraseñas no son iguales",
+    "NEWS":"Novedades",
+    "RECOMMENDED":"Productos recomendados",
+    "POPULAR_NOW":"Populares ahora mismo"
   },
   "LOGIN": {
     "LOGIN": "Iniciar sesión",

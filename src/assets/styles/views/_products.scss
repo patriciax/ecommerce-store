@@ -31,4 +31,17 @@
 
 .c-carouselProduct .carousel__slide {
   // padding: 0 15px;
+  align-items: normal !important;
+}
+.popular {
+  .c-carouselProduct .carousel__prev,
+  .c-carouselProduct .carousel__next {
+    top: 37% !important;
+  }
+  .c-carouselProduct .carousel__prev {
+    left: -4% !important;
+  }
+  .c-carouselProduct .carousel__next {
+    right: -4% !important;
+  }
 }

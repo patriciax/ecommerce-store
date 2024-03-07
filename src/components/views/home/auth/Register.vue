@@ -9,6 +9,7 @@ import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import TextFields from '@/components/common/TextFields.vue'
 import InputPhoneNumber from '@/components/common/InputPhoneNumber.vue'
+import Btn from '@/components/common/Btn.vue'
 
 const emit = defineEmits(['close'])
 
@@ -206,16 +207,12 @@ const sendForm = async () => {
           :label="t('FORM.PASSWORD_CONFIRM')"
         />
         <div class="col-span-2 mt-6">
-          <button
-            type="submit"
-            class="flex w-full justify-center rounded-xl bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-          >
-            {{ t('COMMON.CREATE_ACCOUNT') }}
-          </button>
+          <Btn :isLoading="storeAuth.isLoading" :isDisabled="storeAuth.isLoading" :text="t('COMMON.CREATE_ACCOUNT')" isFull />
+
         </div>
       </form>
 
-      <p class="mt-6 text-center text-sm text-gray-500 md:mt-10">
+      <p class="mt-6 text-center text-sm text-gray-500 md:mt-10" @click="$emit('login')">
         Tienes una cuenta?<a href="#" class="font-semibold leading-6 text-indigo-600 hover:text-indigo-500"> Inicia sesion</a>
       </p>
     </div>

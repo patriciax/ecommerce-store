@@ -8,9 +8,7 @@ const props = defineProps({
   products: {
     type: Object,
   },
-
 })
-
 
 const settings = ref({
   itemsToShow: 1,
@@ -18,7 +16,6 @@ const settings = ref({
 })
 
 const breakpoints = ref({
-
   700: {
     itemsToShow: 2,
     snapAlign: 'start',
@@ -34,16 +31,15 @@ const breakpoints = ref({
 })
 </script>
 <template>
-<section>
-  <p class="title_products" v-text="$t('COMMON.NEWS')"/>
-  <carousel :v-bind="settings" :breakpoints="breakpoints" class="c-carouselProduct">
-    <slide v-for="(product, index) in props.products" :key="index" class="relative">
-      <CardProduct :data="product" class="md:mr-8" />
-    </slide>
-    <template #addons>
-      <navigation />
-    </template>
-  </carousel>
-</section>
-  
+  <section class="rounded-lg bg-gray-100  p-8 shadow-sm popular">
+    <p class="title_products" v-text="$t('COMMON.POPULAR_NOW')" />
+    <carousel :v-bind="settings" :breakpoints="breakpoints" class="c-carouselProduct">
+      <slide v-for="(product, index) in props.products" :key="index" class="relative">
+        <CardProduct :data="product" class="md:mr-4" />
+      </slide>
+      <template #addons>
+        <navigation />
+      </template>
+    </carousel>
+  </section>
 </template>

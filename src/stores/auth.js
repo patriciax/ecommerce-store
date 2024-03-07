@@ -71,8 +71,14 @@ export default defineStore({
       this.changeStatus('loading')
       try {
         const response = await _login(body)
-        if (response) {
+        console.log('store', response)
+        if (response.data.status == 'success') {
+          localStorage.setItem(import.meta.env.VITE_BEARER_TOKEN_KEY, response.data.data)
           this.changeStatus('ready')
+        }
+
+        if (response.status === 'fail') {
+          this.changeStatus('error')
         }
       } catch (error) {
         this.changeStatus('error', error)
