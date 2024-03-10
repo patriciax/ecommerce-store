@@ -1,0 +1,24 @@
+// vite.config.ts
+import { fileURLToPath, URL } from "node:url";
+import VueI18nPlugin from "file:///home/william/M%C3%BAsica/sideProjects/EcommerceR/ecommerce-store/node_modules/@intlify/unplugin-vue-i18n/lib/vite.mjs";
+import { defineConfig } from "file:///home/william/M%C3%BAsica/sideProjects/EcommerceR/ecommerce-store/node_modules/vite/dist/node/index.js";
+import vue from "file:///home/william/M%C3%BAsica/sideProjects/EcommerceR/ecommerce-store/node_modules/@vitejs/plugin-vue/dist/index.mjs";
+import { dirname, resolve } from "node:path";
+var __vite_injected_original_import_meta_url = "file:///home/william/M%C3%BAsica/sideProjects/EcommerceR/ecommerce-store/vite.config.ts";
+var vite_config_default = defineConfig({
+  plugins: [
+    vue(),
+    VueI18nPlugin({
+      include: resolve(dirname(fileURLToPath(__vite_injected_original_import_meta_url)), "./src/assets/locales/**")
+    })
+  ],
+  resolve: {
+    alias: {
+      "@": fileURLToPath(new URL("./src", __vite_injected_original_import_meta_url))
+    }
+  }
+});
+export {
+  vite_config_default as default
+};
+//# sourceMappingURL=data:application/json;base64,ewogICJ2ZXJzaW9uIjogMywKICAic291cmNlcyI6IFsidml0ZS5jb25maWcudHMiXSwKICAic291cmNlc0NvbnRlbnQiOiBbImNvbnN0IF9fdml0ZV9pbmplY3RlZF9vcmlnaW5hbF9kaXJuYW1lID0gXCIvaG9tZS93aWxsaWFtL01cdTAwRkFzaWNhL3NpZGVQcm9qZWN0cy9FY29tbWVyY2VSL2Vjb21tZXJjZS1zdG9yZVwiO2NvbnN0IF9fdml0ZV9pbmplY3RlZF9vcmlnaW5hbF9maWxlbmFtZSA9IFwiL2hvbWUvd2lsbGlhbS9NXHUwMEZBc2ljYS9zaWRlUHJvamVjdHMvRWNvbW1lcmNlUi9lY29tbWVyY2Utc3RvcmUvdml0ZS5jb25maWcudHNcIjtjb25zdCBfX3ZpdGVfaW5qZWN0ZWRfb3JpZ2luYWxfaW1wb3J0X21ldGFfdXJsID0gXCJmaWxlOi8vL2hvbWUvd2lsbGlhbS9NJUMzJUJBc2ljYS9zaWRlUHJvamVjdHMvRWNvbW1lcmNlUi9lY29tbWVyY2Utc3RvcmUvdml0ZS5jb25maWcudHNcIjtpbXBvcnQgeyBmaWxlVVJMVG9QYXRoLCBVUkwgfSBmcm9tICdub2RlOnVybCdcbmltcG9ydCBWdWVJMThuUGx1Z2luIGZyb20gJ0BpbnRsaWZ5L3VucGx1Z2luLXZ1ZS1pMThuL3ZpdGUnXG5cbmltcG9ydCB7IGRlZmluZUNvbmZpZyB9IGZyb20gJ3ZpdGUnXG5pbXBvcnQgdnVlIGZyb20gJ0B2aXRlanMvcGx1Z2luLXZ1ZSdcbmltcG9ydCB7IGRpcm5hbWUsIHJlc29sdmUgfSBmcm9tICdub2RlOnBhdGgnXG4vLyBodHRwczovL3ZpdGVqcy5kZXYvY29uZmlnL1xuZXhwb3J0IGRlZmF1bHQgZGVmaW5lQ29uZmlnKHtcbiAgcGx1Z2luczogW1xuICAgIHZ1ZSgpLFxuICAgIFZ1ZUkxOG5QbHVnaW4oe1xuICAgICAgaW5jbHVkZTogcmVzb2x2ZShkaXJuYW1lKGZpbGVVUkxUb1BhdGgoaW1wb3J0Lm1ldGEudXJsKSksICcuL3NyYy9hc3NldHMvbG9jYWxlcy8qKicpLFxuICAgIH0pLFxuICBdLFxuXG4gIHJlc29sdmU6IHtcbiAgICBhbGlhczoge1xuICAgICAgJ0AnOiBmaWxlVVJMVG9QYXRoKG5ldyBVUkwoJy4vc3JjJywgaW1wb3J0Lm1ldGEudXJsKSlcbiAgICB9XG4gIH1cbn0pXG4iXSwKICAibWFwcGluZ3MiOiAiO0FBQTJXLFNBQVMsZUFBZSxXQUFXO0FBQzlZLE9BQU8sbUJBQW1CO0FBRTFCLFNBQVMsb0JBQW9CO0FBQzdCLE9BQU8sU0FBUztBQUNoQixTQUFTLFNBQVMsZUFBZTtBQUwrTCxJQUFNLDJDQUEyQztBQU9qUixJQUFPLHNCQUFRLGFBQWE7QUFBQSxFQUMxQixTQUFTO0FBQUEsSUFDUCxJQUFJO0FBQUEsSUFDSixjQUFjO0FBQUEsTUFDWixTQUFTLFFBQVEsUUFBUSxjQUFjLHdDQUFlLENBQUMsR0FBRyx5QkFBeUI7QUFBQSxJQUNyRixDQUFDO0FBQUEsRUFDSDtBQUFBLEVBRUEsU0FBUztBQUFBLElBQ1AsT0FBTztBQUFBLE1BQ0wsS0FBSyxjQUFjLElBQUksSUFBSSxTQUFTLHdDQUFlLENBQUM7QUFBQSxJQUN0RDtBQUFBLEVBQ0Y7QUFDRixDQUFDOyIsCiAgIm5hbWVzIjogW10KfQo=
