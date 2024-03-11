@@ -3,6 +3,7 @@ import HomeView from '../views/HomeView.vue'
 import Product from '../views/SingleProduct.vue'
 import CountryStore from '@/stores/country'
 import _storeUser from '@/stores/user'
+import Checkout from '../views/Checkout.vue'
 
 const router = createRouter({
   history: createWebHistory((import.meta as any).env.BASE_URL),
@@ -17,11 +18,15 @@ const router = createRouter({
       name: 'singleProduct',
       component: Product
     },
-
+    {
+      path: '/checkout',
+      name: 'checkout',
+      component: Checkout
+    },
   ]
 })
 
-router.beforeEach( async(to, from) => {
+router.beforeEach(async (to, from) => {
 
   const countryStore = CountryStore()
 
@@ -31,10 +36,10 @@ router.beforeEach( async(to, from) => {
 
   const storeUser=_storeUser()
 
-  if(!storeUser.currentUser && localStorage.getItem((import.meta as any).env.VITE_BEARER_TOKEN_KEY)){
+  if (!storeUser.currentUser && localStorage.getItem((import.meta as any).env.VITE_BEARER_TOKEN_KEY)) {
     await storeUser.getUser()
   }
-  
+
   // if (to.meta.requiresAuth && !storeUser.user) {
   //   return {
   //     name: 'login',

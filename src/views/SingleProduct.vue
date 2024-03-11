@@ -7,31 +7,60 @@ import { onMounted } from 'vue'
 import Gallery from '@/components/common/Gallery.vue'
 import Products from '@/components/views/home/Products.vue'
 import { useI18n } from 'vue-i18n'
+import RadioCheck from '@/components/common/RadioCheck.vue'
+import { HeartIcon, ChevronLeftIcon, ChevronRightIcon, ShoppingCartIcon } from '@heroicons/vue/24/outline'
+import Btn from '@/components/common/Btn.vue'
+import NewProducts from '@/components/views/home/NewProducts.vue'
+import useNotifications from '@/composables/useNotifications'
 
 const productStore = _storeProduct()
 const cartStore = CartStore()
 const router = useRouter()
 const { locale } = useI18n()
+const { pushNotification } = useNotifications()
 
+const color = ref(null)
+const size = ref(null)
+const favorite = ref(null)
 const productsImg = computed(() => {
   return productStore.product?.images
 })
 const goToRoute = () => router.push({ name: 'home' })
 // const goToOrder = () => router.push({ name: 'cart' })
+const addFavorite = () => {
+  favorite.value = true
+}
+const addProduct = () => {
+  cartStore.addToCart({
+    productId: productStore.product?._id,
+  })
+
+  pushNotification({
+    id: '',
+    title: 'Añadido al carrito. ',
+    type: 'success',
+    isLink: '/checkout',
+    description: 'Ver carrito ',
+  })
+}
 
 onMounted(async () => {
   await productStore.getSingleProduct(router.currentRoute.value.params.id)
+  await productStore.getAllProducts()
 
   if (productStore.product) {
     productsImg.value.unshift(productStore.product.mainImage)
   }
+
+  color.value = locale.value === 'en_US' ? productStore.product?.colors[0].englishName : productStore.product?.colors[0].name
+  size.value = locale.value === 'en_US' ? productStore.product?.sizes[0].englishName : productStore.product?.sizes[0].name
 })
 </script>
 <template>
   <div class="mx-auto bg-white pb-20 lg:max-w-7xl">
     <div class="pt-6">
-      <nav aria-label="Breadcrumb">
-        <ol role="list" class="mb-6 flex max-w-2xl items-center space-x-2 lg:max-w-7xl">
+      <nav aria-label="Breadcrumb" class="">
+        <ol role="list" class="mb-16 flex max-w-2xl items-center space-x-2 lg:max-w-7xl">
           <li @click="goToRoute">
             <div class="flex items-center">
               <div class="mt-1 -rotate-180 transform cursor-pointer text-sm font-medium text-gray-900">
@@ -41,7 +70,9 @@ onMounted(async () => {
           </li>
           <li>
             <div class="flex items-center">
-              <div class="mr-2 text-sm font-medium text-gray-900">{{ productStore.product?.name }}</div>
+              <div class="mr-2 text-sm font-medium text-gray-900">
+                {{ locale === 'en_US' ? productStore.product?.nameEnglish : productStore.product?.name }}
+              </div>
               <svg width="16" height="20" viewBox="0 0 16 20" fill="currentColor" aria-hidden="true" class="h-5 w-4 text-gray-300">
                 <path d="M5.697 4.34L8.98 16.532h1.327L7.025 4.341H5.697z" />
               </svg>
@@ -49,97 +80,111 @@ onMounted(async () => {
           </li>
           <li>
             <div class="flex items-center">
-              <div class="mr-2 text-sm font-medium text-gray-900">{{ productStore.product?.categories[0].name }}</div>
+              <div class="mr-2 text-sm font-medium text-gray-900">
+                {{ locale === 'en_US' ? productStore.product?.categories[0].englishName : productStore.product?.categories[0].name }}
+              </div>
             </div>
           </li>
         </ol>
       </nav>
 
-      <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2">
+      <section class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-2">
         <section class="col-span-1">
           <Gallery v-if="productStore.product" :photos="productsImg"></Gallery>
         </section>
 
         <!-- Product info -->
-        <div
-          class="mx-auto max-w-2xl px-4 pb-16 pt-10 sm:px-6 lg:grid lg:max-w-7xl lg:grid-rows-[auto,auto,1fr] lg:gap-x-8 lg:px-8 lg:pb-24 lg:pt-16"
-        >
+        <div class="relative max-w-2xl px-4 pb-16 pt-10 sm:px-6 lg:max-w-7xl lg:gap-x-8 lg:px-8 lg:pb-24 lg:pt-0">
+          <button @click="addFavorite" class="group absolute right-4 top-0 rounded-full bg-gray-100 p-3">
+            <HeartIcon class="w-6 group-hover:text-red-600" :class="{ 'text-red-600': favorite }" />
+          </button>
           <div class="lg:col-span-1">
-            <p v-text="productStore.product?.name" class="mb-4 max-w-4xl text-3xl font-bold text-gray-900" />
+            <p
+              v-text="locale === 'en_US' ? productStore.product?.nameEnglish : productStore.product?.name"
+              class="mb-4 mr-8 max-w-4xl text-3xl font-bold text-gray-900"
+            />
 
-            <p class="text-3xl tracking-tight text-gray-900">${{ productStore.product?.price }}</p>
+            <p class="text-2xl tracking-tight text-gray-900">${{ productStore.product?.price }}</p>
           </div>
 
-          <div class="pb-10 lg:col-span-2 lg:col-start-1 lg:pb-16 lg:pr-8 lg:pt-6">
+          <div class="pb-10 lg:col-span-2 lg:col-start-1 lg:pb-16 lg:pt-6">
             <!-- Description and details -->
             <div>
-              <div class="space-y-6">
-                <p class="text-base text-gray-900" v-html="'Description'"></p>
-                <p v-html="locale === 'en_US' ? productStore.product?.descriptionEnglish : productStore.product?.description"></p>
+              <div class="space-y-2">
+                <p class="text-base text-gray-900" v-html="$t('COMMON.DESCRIPTION')"></p>
+                <p
+                  class="text-gray-600"
+                  v-html="locale === 'en_US' ? productStore.product?.descriptionEnglish : productStore.product?.description"
+                ></p>
               </div>
             </div>
             <!-- Options -->
-            <div class="mt-4 lg:row-span-3 lg:mt-0">
-              <h2 class="sr-only">Product information</h2>
-
-              <!-- Reviews -->
-              <div class="mt-6">
-                <h3 class="sr-only">Reviews</h3>
-                <div class="flex items-center">
-                  <div class="flex items-center">
-                    <!-- Active: "text-gray-900", Default: "text-gray-200" -->
-                    <svg class="h-5 w-5 flex-shrink-0 text-gray-900" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                      <path
-                        fill-rule="evenodd"
-                        d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401z"
-                        clip-rule="evenodd"
-                      />
-                    </svg>
-                    <svg class="h-5 w-5 flex-shrink-0 text-gray-900" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                      <path
-                        fill-rule="evenodd"
-                        d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401z"
-                        clip-rule="evenodd"
-                      />
-                    </svg>
-                    <svg class="h-5 w-5 flex-shrink-0 text-gray-900" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                      <path
-                        fill-rule="evenodd"
-                        d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401z"
-                        clip-rule="evenodd"
-                      />
-                    </svg>
-                    <svg class="h-5 w-5 flex-shrink-0 text-gray-900" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                      <path
-                        fill-rule="evenodd"
-                        d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401z"
-                        clip-rule="evenodd"
-                      />
-                    </svg>
-                    <svg class="h-5 w-5 flex-shrink-0 text-gray-200" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                      <path
-                        fill-rule="evenodd"
-                        d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401z"
-                        clip-rule="evenodd"
-                      />
-                    </svg>
-                  </div>
-                  <p class="sr-only">4 out of 5 stars</p>
-                  <div class="ml-3 text-sm font-medium text-indigo-600 hover:text-indigo-500">117 reviews</div>
+            <div class="my-6 lg:row-span-3">
+              <section v-if="productStore.product?.colors.length">
+                <div class="mb-2 flex">
+                  <p class="" v-text="$t('COMMON.COLOR') + ':'" />
+                  <p class="ml-2 font-bold" v-text="color" />
                 </div>
-              </div>
+                <!-- Reviews -->
+                <div class="mb-4 flex gap-2">
+                  <RadioCheck
+                    v-for="(item, index) in productStore.product?.colors"
+                    :key="index"
+                    :color="item.hex"
+                    :value="item.hex"
+                    v-model="color"
+                    @update:modelValue="color = locale === 'en_US' ? item.englishName : item.name"
+                  />
+                </div>
+              </section>
 
-              <button
-                :disabled="false"
-                class="mt-10 flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-              >
-                <span v-if="false">adding to cart...</span>
-                <span v-else> Add to bag</span>
-              </button>
+              <section v-if="productStore.product?.sizes.length">
+                <div class="mb-2 flex">
+                  <p class="" v-text="$t('COMMON.SIZE') + ':'" />
+                  <p class="ml-2 font-bold" v-text="size" />
+                </div>
+                <!-- Reviews -->
+                <div class="flex gap-2">
+                  <RadioCheck
+                    v-for="(item, index) in productStore.product?.sizes"
+                    :key="index"
+                    :is-checked="item.name === size"
+                    :color="item.hex"
+                    :label="item.name"
+                    :value="item.hex"
+                    v-model="size"
+                    @update:modelValue="size = locale === 'en_US' ? item.englishName : item.name"
+                  />
+                </div>
+              </section>
+
+              <section class="mb-4">
+                <!-- <div class="mt-2">
+                  <section class="items-center justify-between">
+                    <p class="" v-text="'Cantidad:'" />
+                    <div class="border-burgerPrimary flex w-24 items-center justify-between rounded-md border px-3 py-1">
+                      <button class="transition duration-500 hover:opacity-50">
+                        <ChevronLeftIcon class="w-4" />
+                      </button>
+                      <p class="text-burgerPrimary text-base" v-text="'1'" />
+                      <button class="transition duration-500 hover:opacity-50">
+                        <ChevronRightIcon class="w-4" />
+                      </button>
+                    </div>
+                  </section>
+                </div> -->
+              </section>
+              <Btn with-icon is-full color="primaryProduct" :text="$t('COMMON.ADD_TO_CART')" @click="addProduct()">
+                <template #icon>
+                  <ShoppingCartIcon class="mx-2 w-5" />
+                </template>
+              </Btn>
             </div>
           </div>
         </div>
       </section>
     </div>
+
+    <NewProducts v-if="productStore.allProduct?.section1.length" :products="productStore.allProduct?.section1" class="mb-8" />
   </div>
 </template>

@@ -26,15 +26,7 @@ onMounted(() => {
 })
 </script>
 <template>
-  <div class="vueGallery">
-    <div class="activePhoto" :style="'background-image: url(' + props.photos[activePhoto] + ');'">
-      <button v-if="props.photos.length > 1" type="button" aria-label="Previous Photo" class="previous" @click="previousPhoto()">
-        <ArrowLeftIcon class="w-4 mx-auto text-gray-900" />
-      </button>
-      <button v-if="props.photos.length > 1" type="button" aria-label="Next Photo" class="next" @click="nextPhoto()">
-        <ArrowRightIcon  class="w-4 mx-auto text-gray-900" />
-      </button>
-    </div>
+  <div class="vueGallery flex gap-2">
     <div class="thumbnails" v-if="props.photos.length > 1">
       <div
         v-for="(photo, index) in props.photos"
@@ -45,5 +37,14 @@ onMounted(() => {
         :style="'background-image: url(' + photo + ')'"
       ></div>
     </div>
+    <div class="activePhoto" :style="'background-image: url(' + props.photos[activePhoto] + ');'">
+      <button v-if="props.photos.length > 1" type="button" aria-label="Previous Photo" class="previous" @click="previousPhoto()">
+        <ArrowLeftIcon class="w-4 mx-auto text-gray-900" />
+      </button>
+      <button v-if="props.photos.length > 1" type="button" aria-label="Next Photo" class="next" @click="nextPhoto()">
+        <ArrowRightIcon  class="w-4 mx-auto text-gray-900" />
+      </button>
+    </div>
+ 
   </div>
 </template>

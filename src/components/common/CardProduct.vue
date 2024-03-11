@@ -5,6 +5,8 @@ import { HeartIcon, ShoppingCartIcon, PhotoIcon } from '@heroicons/vue/24/outlin
 import { useRouter } from 'vue-router'
 import CartStore from '@/stores/cart/cart'
 import { useI18n } from 'vue-i18n'
+import _storeUser from '@/stores/user'
+import useNotifications from '@/composables/useNotifications'
 
 const props = defineProps({
   data: {
@@ -20,11 +22,34 @@ const { locale } = useI18n()
 const cartStore = CartStore()
 const router = useRouter()
 const imageError = ref(false)
+const storeUser = _storeUser()
+const { pushNotification } = useNotifications()
+
+const addToCart = (_id: any) => {
+  if (storeUser.currentUser) {
+    cartStore.addToUserCart({
+      productId: _id,
+      quantity: cartStore.cart.find((item) => item.productId === _id)?.quantity || 1,
+    })
+  } else {
+    cartStore.addToCart({
+      productId: _id,
+    })
+  }
+
+  pushNotification({
+    id: '',
+    title: 'Añadido al carrito. ',
+    type: 'success',
+    isLink: '/checkout',
+    description: 'Ver carrito ',
+  })
+}
 
 const goToProduct = (id: number) => router.push({ name: 'singleProduct', params: { id: id } })
 </script>
 <template>
-  <section class="relative w-full  text-start">
+  <section class="relative w-full text-start">
     <div class="group/card mb-2 flex h-[350px] w-full overflow-hidden rounded-lg bg-gray-100">
       <PhotoIcon v-if="imageError" class="mx-auto w-7 text-gray-500" />
 
@@ -49,18 +74,7 @@ const goToProduct = (id: number) => router.push({ name: 'singleProduct', params:
         <p v-text="locale === 'en_US' ? props.data.nameEnglish : props.data.name" />
         <p class="text-xl font-bold" v-text="`$` + props.data.price" />
       </div>
-      <Btn
-        color="cart"
-        is-tooltip
-        :text="$t('COMMON.ADD_TO_CART')"
-        with-icon
-        @click="
-          cartStore.addToCart({
-            name: locale === 'en_US' ? props.data.nameEnglish : props.data.name,
-            id: props.data._id,
-          })
-        "
-      >
+      <Btn color="cart" is-tooltip :text="$t('COMMON.ADD_TO_CART')" with-icon @click="addToCart(props.data._id)">
         <template #icon>
           <ShoppingCartIcon class="w-5" />
         </template>

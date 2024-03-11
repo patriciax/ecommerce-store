@@ -14,6 +14,7 @@ const { notifications, removeNotification } = useNotifications()
       v-for="(notification, index) in notifications"
       :key="index"
       :title="notification.title"
+      :isLink="notification.isLink"
       :description="notification.description"
       :typeAlert="notification.type"
       class="mt-5"

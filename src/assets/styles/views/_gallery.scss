@@ -11,6 +11,7 @@
     border-radius: 10px;
     height: 500px;
     margin-bottom: 13px;
+    background-size: cover;
     button {
       border: none;
       background-color: transparent;
@@ -54,9 +55,10 @@
     }
   }
   .thumbnails {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-    grid-gap: 5px;
+    // display: grid;
+    width: 140px;
+    // grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    // grid-gap: 5px;
 
     div {
       border-radius: 10px;
@@ -69,6 +71,8 @@
       background-position: center;
       background-repeat: no-repeat;
       opacity: 1;
+      height: 100px;
+      margin-bottom: 26px;
 
       &:hover {
         opacity: 0.6;

@@ -11,6 +11,12 @@ const props = defineProps({
     validator: (value) => ['error', 'success', 'warning', 'info'].includes(String(value)),
     default: 'info',
   },
+  isLink: {
+    type: String,
+  },
+  description: {
+    type: String,
+  }
 })
 
 const classList = computed(() => {
@@ -27,6 +33,7 @@ const handleClose = () => emit('close')
   <section class="c-alert" :class="classList">
     <template v-if="props.title">
       <p v-text="props.title" />
+      <RouterLink class="ml-2 hover:bg-gray-200 bg-white rounded-lg px-4" :to="props.isLink" v-text="props.description" v-if="props.isLink"/>
       <button aria-label="close alert" @click="handleClose">
         <XMarkIcon class="w-5 text-white" />
       </button>

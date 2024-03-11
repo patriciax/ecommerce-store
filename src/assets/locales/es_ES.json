@@ -3,19 +3,22 @@
     "LOADING": "Cargando...",
     "TOGGLE_DARK_MODE": "Activar el modo oscuro",
     "LOGOUT": "Cerrar sesión",
-    "CART":"Carrito",
+    "CART": "Carrito",
     "GIFT_CART": "Tarjeta de regalo",
-    "ADD_TO_CART":"Agregar al carrito",
-    "REGISTER":"Registrarse",
+    "ADD_TO_CART": "Agregar al carrito",
+    "REGISTER": "Registrarse",
     "CREATE_ACCOUNT": "Crear cuenta",
-    "CREATE_AN_ACCOUNT":"Crea una cuenta",
+    "CREATE_AN_ACCOUNT": "Crea una cuenta",
     "SUCCEFULLY_REGISTER": "Registro exitoso",
     "ERROR": "Error",
     "ERROR_REGISTER": "Error al registrar",
     "PASSWORD_NOT_SAME": "Las contraseñas no son iguales",
-    "NEWS":"Novedades",
-    "RECOMMENDED":"Productos recomendados",
-    "POPULAR_NOW":"Populares ahora mismo"
+    "NEWS": "Novedades",
+    "RECOMMENDED": "Productos recomendados",
+    "POPULAR_NOW": "Populares ahora mismo",
+    "COLOR": "Color",
+    "SIZE": "Tamaño",
+    "DESCRIPTION": "Descripción"
   },
   "LOGIN": {
     "LOGIN": "Iniciar sesión",
@@ -37,7 +40,7 @@
   },
   "HOME": {
     "NEW_PRODUCTS": "Nuevos productos",
-    "PRODUCTS":"Productos"
+    "PRODUCTS": "Productos"
   },
   "FORM": {
     "NAME_LAST_NAME": "Nombre y Apellido",
@@ -76,8 +79,7 @@
     "SALES_TO_FINAL_CONSUMERS": "Venta a consumidor final",
     "EXTERIOR_IDENTIFICATION": "Identificacion del exterior",
     "DATE_HOUR": "Fecha y hora",
-    "PASSWORD_CONFIRM":"Confirmar contraseña"
+    "PASSWORD_CONFIRM": "Confirmar contraseña"
   },
-  "ACTIONS": {
-  }
+  "ACTIONS": {}
 }

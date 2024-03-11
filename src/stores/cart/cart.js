@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-
+import { _addToMassiveCart, _delete, _productInfoGuest, _productInfo, _addToUserCart, _update } from '@/api/repositories/cart.repository'
 export default defineStore({
   id: 'cart',
   state: () => ({
@@ -10,7 +10,6 @@ export default defineStore({
     _isCart: null,
   }),
   getters: {
-    isIdle: (state) => state._status === 'idle',
     isLoading: (state) => state._status === 'loading',
     isReady: (state) => state._status === 'ready',
     isError: (state) => state._status === 'error',
@@ -25,10 +24,82 @@ export default defineStore({
     isCart: (state) => state._isCart,
   },
   actions: {
+    async productInfoGuest(body) {
+      this.changeStatus('loading')
+      try {
+        const response = await _productInfoGuest(body)
+        if (response) {
+          const cartData = response.data.data.cart
+          const updatedCart = cartData.map((item) => {
+            const updatedItem = { ...item }
+            updatedItem.productId = updatedItem._id
+            delete updatedItem._id
+            return updatedItem
+          })
+          this._cart = updatedCart
+          this.changeStatus('ready')
+        }
+      } catch (error) {
+        this.changeStatus('error', error)
+      }
+    },
+    async productInfo() {
+      this.changeStatus('loading')
+      try {
+        const response = await _productInfo(this.cart)
+        if (response) {
+          const cartData = response.data.cart
+          const updatedCart = cartData.map((item) => {
+            const updatedItem = { ...item }
+            updatedItem.productId = updatedItem._id
+            delete updatedItem._id
+            return updatedItem
+          })
+          this._cart = updatedCart
+          this.changeStatus('ready')
+        }
+      } catch (error) {
+        this.changeStatus('error', error)
+      }
+    },
+    async addToMassiveCart(body) {
+      this.changeStatus('loading')
+      try {
+        const response = await _addToMassiveCart(body)
+        if (response) {
+          this.changeStatus('ready')
+          this.productInfo()
+        }
+      } catch (error) {
+        this.changeStatus('error', error)
+      }
+    },
+    async update(body) {
+      console.log(body)
+      this.changeStatus('loading')
+      try {
+        const response = await _update(body)
+        if (response) {
+          this.changeStatus('ready')
+        }
+      } catch (error) {
+        this.changeStatus('error', error)
+      }
+    },
 
-
+    async addToUserCart(body) {
+      this.changeStatus('loading')
+      try {
+        const response = await _addToUserCart(body)
+        if (response) {
+          this.changeStatus('ready')
+        }
+      } catch (error) {
+        this.changeStatus('error', error)
+      }
+    },
     addToCart(item) {
-      const _indexExist = this.cart.findIndex((product) => product.id === item.id)
+      const _indexExist = this.cart.findIndex((product) => product.productId === item.productId)
 
       if (_indexExist < 0) {
         this.cart.push({
@@ -36,46 +107,42 @@ export default defineStore({
           quantity: 0,
         })
       }
-
       const indexProduct = _indexExist >= 0 ? _indexExist : this.cart.length - 1
       this.cart[indexProduct].quantity++
       sessionStorage.setItem('cart', JSON.stringify(this.cart))
     },
+    async removeCart(id) {
+      this.changeStatus('loading')
+      try {
+        const response = await _delete(id)
 
-    removeCart(id) {
+        if (response) {
+          this.changeStatus('ready')
+          this.productInfo()
+        }
+      } catch (error) {
+        this.changeStatus('error', error)
+      }
+    },
 
-      let cartItem = this.cart.findIndex((product) => product.id === id)
-      // const lineId = this.cart[cartItem].id
-
-  
-
+    removeCartStorage(id) {
+      let cartItem = this.cart.findIndex((product) => product._id === id)
       if (cartItem >= 0) {
         this.cart.splice(cartItem, cartItem + 1)
         sessionStorage.setItem('cart', JSON.stringify(this.cart))
       }
     },
 
-
     clearCart() {
       this._cart = []
       sessionStorage.setItem('cart', JSON.stringify(this.cart))
     },
 
-    changeStatus: (_status, _errors) => {
-      this._status = _status
-      this._errors = _status == 'error' ? _errors : null
+    changeStatus(status, error = null) {
+      this._status = status
+      if (status === 'error') this._error = error
     },
 
-    setLoading() {
-      this._status = 'loading'
-    },
-    setReady() {
-      this._status = 'ready'
-    },
-    setError(error) {
-      this._error = Object.assign({}, error)
-      this._status = 'error'
-    },
     Reset() {
       this._isCart = null
     },
