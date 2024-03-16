@@ -69,5 +69,13 @@
     "EXTERIOR_IDENTIFICATION": "Exterior identification",
     "DATE_HOUR": "Date",
     "PASSWORD_CONFIRM": "Confirm password"
+  },
+  "ACTIONS":{},
+  "PAYMENTS": {
+    "CARD_HOLDER":"Nombre del titular de la tarjeta",
+    "CARD_HOLDER_ID":"Cédula del titular de la tarjeta",
+    "CARD_NUMBER":"Número de tarjeta",
+    "CVC": "cvc",
+    "EXPIRATION_DATE": "Fecha de expiración"
   }
 }

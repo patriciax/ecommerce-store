@@ -13,10 +13,16 @@ export default defineStore({
 
     async getCountry() {
       
+      try{
+
         const response = await axios.get("https://ipapi.co/json/")
         if(response.status == 200){
             this._country = response.data.country_name
         }
+
+      }catch(err){
+        console.error(err)
+      }
 
     }
   },

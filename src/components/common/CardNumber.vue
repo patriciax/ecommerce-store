@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script setup>
 import { ref, computed } from 'vue'
 import { EyeIcon, EyeSlashIcon } from '@heroicons/vue/24/outline'
 
@@ -31,7 +31,7 @@ const props = defineProps({
   isRequired: {
     type: Boolean,
   },
-  noSpecialCharacters:{
+  onlyNumber:{
     type: Boolean,
     default: false
   }
@@ -40,14 +40,6 @@ const props = defineProps({
 const showPassword = ref(false)
 
 const changeType = () => (showPassword.value = !showPassword.value)
-
-const typeApply = computed(() => {
-  if (props.type === 'password') {
-    return showPassword.value ? 'text' : 'password'
-  }
-
-  return props.type
-})
 
 const emit = defineEmits(['update:modelValue'])
 const handleInput = (_event) => emit('update:modelValue', _event.target.value)
@@ -58,18 +50,6 @@ const isNumber = (evt) => {
   
   if (!keysAllowed.includes(keyPressed)) {
   evt.preventDefault()
-  }
-}
-
-const validateKeyPress = (event) => {
-  const charCode = event.charCode;
-
-  if (!(charCode >= 65 && charCode <= 90) && // A-Z
-      !(charCode >= 97 && charCode <= 122) && // a-z
-      charCode !== 32 && 
-      charCode !== 241 &&
-      charCode !== 209) { // space
-    event.preventDefault();
   }
 }
 
@@ -88,25 +68,15 @@ const validateKeyPress = (event) => {
           isDisabled ? 'cursor-not-allowed bg-gray-200 opacity-70 dark:bg-gray-600' : 'bg-white dark:bg-gray-600',
         ]"
         :name="props.name"
-        :type="typeApply"
+        type="text"
         :placeholder="props.placeholder"
         :value="props.modelValue"
         :disabled="props.isDisabled"
         autocomplete="off"
         @input="handleInput"
-        @keypress="props.noSpecialCharacters ? validateKeyPress($event) : ''"
+        maxlength="20"
+        @keypress="props.onlyNumber ? isNumber($event) : ''"
       />
-      <button
-        v-if="props.type === 'password'"
-        class="absolute right-4 top-9"
-        :disabled="props.isDisabled"
-        aria-label="show password"
-        type="button"
-        @click="changeType"
-      >
-        <EyeIcon v-if="!showPassword" class="h-5 w-5" />
-        <EyeSlashIcon v-else class="h-5 w-5" />
-      </button>
       <p v-if="props.errorMessage" class="absolute right-0 mt-0.5 text-xs font-medium text-red-500" v-text="props.errorMessage" />
     </label>
   </section>

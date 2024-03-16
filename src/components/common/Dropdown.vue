@@ -26,7 +26,7 @@ const classList = computed(() => {
 })
 const target = ref()
 window.addEventListener('click', (e) => {
-  if (!target.value.contains(e.target)) isOpen.value = false
+  if (!target.value?.contains(e.target)) isOpen.value = false
 })
 </script>
 
