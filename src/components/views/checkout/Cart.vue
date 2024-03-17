@@ -1,0 +1,120 @@
+<script setup lang="ts">
+import { ref, computed, onMounted, watch } from 'vue'
+import CartStore from '@/stores/cart/cart'
+import _storeUser from '@/stores/user'
+import useNotifications from '@/composables/useNotifications'
+import { useI18n } from 'vue-i18n'
+import CartList from '@/components/common/CartList.vue'
+
+const { t } = useI18n()
+
+const page = ref(1)
+const cartStore = CartStore()
+const storeUser = _storeUser()
+const { pushNotification } = useNotifications()
+const isDisabledStock = ref(false)
+
+const removeItem = async (item) => {
+  if (storeUser.currentUser) {
+    cartStore.removeCart(item.productId)
+
+    if (cartStore.isError) {
+      pushNotification({
+        id: '',
+        title: 'Error al eliminar el producto. ',
+        type: 'error',
+      })
+    }
+    if (cartStore.isReady) {
+      pushNotification({
+        id: '',
+        title: 'Producto eliminado del carrito. ',
+        type: 'success',
+      })
+    }
+  } else {
+    cartStore.removeCartStorage(item._id)
+  }
+}
+
+const lessItem = (index) => {
+  const cart = cartStore.cart
+  if (cart[index].quantity - 1 > 0) {
+    cart[index].quantity--
+
+    if (storeUser.currentUser) {
+      cartStore.update({
+        productId: cart[index].product._id,
+        quantity: cart[index].quantity,
+      })
+    }
+  }
+}
+const moreItem = (index) => {
+  const cart = cartStore.cart
+
+  if (cart[index].quantity != cart[index].product?.stock) {
+    cart[index].quantity++
+
+    if (storeUser.currentUser) {
+      cartStore.update({
+        productId: cart[index].product._id,
+        quantity: cart[index].quantity,
+      })
+    }
+
+    if (cart[index].quantity === cart[index].stock) {
+      isDisabledStock.value = true
+      return
+    }
+  }
+}
+
+watch(
+  () => storeUser.currentUser,
+  async (newValue, oldValue) => {
+    if (newValue != oldValue && storeUser.currentUser) {
+      await cartStore.addToMassiveCart({ cartItems: cartStore.cart })
+    }
+  }
+)
+
+onMounted(async () => {
+  if (storeUser.currentUser) {
+    await cartStore.addToMassiveCart({ cartItems: cartStore.cart })
+  }
+
+  if (!storeUser.currentUser) {
+    await cartStore.productInfoGuest({ cartProducts: cartStore.cart })
+  }
+})
+</script>
+<template>
+      <p class="text-xl font-bold" v-text="'Carrtito de compra'" />
+      <p class="mb-6 font-light" v-text="`Tienes ${cartStore.cart.length} productos en el carrito`" />
+      <template v-if="cartStore.isLoading">
+        <div
+          v-for="(item, index) in 3"
+          :key="index"
+          class="mb-6 flex h-24 animate-pulse items-center gap-4 rounded-2xl bg-gray-200 px-6 text-lg shadow-[0px_2px_5px_#00000038]"
+        />
+      </template>
+      <template v-else>
+        <CartList
+          v-for="(item, index) in cartStore.cart"
+          :key="index"
+          :isLast="index === cartStore.cart.length - 1"
+          :item="item"
+          :index="index"
+          :isLoading="cartStore.isLoading"
+          @removeItem="removeItem(item)"
+          @lessItem="lessItem(index)"
+          @moreItem="moreItem(index)"
+          :disableStock="isDisabledStock"
+        />
+      </template>
+
+      <p class="rounded-lg bg-gray-100 p-3 text-center text-xl font-bold" v-if="!cartStore.cart.length && cartStore.isReady">Empty cart</p>
+
+      <Card />
+</template>

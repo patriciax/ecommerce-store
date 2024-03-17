@@ -56,6 +56,7 @@ export default defineStore({
             return updatedItem
           })
           this._cart = updatedCart
+          sessionStorage.setItem('cart', JSON.stringify(this.cart))
           this.changeStatus('ready')
         }
       } catch (error) {
@@ -69,6 +70,7 @@ export default defineStore({
         if (response) {
           this.changeStatus('ready')
           this.productInfo()
+          sessionStorage.removeItem('cart')
         }
       } catch (error) {
         this.changeStatus('error', error)
@@ -92,6 +94,16 @@ export default defineStore({
       try {
         const response = await _addToUserCart(body)
         if (response) {
+          const _indexExist = this.cart.findIndex((product) => product.productId === body.productId)
+
+          if (_indexExist < 0) {
+            this.cart.push({
+              ...body,
+              quantity: 0,
+            })
+          }
+          const indexProduct = _indexExist >= 0 ? _indexExist : this.cart.length - 1
+          this.cart[indexProduct].quantity++
           this.changeStatus('ready')
         }
       } catch (error) {
@@ -143,8 +155,9 @@ export default defineStore({
       if (status === 'error') this._error = error
     },
 
-    Reset() {
+    reset() {
       this._isCart = null
+      this._cart = []
     },
     ResetCart() {
       this._cart = []

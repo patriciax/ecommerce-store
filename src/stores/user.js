@@ -30,8 +30,11 @@ export default defineStore({
     },
     reset() {
       localStorage.removeItem(import.meta.env.VITE_BEARER_TOKEN_KEY)
+      sessionStorage.removeItem('cart')
+      this._cart = []
       this._status = null
       this._user = null
+
     },
     changeStatus(status, error = null) {
       this._status = status

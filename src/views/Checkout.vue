@@ -1,10 +1,19 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { CheckIcon } from '@heroicons/vue/24/outline'
-import CartList from '../components/common/CartList.vue'
 import CartStore from '@/stores/cart/cart'
 import _storeUser from '@/stores/user'
 import useNotifications from '@/composables/useNotifications'
+import TextFields from '@/components/common/TextFields.vue'
+import InputPhoneNumber from '@/components/common/InputPhoneNumber.vue'
+import Btn from '@/components/common/Btn.vue'
+import useVuelidate from '@vuelidate/core'
+import { email, required } from '@vuelidate/validators'
+import { useI18n } from 'vue-i18n'
+import Cart from '@/components/views/checkout/Cart.vue'
+import Billing from '@/components/views/checkout/Billing.vue'
+
+const { t } = useI18n()
 
 const page = ref(1)
 const cartStore = CartStore()
@@ -19,54 +28,64 @@ const total = computed(() => {
   return total.toFixed(2)
 })
 
-const removeItem = async (item) => {
-  if (storeUser.currentUser) {
-    cartStore.removeCart(item.productId)
+const dataForm = ref({
+  name: '',
+  lastname: '',
+  email: '',
+  phone: '',
+  address: '',
+  password: '',
+  passwordConfirm: '',
+})
 
-    if (cartStore.isError) {
-      pushNotification({
-        id: '',
-        title: 'Error al eliminar el producto. ',
-        type: 'error',
-      })
+const handlerValidate = useVuelidate(
+  {
+    email: {
+      required,
+      email,
+    },
+    name: {
+      required,
+    },
+    lastname: {
+      required,
+    },
+    phone: {
+      required,
+    },
+    password: {
+      required,
+    },
+    passwordConfirm: {
+      required,
+    },
+  },
+  dataForm
+)
+
+const setEmailErrors = computed(() => {
+  const validator = handlerValidate.value?.['email']?.$errors?.[0]?.$validator
+  if (validator == 'required') return t('VALIDATIONS.REQUIRED')
+  if (validator == 'email') return t('VALIDATIONS.EMAIL')
+  else if (emailHasError.value) return t('VALIDATIONS.EMAIL_IN_USE')
+
+  return undefined
+})
+
+watch(
+  () => storeUser.currentUser,
+  async (newValue, oldValue) => {
+    if (newValue != oldValue && storeUser.currentUser) {
+      await cartStore.addToMassiveCart({ cartItems: cartStore.cart })
     }
-    if (cartStore.isReady) {
-      pushNotification({
-        id: '',
-        title: 'Producto eliminado del carrito. ',
-        type: 'success',
-      })
-    }
-  } else {
-    cartStore.removeCartStorage(item._id)
   }
-}
-
-const lessItem = (index) => {
-  const cart = cartStore.cart
-  if (cart[index].quantity - 1 > 0) {
-    cart[index].quantity--
-  }
-}
-const moreItem = (index) => {
-  const cart = cartStore.cart
-
-  if (cart[index].quantity + 1 <= cart[index].stock) {
-    cart[index].quantity++
-  }
-  if (storeUser.currentUser ) {
-    if( cart[index].product?.stock)isDisabledStock.value = true
-    cartStore.update({
-      productId: cart[index].product._id,
-      quantity: cart[index].quantity,
-    })
-  }
-}
+)
 
 onMounted(async () => {
   if (storeUser.currentUser) {
     await cartStore.addToMassiveCart({ cartItems: cartStore.cart })
   }
+
   if (!storeUser.currentUser) {
     await cartStore.productInfoGuest({ cartProducts: cartStore.cart })
   }
@@ -102,42 +121,29 @@ onMounted(async () => {
       </ol>
     </div>
 
-    <div class="min-h-[360px]">
+    <section class="min-h-[360px]">
       <div v-if="page == 1">
-        <p class="text-xl font-bold" v-text="'Carrtito de compra'" />
-        <p class="mb-6 font-light" v-text="`Tienes ${cartStore.cart.length} productos en el carrito`" />
-        <template v-if="cartStore.isLoading">
-          <div
-            v-for="(item, index) in 3"
-            :key="index"
-            class="mb-6 flex h-24 animate-pulse items-center gap-4 rounded-2xl bg-gray-200 px-6 text-lg shadow-[0px_2px_5px_#00000038]"
-          />
-        </template>
-        <template v-else>
-          <CartList
-            v-for="(item, index) in cartStore.cart"
-            :key="index"
-            :isLast="index === cartStore.cart.length - 1"
-            :item="item"
-            :index="index"
-            :isLoading="cartStore.isLoading"
-            @removeItem="removeItem(item)"
-            @lessItem="lessItem(index)"
-            @moreItem="moreItem(index)"
-          />
-        </template>
-
-        <p class="rounded-lg bg-gray-100 p-3 text-center text-xl font-bold" v-if="!cartStore.cart.length">Empty cart</p>
+        <Cart />
       </div>
 
-      <div v-if="page == 2">TEST 2</div>
+      <div v-if="page == 2">
+        <Billing />
+      </div>
 
       <div v-if="page == 3">TEST 3</div>
-    </div>
+    </section>
 
     <div class="flex justify-center gap-4">
-      <button v-if="page > 1" class="" type="submit" @click="page <= 4 && page > 1 ? (page -= 1) : ''">Volver</button>
       <button
+        v-if="page > 1"
+        class="rounded-lg border border-gray-300 p-8 py-3 text-sm font-bold leading-6"
+        type="submit"
+        @click="page <= 4 && page > 1 ? (page -= 1) : ''"
+      >
+        Volver
+      </button>
+      <button
+        v-if="cartStore.cart.length"
         :class="{ 'opacity-50': !cartStore.cart.length || cartStore.isLoading }"
         :disabled="!cartStore.cart.length || cartStore.isLoading"
         class="group flex items-center justify-center gap-1 rounded-xl bg-gray-800 p-8 py-3 text-sm font-bold leading-6 text-white shadow-sm hover:bg-opacity-90"

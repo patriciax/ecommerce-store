@@ -24,11 +24,12 @@ const register = ref(false)
 const login = ref(false)
 
 const logout = (_closeDropdown: () => void) => {
-  storeUser.reset()
-  _closeDropdown()
   router.push({ name: 'home' })
+  storeUser.reset()
+  cartStore.reset()
+  _closeDropdown()
 }
-const goToCart = () => router.push({ name: 'checkout' })
+const goToCart = () => {router.push({ name: 'checkout' })}
 
 onMounted(async () => {
   const response = await getAllCategoriesMenu()
