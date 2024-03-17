@@ -21,7 +21,6 @@ const { pushNotification } = useNotifications()
 const isDisabledStock = ref(false)
 const emailHasError = ref(null)
 
-
 const total = computed(() => {
   let total = 0
   cartStore.cart.forEach((item) => {
@@ -74,18 +73,14 @@ const setEmailErrors = computed(() => {
   return undefined
 })
 
-
-
-onMounted(async () => {
-
-})
+onMounted(async () => {})
 </script>
 <template>
   <p class="text-xl font-bold" v-text="'Datos de facturación'" />
   <p class="mb-6 font-light" v-text="`Tienes ${cartStore.cart.length} productos en el carrito`" />
 
-  <section>
-    <form class="grid gap-x-6 gap-y-3 md:grid-cols-2" @submit.prevent="sendForm">
+  <section class="grid grid-cols-2">
+    <form class="flex flex-col gap-2" @submit.prevent="sendForm">
       <TextFields
         id="name"
         v-model="dataForm.name"
@@ -145,6 +140,14 @@ onMounted(async () => {
         placeholder="Lorem ipsum"
         :label="t('FORM.ADDRESS')"
       />
+
+      <section class="py-4 border-t mt-4">
+        <p class="mb-3 text-lg font-bold" v-text="'Dirección de envío'" />
+
+        <div>
+          <img class="w-32" src="@/assets/images/zoom.png" />
+        </div>
+      </section>
 
       <div class="col-span-2 mt-6">
         <!-- <Btn :text="t('COMMON.CREATE_ACCOUNT')" isFull /> -->

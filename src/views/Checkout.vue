@@ -4,11 +4,6 @@ import { CheckIcon } from '@heroicons/vue/24/outline'
 import CartStore from '@/stores/cart/cart'
 import _storeUser from '@/stores/user'
 import useNotifications from '@/composables/useNotifications'
-import TextFields from '@/components/common/TextFields.vue'
-import InputPhoneNumber from '@/components/common/InputPhoneNumber.vue'
-import Btn from '@/components/common/Btn.vue'
-import useVuelidate from '@vuelidate/core'
-import { email, required } from '@vuelidate/validators'
 import { useI18n } from 'vue-i18n'
 import Cart from '@/components/views/checkout/Cart.vue'
 import Billing from '@/components/views/checkout/Billing.vue'
@@ -19,7 +14,6 @@ const page = ref(1)
 const cartStore = CartStore()
 const storeUser = _storeUser()
 const { pushNotification } = useNotifications()
-const isDisabledStock = ref(false)
 const total = computed(() => {
   let total = 0
   cartStore.cart.forEach((item) => {
@@ -28,71 +22,11 @@ const total = computed(() => {
   return total.toFixed(2)
 })
 
-const dataForm = ref({
-  name: '',
-  lastname: '',
-  email: '',
-  phone: '',
-  address: '',
-  password: '',
-  passwordConfirm: '',
-})
 
-const handlerValidate = useVuelidate(
-  {
-    email: {
-      required,
-      email,
-    },
-    name: {
-      required,
-    },
-    lastname: {
-      required,
-    },
-    phone: {
-      required,
-    },
-    password: {
-      required,
-    },
-    passwordConfirm: {
-      required,
-    },
-  },
-  dataForm
-)
-
-const setEmailErrors = computed(() => {
-  const validator = handlerValidate.value?.['email']?.$errors?.[0]?.$validator
-  if (validator == 'required') return t('VALIDATIONS.REQUIRED')
-  if (validator == 'email') return t('VALIDATIONS.EMAIL')
-  else if (emailHasError.value) return t('VALIDATIONS.EMAIL_IN_USE')
-
-  return undefined
-})
-
-watch(
-  () => storeUser.currentUser,
-  async (newValue, oldValue) => {
-    if (newValue != oldValue && storeUser.currentUser) {
-      await cartStore.addToMassiveCart({ cartItems: cartStore.cart })
-    }
-  }
-)
-
-onMounted(async () => {
-  if (storeUser.currentUser) {
-    await cartStore.addToMassiveCart({ cartItems: cartStore.cart })
-  }
-
-  if (!storeUser.currentUser) {
-    await cartStore.productInfoGuest({ cartProducts: cartStore.cart })
-  }
-})
+onMounted(async () => {})
 </script>
 <template>
-  <section class="mx-auto mt-32 max-w-3xl">
+  <section class="mx-auto mt-32 max-w-4xl">
     <div class="mb-14 after:mt-4 after:block after:h-1 after:w-full after:rounded-lg after:bg-gray-200">
       <ol class="grid grid-cols-3 text-sm font-medium text-gray-500">
         <li @click="page = 1" class="relative flex justify-start text-gray-800">

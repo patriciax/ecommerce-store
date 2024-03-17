@@ -73,7 +73,7 @@ const moreItem = (index) => {
 watch(
   () => storeUser.currentUser,
   async (newValue, oldValue) => {
-    if (newValue != oldValue && storeUser.currentUser) {
+    if (newValue != oldValue && storeUser.currentUser && cartStore.cartIsNew) {
       await cartStore.addToMassiveCart({ cartItems: cartStore.cart })
     }
   }
@@ -81,7 +81,10 @@ watch(
 
 onMounted(async () => {
   if (storeUser.currentUser) {
-    await cartStore.addToMassiveCart({ cartItems: cartStore.cart })
+    if (cartStore.cartIsNew) {
+      await cartStore.addToMassiveCart({ cartItems: cartStore.cart })
+    }
+    await cartStore.productInfo()
   }
 
   if (!storeUser.currentUser) {
@@ -90,31 +93,31 @@ onMounted(async () => {
 })
 </script>
 <template>
-      <p class="text-xl font-bold" v-text="'Carrtito de compra'" />
-      <p class="mb-6 font-light" v-text="`Tienes ${cartStore.cart.length} productos en el carrito`" />
-      <template v-if="cartStore.isLoading">
-        <div
-          v-for="(item, index) in 3"
-          :key="index"
-          class="mb-6 flex h-24 animate-pulse items-center gap-4 rounded-2xl bg-gray-200 px-6 text-lg shadow-[0px_2px_5px_#00000038]"
-        />
-      </template>
-      <template v-else>
-        <CartList
-          v-for="(item, index) in cartStore.cart"
-          :key="index"
-          :isLast="index === cartStore.cart.length - 1"
-          :item="item"
-          :index="index"
-          :isLoading="cartStore.isLoading"
-          @removeItem="removeItem(item)"
-          @lessItem="lessItem(index)"
-          @moreItem="moreItem(index)"
-          :disableStock="isDisabledStock"
-        />
-      </template>
+  <p class="text-xl font-bold" v-text="'Carrtito de compra'" />
+  <p class="mb-6 font-light" v-text="`Tienes ${cartStore.cart.length} productos en el carrito`" />
+  <template v-if="cartStore.isLoading">
+    <div
+      v-for="(item, index) in 3"
+      :key="index"
+      class="mb-6 flex h-24 animate-pulse items-center gap-4 rounded-2xl bg-gray-200 px-6 text-lg shadow-[0px_2px_5px_#00000038]"
+    />
+  </template>
+  <template v-else>
+    <CartList
+      v-for="(item, index) in cartStore.cart"
+      :key="index"
+      :isLast="index === cartStore.cart.length - 1"
+      :item="item"
+      :index="index"
+      :isLoading="cartStore.isLoading"
+      @removeItem="removeItem(item)"
+      @lessItem="lessItem(index)"
+      @moreItem="moreItem(index)"
+      :disableStock="isDisabledStock"
+    />
+  </template>
 
-      <p class="rounded-lg bg-gray-100 p-3 text-center text-xl font-bold" v-if="!cartStore.cart.length && cartStore.isReady">Empty cart</p>
+  <p class="rounded-lg bg-gray-100 p-3 text-center text-xl font-bold" v-if="!cartStore.cart.length && cartStore.isReady">Empty cart</p>
 
-      <Card />
+  <Card />
 </template>

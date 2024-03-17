@@ -6,7 +6,7 @@ export default defineStore({
     _status: null,
     _errors: null,
     _cart: sessionStorage.getItem('cart') ? JSON.parse(sessionStorage.getItem('cart')) : [],
-    _isShow: false,
+    _isNew: false,
     _isCart: null,
   }),
   getters: {
@@ -15,7 +15,7 @@ export default defineStore({
     isError: (state) => state._status === 'error',
     error: (state) => state._errors,
     cart: (state) => state._cart,
-    cartIsShow: (state) => state._isShow,
+    cartIsNew: (state) => state._isNew,
     quantityInCar: (state) => state._cart.reduce((acc, item) => acc + item.quantity, 0),
     total: (state) => {
       const total = state._cart.reduce((acc, item) => acc + item.price * item.quantity, 0)
@@ -46,7 +46,7 @@ export default defineStore({
     async productInfo() {
       this.changeStatus('loading')
       try {
-        const response = await _productInfo(this.cart)
+        const response = await _productInfo()
         if (response) {
           const cartData = response.data.cart
           const updatedCart = cartData.map((item) => {
@@ -69,7 +69,6 @@ export default defineStore({
         const response = await _addToMassiveCart(body)
         if (response) {
           this.changeStatus('ready')
-          this.productInfo()
           sessionStorage.removeItem('cart')
         }
       } catch (error) {
@@ -78,7 +77,7 @@ export default defineStore({
     },
     async update(body) {
       console.log(body)
-      this.changeStatus('loading')
+      // this.changeStatus('loading')
       try {
         const response = await _update(body)
         if (response) {
@@ -104,6 +103,7 @@ export default defineStore({
           }
           const indexProduct = _indexExist >= 0 ? _indexExist : this.cart.length - 1
           this.cart[indexProduct].quantity++
+          this._isCart = true
           this.changeStatus('ready')
         }
       } catch (error) {
@@ -124,12 +124,12 @@ export default defineStore({
       sessionStorage.setItem('cart', JSON.stringify(this.cart))
     },
     async removeCart(id) {
-      this.changeStatus('loading')
+      // this.changeStatus('loading')
       try {
         const response = await _delete(id)
 
         if (response) {
-          this.changeStatus('ready')
+          // this.changeStatus('ready')
           this.productInfo()
         }
       } catch (error) {
