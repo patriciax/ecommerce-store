@@ -16,7 +16,11 @@ const active = ref(false)
     class="border-gray-light mb-4 flex cursor-pointer items-center justify-between gap-3 border-b py-4 first-of-type:pt-0"
     @click="active = !active"
   >
+  <div class="flex">
+    <slot name="img"/>
     <p class="text-lg font-semibold" v-text="props.title" />
+
+  </div>
     <ChevronDownIcon
       class="block w-5 transform transition-all duration-200"
       :class="active === true ? 'rotate-180 text-primary' : 'text-gray'"

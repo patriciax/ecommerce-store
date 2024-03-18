@@ -15,6 +15,8 @@ import SelectField from '@/components/common/SelectField.vue'
 import _ZoomStore from '@/stores/zoom'
 import Paypal from '@/components/paymentMethods/Paypal.vue'
 import Banesco from '@/components/paymentMethods/Banesco.vue'
+import Card from '@/components/paymentMethods/Card.vue'
+
 import Accordion from '@/components/common/Accordion.vue'
 const { t } = useI18n()
 
@@ -114,7 +116,7 @@ onMounted(async () => {
 })
 </script>
 <template>
-  <section class="grid grid-cols-2 gap-12">
+  <section class="grid px-10 lg:px-0 md:grid-cols-2 gap-12">
     <div>
       <p class="mt-6 text-xl font-bold" v-text="'Datos de facturación'" />
       <p class="mb-6 font-light" v-text="`Tienes ${cartStore.cart.length} productos en el carrito`" />
@@ -236,10 +238,26 @@ onMounted(async () => {
       <section>
         <p class="text-lg font-bold mb-6" v-text="'Método de pago'" />
         <div>
-          <accordion :title="'Banesco'">
-            <Banesco/>
+          <accordion :title="''">
+            <template #img>
+              <img
+                class="w-32"
+                src="@/assets/images/banesco.png"
+            /></template>
+            <Banesco />
           </accordion>
-          <Paypal />
+
+          <accordion :title="''">
+            <template #img>
+              <img
+                class="w-32"
+                src="@/assets/images/paypal.png"
+            /></template>
+            <Paypal />
+          </accordion>
+          <accordion :title="'Tarjeta Eroca'">
+            <Card />
+          </accordion>
         </div>
       </section>
     </div>
