@@ -16,7 +16,7 @@ interval.value = setInterval(() => {
       fundingSource: (window as any).paypal.FUNDING.PAYPAL,
       async createOrder() {
         try {
-          const response = await fetch(`${(import.meta as any).env.BASE_URL}/checkout`, {
+          const response = await fetch(`${(import.meta as any).env.VITE_API_URL}/v1/checkout`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -24,7 +24,11 @@ interval.value = setInterval(() => {
             // use the "body" param to optionally pass additional order information
             // like product ids and quantities
             body: JSON.stringify({
-              paymentMethod: "paypal-create-order"
+              paymentMethod: "paypal-create-order",
+              carts:[{
+                "id": "65e8feabd745911b0a1072dd",
+                "quantity": 1
+              }]
               // cart: [
               //   {
               //     id: "YOUR_PRODUCT_ID",
@@ -36,8 +40,8 @@ interval.value = setInterval(() => {
           
           const orderData = await response.json();
           
-          if (orderData.id) {
-            return orderData.id;
+          if (orderData?.order?.id) {
+            return orderData.order.id;
           } else {
             const errorDetail = orderData?.details?.[0];
             const errorMessage = errorDetail
