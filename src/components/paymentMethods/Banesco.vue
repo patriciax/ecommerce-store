@@ -5,11 +5,7 @@ import DateCard from '../common/DateCard.vue';
 import Btn from '../common/Btn.vue';
 import { _submitPay } from '@/api/repositories/banesco.repository';
 import { ref } from 'vue'
-import { inject } from 'vue'
-import CryptoJS from 'crypto-js'
 import { showNotification } from '@/composables/useNotification';
-
-const cryptojs = inject('cryptojs') as typeof CryptoJS
 
 const document = ref('')
 const cardHolder = ref('')
