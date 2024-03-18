@@ -79,3 +79,34 @@ span {
     left: 0;
   }
 }
+
+.c-select {
+  @apply w-full transform transition-all;
+  & select {
+    @apply light-scroll block w-full cursor-pointer appearance-none rounded-md border    p-2.5 pr-7 text-sm   focus:outline-none   dark:text-gray-300   dark:placeholder-gray-400;
+    &:active ~ svg {
+      @apply rotate-180  duration-500;
+    }
+    option {
+      appearance: none;
+      outline: 0;
+      border: 0;
+      box-shadow: none;
+      border: 1px solid blue;
+    }
+  }
+  &--none {
+    @apply w-36;
+    select {
+      @apply border-0 p-2.5 pr-8;
+    }
+  }
+}
+
+select,
+option.selected {
+  width: 100px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}

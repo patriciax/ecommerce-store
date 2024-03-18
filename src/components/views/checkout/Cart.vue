@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, watch } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import CartStore from '@/stores/cart/cart'
 import _storeUser from '@/stores/user'
 import useNotifications from '@/composables/useNotifications'
@@ -8,7 +8,6 @@ import CartList from '@/components/common/CartList.vue'
 
 const { t } = useI18n()
 
-const page = ref(1)
 const cartStore = CartStore()
 const storeUser = _storeUser()
 const { pushNotification } = useNotifications()

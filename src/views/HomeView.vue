@@ -2,7 +2,6 @@
 import Banner from '@/components/views/home/Banner.vue'
 import NewProducts from '@/components/views/home/NewProducts.vue'
 import Products from '@/components/views/home/Products.vue'
-import Paypal from '@/components/paymentMethods/Paypal.vue'
 import Popular from '@/components/views/home/Popular.vue'
 import _storeProduct from '@/stores/product'
 import { onMounted } from 'vue'
@@ -21,7 +20,6 @@ onMounted(async () => {
       <NewProducts v-if="productStore.allProduct?.section1.length" :products="productStore.allProduct?.section1" class="mb-8" />
       <Products v-if="productStore.allProduct?.section2.length" :products="productStore.allProduct?.section2" />
       <Popular v-if="productStore.allProduct?.section3.length" :products="productStore.allProduct?.section3" />
-      <Paypal />
     </section>
   </main>
 </template>

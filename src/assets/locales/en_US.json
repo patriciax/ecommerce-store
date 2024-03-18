@@ -15,7 +15,8 @@
     "PASSWORD_NOT_SAME": "Passwords are not the same", 
     "NEWS":"News",
     "RECOMMENDED": "Recommended products", 
-    "POPULAR_NOW": "Popular right now"
+    "POPULAR_NOW": "Popular right now",
+    "SELECT": "Select"
   },
   "VALIDATIONS": {
     "REQUIRED": "This field is required",
