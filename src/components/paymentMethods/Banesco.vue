@@ -7,6 +7,13 @@ import { _submitPay } from '@/api/repositories/banesco.repository';
 import { ref } from 'vue'
 import { showNotification } from '@/composables/useNotification';
 
+const props = defineProps({
+    cart: {
+        type: Array,
+        required: true
+    }
+})
+
 const document = ref('')
 const cardHolder = ref('')
 const cardNumber = ref('')
@@ -34,10 +41,7 @@ const submitPay = async () => {
         const data = {
             paymentMethod: 'banesco',
             banescoData,
-            carts:[{
-                "id": "65e8feabd745911b0a1072dd",
-                "quantity": 1
-            }]
+            carts:props.cart
         }
 
         await _submitPay(data)

@@ -1,9 +1,13 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 
-
+const props = defineProps({
+  cart: {
+    type: Array,
+    required: true
+  }
+})
 const interval = ref(null)
-
 
 interval.value = setInterval(() => {
 
@@ -25,10 +29,7 @@ interval.value = setInterval(() => {
             // like product ids and quantities
             body: JSON.stringify({
               paymentMethod: "paypal-create-order",
-              carts:[{
-                "id": "65e8feabd745911b0a1072dd",
-                "quantity": 1
-              }]
+              carts:props.cart
               // cart: [
               //   {
               //     id: "YOUR_PRODUCT_ID",
