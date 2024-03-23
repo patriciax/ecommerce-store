@@ -3,6 +3,7 @@ import HomeView from '../views/HomeView.vue'
 import Product from '../views/SingleProduct.vue'
 import CountryStore from '@/stores/country'
 import _storeUser from '@/stores/user'
+import _storeCart from '@/stores/cart/cart'
 import Checkout from '../views/Checkout.vue'
 
 const router = createRouter({
@@ -35,10 +36,22 @@ router.beforeEach(async (to, from) => {
   }
 
   const storeUser=_storeUser()
+  const storeCart = _storeCart()
 
   if (!storeUser.currentUser && localStorage.getItem((import.meta as any).env.VITE_BEARER_TOKEN_KEY)) {
     await storeUser.getUser()
+    await storeCart.productInfo()
   }
+
+  else{
+
+    if(!storeCart.firstLoadedCart){
+      storeCart.productInfoGuest({cartProducts: sessionStorage.getItem('cart') ? JSON.parse(sessionStorage.getItem('cart')) : []})
+      storeCart.setFirstLoadedCart()
+    }
+    
+  }
+
 
   // if (to.meta.requiresAuth && !storeUser.user) {
   //   return {

@@ -1,8 +1,13 @@
 import { defineStore } from 'pinia'
 import { _addToMassiveCart, _delete, _productInfoGuest, _productInfo, _addToUserCart, _update } from '@/api/repositories/cart.repository'
+import useNotifications from '@/composables/useNotifications'
+import _storeUser from '@/stores/user'
+import { useI18n } from 'vue-i18n'
+
 export default defineStore({
   id: 'cart',
   state: () => ({
+    _firstLoadedCart: false,
     _status: null,
     _errors: null,
     _cart: sessionStorage.getItem('cart') ? JSON.parse(sessionStorage.getItem('cart')) : [],
@@ -22,8 +27,17 @@ export default defineStore({
       return total
     },
     isCart: (state) => state._isCart,
+    firstLoadedCart: (state) => state._firstLoadedCart,
   },
   actions: {
+    setFirstLoadedCart() {
+      this._firstLoadedCart = true
+    },
+    getAmountInCartByProduct(product) {
+      const productInCart = this.cart.find((item) => item.productId === product._id && item.color === product.color && item.size === product.size)
+      return productInCart ? productInCart.quantity : 0
+
+    },
     async productInfoGuest(body) {
       this.changeStatus('loading')
       try {
@@ -51,7 +65,7 @@ export default defineStore({
           const cartData = response.data.cart
           const updatedCart = cartData.map((item) => {
             const updatedItem = { ...item }
-            updatedItem.productId = updatedItem._id
+            updatedItem.productId = updatedItem?.product?._id
             delete updatedItem._id
             return updatedItem
           })
@@ -76,7 +90,6 @@ export default defineStore({
       }
     },
     async update(body) {
-      console.log(body)
       // this.changeStatus('loading')
       try {
         const response = await _update(body)
@@ -110,18 +123,32 @@ export default defineStore({
         this.changeStatus('error', error)
       }
     },
-    addToCart(item) {
-      const _indexExist = this.cart.findIndex((product) => product.productId === item.productId)
+    async addToCart(item) {
+
+      const storeUser = _storeUser()
+
+      const _indexExist = this.cart.findIndex((product) => product.productId === item.productId && product.color == item.color && product.size == item.size)
 
       if (_indexExist < 0) {
         this.cart.push({
           ...item,
-          quantity: 0,
         })
       }
       const indexProduct = _indexExist >= 0 ? _indexExist : this.cart.length - 1
-      this.cart[indexProduct].quantity++
+      this.cart[indexProduct].quantity = item.quantity
+      
+      if(storeUser.currentUser){
+        const response = await _addToUserCart(item)
+        return response
+      }
+      
       sessionStorage.setItem('cart', JSON.stringify(this.cart))
+      return {
+        data:{
+          'status': 'success',
+          'message': 'CART.SUCCESS'
+        }
+      }
     },
     async removeCart(id) {
       // this.changeStatus('loading')
