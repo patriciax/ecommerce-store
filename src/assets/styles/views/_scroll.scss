@@ -1,0 +1,21 @@
+.light-scroll {
+  // scrollbar-width: thin;
+  // scrollbar-color: #dbdbdb #ffffff;
+  &::-webkit-scrollbar {
+    // background-color: #dbdbdb ;
+
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-left: 3px solid;
+    @apply border-gray-400  ;
+  }
+}
+
+.overflow-y-overlay {
+  overflow-y: overlay;
+  @supports (-moz-appearance: none) {
+    overflow-y: auto;
+  }
+}

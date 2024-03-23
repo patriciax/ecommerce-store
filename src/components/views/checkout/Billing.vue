@@ -11,12 +11,19 @@ import useVuelidate from '@vuelidate/core'
 import { email, required } from '@vuelidate/validators'
 import { useI18n } from 'vue-i18n'
 import Cart from '@/components/views/checkout/Cart.vue'
+import SelectField from '@/components/common/SelectField.vue'
+import _ZoomStore from '@/stores/zoom'
+import Paypal from '@/components/paymentMethods/Paypal.vue'
+import Banesco from '@/components/paymentMethods/Banesco.vue'
+import Card from '@/components/paymentMethods/Card.vue'
 
+import Accordion from '@/components/common/Accordion.vue'
 const { t } = useI18n()
 
 const page = ref(1)
 const cartStore = CartStore()
 const storeUser = _storeUser()
+const zoomStore = _ZoomStore()
 const { pushNotification } = useNotifications()
 const isDisabledStock = ref(false)
 const emailHasError = ref(null)
@@ -35,8 +42,8 @@ const dataForm = ref({
   email: '',
   phone: '',
   address: '',
-  password: '',
-  passwordConfirm: '',
+  zoomState: '',
+  zoomOffice: '',
 })
 
 const handlerValidate = useVuelidate(
@@ -54,14 +61,36 @@ const handlerValidate = useVuelidate(
     phone: {
       required,
     },
-    password: {
+    address: {
       required,
     },
-    passwordConfirm: {
+    zoomState: {
+      required,
+    },
+    zoomOffice: {
       required,
     },
   },
   dataForm
+)
+
+const handleInputStates = async (_value) => {
+  await zoomStore.getOffices(_value)
+  dataForm.value.zoomState = _value
+}
+
+const statesFormated = computed(() =>
+  zoomStore.states?.map((state) => ({
+    value: state.codestado,
+    text: state.nombre,
+  }))
+)
+
+const offiecesFormated = computed(() =>
+  zoomStore.offices?.map((office) => ({
+    value: office.codoficina,
+    text: office.direccion,
+  }))
 )
 
 const setEmailErrors = computed(() => {
@@ -73,85 +102,164 @@ const setEmailErrors = computed(() => {
   return undefined
 })
 
-onMounted(async () => {})
+const fetchDataForm = () => {
+  dataForm.value.name = storeUser.currentUser?.name
+  dataForm.value.lastname = storeUser.currentUser?.lastname
+  dataForm.value.address = storeUser.currentUser?.address
+  dataForm.value.email = storeUser.currentUser?.email
+  dataForm.value.phone = storeUser.currentUser?.phone
+}
+
+onMounted(async () => {
+  if (storeUser.currentUser) fetchDataForm()
+  await zoomStore.getState()
+})
 </script>
 <template>
-  <p class="text-xl font-bold" v-text="'Datos de facturación'" />
-  <p class="mb-6 font-light" v-text="`Tienes ${cartStore.cart.length} productos en el carrito`" />
+  <section class="grid px-10 lg:px-0 md:grid-cols-2 gap-12">
+    <div>
+      <p class="mt-6 text-xl font-bold" v-text="'Datos de facturación'" />
+      <p class="mb-6 font-light" v-text="`Tienes ${cartStore.cart.length} productos en el carrito`" />
 
-  <section class="grid grid-cols-2">
-    <form class="flex flex-col gap-2" @submit.prevent="sendForm">
-      <TextFields
-        id="name"
-        v-model="dataForm.name"
-        isRequired
-        :errorMessage="
-          handlerValidate?.['name']?.$errors?.length > 0
-            ? $t('VALIDATIONS.' + handlerValidate?.['name']?.$errors?.[0]?.$validator?.toUpperCase())
-            : undefined
-        "
-        name="name"
-        placeholder="jhon"
-        :label="t('FORM.NAME')"
-        class="col-span-2 md:col-span-1"
-      />
-      <TextFields
-        class="col-span-2 md:col-span-1"
-        id="lastname"
-        v-model="dataForm.lastname"
-        isRequired
-        :errorMessage="
-          handlerValidate?.['lastname']?.$errors?.length > 0
-            ? $t('VALIDATIONS.' + handlerValidate?.['lastname']?.$errors?.[0]?.$validator?.toUpperCase())
-            : undefined
-        "
-        name="name"
-        placeholder="Doe"
-        :label="t('FORM.LASTNAME')"
-      />
-      <TextFields
-        id="email"
-        class="col-span-2 md:col-span-1"
-        v-model="dataForm.email"
-        isRequired
-        :errorMessage="setEmailErrors || emailHasError"
-        name="name"
-        placeholder="example@gmail.com"
-        :label="t('FORM.EMAIL')"
-      />
-
-      <section class="col-span-2 md:col-span-1">
-        <label for="" class="text-sm font-bold">{{ $t('FORM.PHONE') }}<span class="text-red-600" v-text="'*'" /></label>
-        <InputPhoneNumber
+      <form class="flex flex-col gap-2">
+        <TextFields
+          id="name"
+          v-model="dataForm.name"
+          isRequired
           :errorMessage="
-            handlerValidate?.['phone']?.$errors?.length > 0
-              ? $t('VALIDATIONS.' + handlerValidate?.['phone']?.$errors?.[0]?.$validator?.toUpperCase())
+            handlerValidate?.['name']?.$errors?.length > 0
+              ? $t('VALIDATIONS.' + handlerValidate?.['name']?.$errors?.[0]?.$validator?.toUpperCase())
               : undefined
           "
-          id="phone"
-          v-model="dataForm.phone"
+          name="name"
+          placeholder="jhon"
+          :label="t('FORM.NAME')"
         />
-      </section>
-      <TextFields
-        class="col-span-2"
-        id="address"
-        v-model="dataForm.address"
-        name="name"
-        placeholder="Lorem ipsum"
-        :label="t('FORM.ADDRESS')"
-      />
+        <TextFields
+          id="lastname"
+          v-model="dataForm.lastname"
+          isRequired
+          :errorMessage="
+            handlerValidate?.['lastname']?.$errors?.length > 0
+              ? $t('VALIDATIONS.' + handlerValidate?.['lastname']?.$errors?.[0]?.$validator?.toUpperCase())
+              : undefined
+          "
+          name="name"
+          placeholder="Doe"
+          :label="t('FORM.LASTNAME')"
+        />
+        <TextFields
+          id="email"
+          v-model="dataForm.email"
+          isRequired
+          :is-disabled="storeUser.currentUser?.email"
+          :errorMessage="setEmailErrors || emailHasError"
+          name="name"
+          placeholder="example@gmail.com"
+          :label="t('FORM.EMAIL')"
+        />
 
-      <section class="py-4 border-t mt-4">
-        <p class="mb-3 text-lg font-bold" v-text="'Dirección de envío'" />
+        <section>
+          <label for="" class="text-sm font-bold">{{ $t('FORM.PHONE') }}<span class="text-red-600" v-text="'*'" /></label>
+          <InputPhoneNumber
+            :errorMessage="
+              handlerValidate?.['phone']?.$errors?.length > 0
+                ? $t('VALIDATIONS.' + handlerValidate?.['phone']?.$errors?.[0]?.$validator?.toUpperCase())
+                : undefined
+            "
+            id="phone"
+            v-model="dataForm.phone"
+          />
+        </section>
+        <TextFields
+          class="col-span-2"
+          id="address"
+          v-model="dataForm.address"
+          name="name"
+          placeholder="Lorem ipsum"
+          :label="t('FORM.ADDRESS')"
+        />
 
+        <section class="mt-4 border-t py-4">
+          <p class="mb-3 text-lg font-bold" v-text="'Dirección de envío'" />
+
+          <div class="mb-4">
+            <img class="w-32" src="@/assets/images/zoom.png" />
+          </div>
+          <SelectField
+            v-model="dataForm.zoomState"
+            :errorMessage="
+              handlerValidate?.['state']?.$errors?.length > 0
+                ? $t('VALIDATIONS.' + handlerValidate?.['state']?.$errors?.[0]?.$validator?.toUpperCase())
+                : undefined
+            "
+            isRequired
+            class="mb-2 w-full"
+            :label="'Estado'"
+            :options="statesFormated"
+            @update:modelValue="handleInputStates"
+          />
+          <SelectField
+            v-model="dataForm.zoomOffice"
+            :errorMessage="
+              handlerValidate?.['office']?.$errors?.length > 0
+                ? $t('VALIDATIONS.' + handlerValidate?.['office']?.$errors?.[0]?.$validator?.toUpperCase())
+                : undefined
+            "
+            isRequired
+            :is-disabled="!dataForm.zoomState"
+            :label="'Oficina'"
+            :options="offiecesFormated"
+            @update:modelValue="(_value) => (dataForm.zoomOffice = _value)"
+          />
+        </section>
+      </form>
+    </div>
+
+    <div class="rounded-lg bg-gray-100 p-6">
+      <p class="text-xl font-bold" v-text="'Tu pedido'" />
+      <p class="mb-6 font-light" v-text="'Detalles'" />
+
+      <ul class="order-details-form mb-6">
+        <li class="mb-4 flex justify-between border-b pb-2"><span class="font-bold">Product</span> <span class="font-bold">Total</span></li>
+        <li v-for="(item, index) in cartStore.cart" :key="index" class="mb-4 flex justify-between border-b pb-2">
+          <span class="" v-text="`${item.name} x ${item.quantity}`"></span>
+          <p class="font-bold" v-text="`$${item.price}`"></p>
+        </li>
+        <li class="mb-4 flex justify-between border-b pb-2">
+          <span class="font-bold">Envío </span> <span class="font-bold text-blue-900">ZOOM</span>
+        </li>
+        <li class="mb-4 flex justify-between border-b pb-2">
+          <span class="text-lg font-bold">Total</span>
+          <p class="text-lg font-bold" v-text="`$${cartStore.total}`"></p>
+        </li>
+      </ul>
+
+      <section>
+        <p class="text-lg font-bold mb-6" v-text="'Método de pago'" />
         <div>
-          <img class="w-32" src="@/assets/images/zoom.png" />
+          <accordion :title="''">
+            <template #img>
+              <img
+                class="w-32"
+                src="@/assets/images/banesco.png"
+            /></template>
+            <Banesco />
+          </accordion>
+
+          <accordion :title="''">
+            <template #img>
+              <img
+                class="w-32"
+                src="@/assets/images/paypal.png"
+            /></template>
+            <Paypal />
+          </accordion>
+          <accordion :title="'Tarjeta Eroca'">
+            <Card />
+          </accordion>
         </div>
       </section>
-
-      <div class="col-span-2 mt-6">
-        <!-- <Btn :text="t('COMMON.CREATE_ACCOUNT')" isFull /> -->
-      </div>
-    </form>
+    </div>
   </section>
 </template>

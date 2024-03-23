@@ -1,21 +1,50 @@
 <script setup>
 import 'vue3-carousel/dist/carousel.css'
 import { Carousel, Slide, Pagination, Navigation } from 'vue3-carousel'
+import { onMounted, ref } from 'vue'
+import BannerStore from '@/stores/banner'
+
+const bannerStore = BannerStore()
+const imagesWithTexts = ref([])
+
+onMounted(async () => {
+  await bannerStore.getBanner()
+
+  bannerStore.currentBanner?.images.forEach((image, index) => {
+    const mainText = bannerStore.currentBanner?.mainTexts[index]
+    const secondaryText = bannerStore.currentBanner?.secondaryTexts[index]
+    const img = bannerStore.currentBanner?.images.slice().reverse()[index]
+
+    imagesWithTexts.value.push({
+      img,
+      mainText,
+      secondaryText,
+    })
+  })
+})
 </script>
 <template>
-  <carousel :items-to-show="1" class="w-full">
-    <slide v-for="slide in 3" :key="slide" class="relative">
-        <div class="bg-gray-950 bg-opacity-30 h-[590px] z-50 rounded-[48px]  w-full absolute"/>
-        <div class="absolute z-50 top-1/2 md:left-28 lg:left-52 left-[3rem] -translate-y-1/2 text-start max-w-xs px-2 md:px-0 md:max-w-xl text-white">
-          <p class="text-lg mb-1 uppercase" v-text="'Comprar es divertido'" />
-          <p class=" text-5xl md:text-7xl font-bold" v-text="'Explora, Elige y compra lo mejor en moda'" />
+  <section v-if="bannerStore.currentBanner?.type === 'image'">
+    <carousel :items-to-show="1" class="w-full">
+      <slide v-for="({ img, mainText, secondaryText }, slide) in imagesWithTexts" :key="slide" class="relative">
+        <div class="absolute z-50 h-[590px] w-full rounded-[48px] bg-gray-950 bg-opacity-30" />
+        <div
+          class="absolute left-[3rem] top-1/2 z-50 max-w-xs -translate-y-1/2 px-2 text-start text-white md:left-28 md:max-w-xl md:px-0 lg:left-52"
+        >
+          <p class="mb-1 text-lg uppercase" v-text="secondaryText" />
+          <p class="text-5xl font-bold md:text-7xl" v-text="mainText" />
         </div>
-        <img class="h-[590px] w-full rounded-[48px] object-cover object-center" src="https://img.freepik.com/foto-gratis/joven-hispana-que-usa-telefono-inteligente-comprar-tienda-ropa_839833-9772.jpg?t=st=1709069952~exp=1709073552~hmac=b6adf2581246c32420fe49fe52f982255d147eeba4b7fcc4a121502268b9898f&w=1380" />
-    </slide>
+        <img class="h-[590px] w-full rounded-[48px] object-cover object-center" :src="img" />
+      </slide>
 
-    <template #addons>
-      <navigation />
-      <pagination />
-    </template>
-  </carousel>
+      <template #addons>
+        <navigation />
+        <pagination />
+      </template>
+    </carousel>
+  </section>
+
+  <section v-else>
+    <video class="h-[590px] w-full rounded-[48px] object-cover object-center"  :src="bannerStore.currentBanner?.video" autoplay loop muted="w-full"></video>
+  </section>
 </template>

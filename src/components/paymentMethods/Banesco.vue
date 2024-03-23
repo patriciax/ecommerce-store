@@ -72,7 +72,7 @@ const submitPay = async () => {
                 <DateCard @changedDate="updateDate" :label="$t('PAYMENTS.EXPIRATION_DATE')" />
             </div>
             <div class="col-span-2">
-                <Btn text="Pagar"/>
+                <Btn text="Pagar" isFull/>
             </div>
         </div>
     </form>
