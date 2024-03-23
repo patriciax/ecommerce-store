@@ -1,4 +1,5 @@
 {
+  "QUANTITY_EXCEEDS_STOCK": "The quantity exceeds the stock",
   "COMMON": {
     "LOADING": "Loading...",
     "TOGGLE_DARK_MODE": "Enable dark mode", 
@@ -17,6 +18,11 @@
     "RECOMMENDED": "Recommended products", 
     "POPULAR_NOW": "Popular right now",
     "SELECT": "Select"
+  },
+  "CART":{
+    "ERROR": "Error while adding to cart",
+    "SUCCESS": "Added to cart successfully",
+    "SHOW": "Show cart"
   },
   "VALIDATIONS": {
     "REQUIRED": "This field is required",

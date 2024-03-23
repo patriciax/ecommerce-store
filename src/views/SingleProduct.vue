@@ -16,33 +16,110 @@ import useNotifications from '@/composables/useNotifications'
 const productStore = _storeProduct()
 const cartStore = CartStore()
 const router = useRouter()
-const { locale } = useI18n()
+const { locale, t } = useI18n()
 const { pushNotification } = useNotifications()
 
+const availableColors = ref([])
+
+const variations = ref(null)
+const maxAmount = ref(0)
 const color = ref(null)
 const size = ref(null)
 const favorite = ref(null)
 const productsImg = computed(() => {
   return productStore.product?.images
 })
+
+const quantity = ref(1);
 const goToRoute = () => router.push({ name: 'home' })
 // const goToOrder = () => router.push({ name: 'cart' })
 const addFavorite = () => {
   favorite.value = true
 }
-const addProduct = () => {
-  cartStore.addToCart({
+
+const add = () => {
+
+  if(quantity.value < maxAmount.value){
+    quantity.value++
+  }
+
+}
+
+const remove = () => {
+
+  if(quantity.value > 1){
+    quantity.value--
+  }
+
+}
+
+const addProduct = async() => {
+
+  console.log(cartStore.getAmountInCartByProduct({
+    _id: productStore.product?._id,
+    size: size.value,
+    color: color.value,
+  }) + quantity.value)
+
+  if(cartStore.getAmountInCartByProduct({
+    _id: productStore.product?._id,
+    size: size.value,
+    color: color.value,
+  }) + quantity.value > maxAmount.value){
+    pushNotification({
+      id: '',
+      title: t('QUANTITY_EXCEEDS_STOCK'),
+      type: 'error',
+      isLink: '/checkout',
+      description: t('CART.SHOW'),
+    })
+    return
+  }
+
+  const response = await cartStore.addToCart({
     productId: productStore.product?._id,
+    size: size.value,
+    color: color.value,
+    quantity: quantity.value,
   })
+
+  if(response.data?.status == 'success'){
+    pushNotification({
+      id: '',
+      title: t('CART.SUCCESS'),
+      type: 'success',
+      isLink: '/checkout',
+      description: 'Ver carrito ',
+    })
+
+    return
+  }
 
   pushNotification({
     id: '',
-    title: 'Añadido al carrito. ',
-    type: 'success',
+    title: t(response.data?.message) ?? t('CART.ERROR'),
+    type: 'error',
     isLink: '/checkout',
-    description: 'Ver carrito ',
+    description: t('CART.SHOW'),
   })
+
 }
+
+const sizesToShow = computed(() => {
+
+  const sizes = []
+  if(color.value){
+    variations.value?.filter(variation => variation.color[0]._id == color.value).forEach((item) => {
+
+      if(!sizes.find((size) => size?._id == item.size[0]._id)){
+        sizes.push(item.size[0])  
+      }
+    })  
+  }
+  
+  maxAmount.value = variations.value?.find((item) => item.color[0]._id == color.value && item.size[0]._id == size.value)?.stock ?? 0
+  return sizes
+})
 
 onMounted(async () => {
   await productStore.getSingleProduct(router.currentRoute.value.params.id)
@@ -52,8 +129,18 @@ onMounted(async () => {
     productsImg.value.unshift(productStore.product.mainImage)
   }
 
-  color.value = locale.value === 'en_US' ? productStore.product?.colors[0].englishName : productStore.product?.colors[0].name
-  size.value = locale.value === 'en_US' ? productStore.product?.sizes[0].englishName : productStore.product?.sizes[0].name
+  variations.value = productStore.product?.productVariations
+  variations.value?.forEach((item) => {
+    
+    if(!availableColors.value.find((color) => color?._id == item.color[0]._id)){
+      availableColors.value.push(item.color[0])  
+    }
+    
+  })
+
+  color.value = availableColors.value[0]?._id ?? null
+  size.value = sizesToShow.value[0]?._id ?? null
+  maxAmount.value = variations.value?.find((item) => item.color[0]._id == color.value && item.size[0]._id == size.value)?.stock ?? 0
 })
 </script>
 <template>
@@ -120,61 +207,61 @@ onMounted(async () => {
             </div>
             <!-- Options -->
             <div class="my-6 lg:row-span-3">
-              <section v-if="productStore.product?.colors.length">
+              <section v-if="availableColors.length">
                 <div class="mb-2 flex">
                   <p class="" v-text="$t('COMMON.COLOR') + ':'" />
-                  <p class="ml-2 font-bold" v-text="color" />
+                  <p class="ml-2 font-bold" v-text="locale === 'en_US' ? availableColors?.find((item) => item?._id == color)?.englishName : availableColors?.find((item) => item?._id == color).name" />
                 </div>
                 <!-- Reviews -->
                 <div class="mb-4 flex gap-2">
                   <RadioCheck
-                    v-for="(item, index) in productStore.product?.colors"
+                    v-for="(item, index) in availableColors"
                     :key="index"
                     :color="item.hex"
-                    :value="item.hex"
+                    :value="item._id"
                     v-model="color"
-                    @update:modelValue="color = locale === 'en_US' ? item.englishName : item.name"
+                    @click="size = null; quantity = 1"
+                    @update:modelValue="color = item._id"
                   />
                 </div>
               </section>
 
-              <section v-if="productStore.product?.sizes.length">
+              <section v-if="sizesToShow">
                 <div class="mb-2 flex">
                   <p class="" v-text="$t('COMMON.SIZE') + ':'" />
-                  <p class="ml-2 font-bold" v-text="size" />
+                  <p class="ml-2 font-bold" v-text="locale === 'en_US' ? sizesToShow?.find((item) => item?._id == size)?.englishName : sizesToShow?.find((item) => item?._id == size)?.name" />
                 </div>
-                <!-- Reviews -->
                 <div class="flex gap-2">
                   <RadioCheck
-                    v-for="(item, index) in productStore.product?.sizes"
+                    v-for="(item, index) in sizesToShow"
                     :key="index"
                     :is-checked="item.name === size"
                     :color="item.hex"
                     :label="item.name"
-                    :value="item.hex"
+                    :value="item._id"
                     v-model="size"
-                    @update:modelValue="size = locale === 'en_US' ? item.englishName : item.name"
+                    @update:modelValue="size = item._id"
                   />
                 </div>
               </section>
 
               <section class="mb-4">
-                <!-- <div class="mt-2">
+                <div class="mt-2">
                   <section class="items-center justify-between">
                     <p class="" v-text="'Cantidad:'" />
                     <div class="border-burgerPrimary flex w-24 items-center justify-between rounded-md border px-3 py-1">
-                      <button class="transition duration-500 hover:opacity-50">
+                      <button class="transition duration-500 hover:opacity-50" @click="remove">
                         <ChevronLeftIcon class="w-4" />
                       </button>
-                      <p class="text-burgerPrimary text-base" v-text="'1'" />
-                      <button class="transition duration-500 hover:opacity-50">
+                      <p class="text-burgerPrimary text-base" v-text="quantity" />
+                      <button class="transition duration-500 hover:opacity-50" @click="add">
                         <ChevronRightIcon class="w-4" />
                       </button>
                     </div>
                   </section>
-                </div> -->
+                </div>
               </section>
-              <Btn with-icon is-full color="primaryProduct" :text="$t('COMMON.ADD_TO_CART')" @click="addProduct()">
+              <Btn with-icon is-full color="primaryProduct" :text="$t('COMMON.ADD_TO_CART')" @click="addProduct()" :is-disabled="!size || !color">
                 <template #icon>
                   <ShoppingCartIcon class="mx-2 w-5" />
                 </template>

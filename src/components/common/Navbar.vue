@@ -124,7 +124,7 @@ onMounted(async () => {
                   class="item-pcenter group relative my-2 flex w-max items-center justify-center gap-1 rounded-md bg-white px-2 py-1.5 font-bold text-gray-800 hover:bg-gray-700 hover:bg-opacity-90 hover:text-white"
                   @click="openDropdown"
                 >
-                  <p v-text="`${storeUser.currentUser?.name} ${storeUser.currentUser?.lastname.charAt(0)}`" class="mr-1 text-base" />
+                  <p v-text="`${storeUser.currentUser?.name} ${storeUser.currentUser?.lastname?.charAt(0) ?? ''}`" class="mr-1 text-base" />
                   <ChevronDownIcon class="text-gray w-4 transition-all ease-in-out" :class="{ 'rotate-180': isOpen }" />
                 </button>
               </template>

@@ -1,4 +1,5 @@
 {
+  "QUANTITY_EXCEEDS_STOCK": "La cantidad excede el stock",
   "COMMON": {
     "LOADING": "Cargando...",
     "TOGGLE_DARK_MODE": "Activar el modo oscuro",
@@ -20,6 +21,11 @@
     "SIZE": "Tamaño",
     "DESCRIPTION": "Descripción",
     "SELECT": "Seleccionar"
+  },
+  "CART":{
+    "ERROR": "Error al añadir al carrito",
+    "SUCCESS": "Añadido al carrito",
+    "SHOW": "Ver carrito"
   },
   "LOGIN": {
     "LOGIN": "Iniciar sesión",
