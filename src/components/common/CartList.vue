@@ -1,9 +1,12 @@
 <script setup>
 import { ChevronLeftIcon, TrashIcon, ChevronRightIcon } from '@heroicons/vue/24/outline'
+import { ref } from 'vue';
 import { useI18n } from 'vue-i18n'
 
 const emit = defineEmits(['removeItem', 'lessItem', 'moreItem'])
 const { locale } = useI18n()
+
+const disableStock = ref(false)
 
 const props = defineProps({
   item: {
@@ -23,8 +26,19 @@ const props = defineProps({
   },
 })
 const removeItem = (index) => emit('removeItem', index)
-const lessItem = (index) => emit('lessItem', index)
-const moreItem = (index) => emit('moreItem', index)
+const lessItem = (index) => {
+  disableStock.value = false
+  emit('lessItem', index)
+}
+const moreItem = (index) => {
+  console.log(props.item)
+  if(props.item.quantity >= props.item.stock){
+    disableStock.value = true
+    return
+  }
+
+  emit('moreItem', index)
+}
 </script>
 <template>
   <li class="mb-6 flex items-center gap-4 rounded-2xl bg-white px-6 py-2 text-lg shadow-[0px_2px_5px_#00000038]">
@@ -33,6 +47,9 @@ const moreItem = (index) => emit('moreItem', index)
       {{ locale === 'en_US' ? props.item.nameEnglish || props.item.product?.nameEnglish : props.item.name || props.item.product?.name }}
     </h3>
 
+    <p>{{ $t('COLOR')  }}: {{ item?.color?.name }}</p>
+    <p>{{ $t('SIZE')  }}: {{ item?.size?.name }}</p>
+
     <div class="flex flex-1 items-center justify-end gap-16">
       <section class="flex items-center justify-between">
         <div class="border-burgerPrimary flex w-24 items-center justify-between rounded-md border px-3 py-1">
@@ -40,7 +57,7 @@ const moreItem = (index) => emit('moreItem', index)
             <ChevronLeftIcon class="w-4 text-gray-900" />
           </button>
           <p class="text-burgerPrimary text-base" v-text="props.item.quantity || props.item.product?.quantity" />
-          <button :disabled="isLoading || props.disableStock" class="transition duration-500 hover:opacity-50" @click="moreItem(props.index)">
+          <button :disabled="isLoading || disableStock" class="transition duration-500 hover:opacity-50" @click="moreItem(props.index)">
             <ChevronRightIcon class="w-4 text-gray-900" />
           </button>
         </div>
