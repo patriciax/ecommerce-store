@@ -55,16 +55,14 @@ const remove = () => {
 
 const addProduct = async() => {
 
-  console.log(cartStore.getAmountInCartByProduct({
-    _id: productStore.product?._id,
-    size: size.value,
-    color: color.value,
-  }) + quantity.value)
-
   if(cartStore.getAmountInCartByProduct({
     _id: productStore.product?._id,
-    size: size.value,
-    color: color.value,
+    size: {
+      _id: size.value
+    },
+    color: {
+      _id: color.value
+    },
   }) + quantity.value > maxAmount.value){
     pushNotification({
       id: '',
@@ -78,8 +76,12 @@ const addProduct = async() => {
 
   const response = await cartStore.addToCart({
     productId: productStore.product?._id,
-    size: size.value,
-    color: color.value,
+    size: {
+      _id: size.value
+    },
+    color: {
+      _id: color.value
+    },
     quantity: quantity.value,
   })
 

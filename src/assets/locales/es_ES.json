@@ -1,5 +1,7 @@
 {
   "QUANTITY_EXCEEDS_STOCK": "La cantidad excede el stock",
+  "COLOR": "Color",
+  "SIZE": "Talla",
   "COMMON": {
     "LOADING": "Cargando...",
     "TOGGLE_DARK_MODE": "Activar el modo oscuro",

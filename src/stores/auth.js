@@ -1,5 +1,6 @@
 import { _verifyEmail, _register, _verifyCode, _resendCode, _login } from '@/api/repositories/auth.repository'
 import { defineStore } from 'pinia'
+import CartStore from '@/stores/cart/cart'
 
 export default defineStore({
   id: 'auth',
@@ -71,9 +72,14 @@ export default defineStore({
       this.changeStatus('loading')
       try {
         const response = await _login(body)
-        console.log('store', response)
         if (response.data.status == 'success') {
           localStorage.setItem(import.meta.env.VITE_BEARER_TOKEN_KEY, response.data.data)
+          if(sessionStorage.getItem('cart')){
+            const cartStore = CartStore()
+            sessionStorage.removeItem('cart')
+            await cartStore.addToMassiveCart({ cartItems: cartStore.cart })
+          }
+          
           this.changeStatus('ready')
         }
 

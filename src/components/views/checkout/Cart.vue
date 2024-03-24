@@ -14,9 +14,9 @@ const { pushNotification } = useNotifications()
 const isDisabledStock = ref(false)
 
 const removeItem = async (item) => {
+  
   if (storeUser.currentUser) {
     cartStore.removeCart(item.productId)
-
     if (cartStore.isError) {
       pushNotification({
         id: '',
@@ -32,18 +32,21 @@ const removeItem = async (item) => {
       })
     }
   } else {
-    cartStore.removeCartStorage(item._id)
+    cartStore.removeCartStorage(item.productId)
   }
 }
 
 const lessItem = (index) => {
+  isDisabledStock.value = false
   const cart = cartStore.cart
   if (cart[index].quantity - 1 > 0) {
     cart[index].quantity--
 
     if (storeUser.currentUser) {
       cartStore.update({
-        productId: cart[index].product._id,
+        productId: cart[index].productId,
+        size: cart[index].size._id,
+        color: cart[index].color._id,
         quantity: cart[index].quantity,
       })
     }
@@ -57,26 +60,16 @@ const moreItem = (index) => {
 
     if (storeUser.currentUser) {
       cartStore.update({
-        productId: cart[index].product._id,
+        productId: cart[index].productId,
+        size: cart[index].size._id,
+        color: cart[index].color._id,
         quantity: cart[index].quantity,
       })
     }
 
-    if (cart[index].quantity === cart[index].stock) {
-      isDisabledStock.value = true
-      return
-    }
+
   }
 }
-
-watch(
-  () => storeUser.currentUser,
-  async (newValue, oldValue) => {
-    if (newValue != oldValue && storeUser.currentUser && cartStore.cartIsNew) {
-      await cartStore.addToMassiveCart({ cartItems: cartStore.cart })
-    }
-  }
-)
 
 onMounted(async () => {
   if (storeUser.currentUser) {

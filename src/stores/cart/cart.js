@@ -34,7 +34,8 @@ export default defineStore({
       this._firstLoadedCart = true
     },
     getAmountInCartByProduct(product) {
-      const productInCart = this.cart.find((item) => item.productId === product._id && item.color === product.color && item.size === product.size)
+     
+      const productInCart = this.cart.find((item) => item.productId == product._id && item.color?._id == product.color?._id && item.size?._id == product.size?._id)
       return productInCart ? productInCart.quantity : 0
 
     },
@@ -65,7 +66,7 @@ export default defineStore({
           const cartData = response.data.cart
           const updatedCart = cartData.map((item) => {
             const updatedItem = { ...item }
-            updatedItem.productId = updatedItem?.product?._id
+            updatedItem.productId = updatedItem?._id
             delete updatedItem._id
             return updatedItem
           })
@@ -127,15 +128,19 @@ export default defineStore({
 
       const storeUser = _storeUser()
 
-      const _indexExist = this.cart.findIndex((product) => product.productId === item.productId && product.color == item.color && product.size == item.size)
+      const _indexExist = this.cart.findIndex((product) => product.productId == item.productId && product.color?._id == item.color?._id && product.size?._id == item.size?._id)
 
       if (_indexExist < 0) {
         this.cart.push({
           ...item,
         })
       }
+      
       const indexProduct = _indexExist >= 0 ? _indexExist : this.cart.length - 1
-      this.cart[indexProduct].quantity = item.quantity
+
+      if(_indexExist >= 0){
+        this.cart[indexProduct].quantity = this.cart[indexProduct].quantity + item.quantity
+      }
       
       if(storeUser.currentUser){
         const response = await _addToUserCart(item)
@@ -163,15 +168,13 @@ export default defineStore({
         this.changeStatus('error', error)
       }
     },
-
     removeCartStorage(id) {
-      let cartItem = this.cart.findIndex((product) => product._id === id)
+      let cartItem = this.cart.findIndex((product) => product.productId == id)
       if (cartItem >= 0) {
         this.cart.splice(cartItem, cartItem + 1)
         sessionStorage.setItem('cart', JSON.stringify(this.cart))
       }
     },
-
     clearCart() {
       this._cart = []
       sessionStorage.setItem('cart', JSON.stringify(this.cart))
