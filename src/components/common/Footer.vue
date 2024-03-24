@@ -1,7 +1,7 @@
 <template>
   <footer class="dark:bg-dark relative z-10 mt-10 border-t bg-black pb-10 pt-10 text-white lg:pb-20">
     <div class="mx-auto max-w-[1440px] px-6">
-      <div class="-mx-4 grid grid-cols-3">
+      <div class="-mx-4 grid grid-cols-1 lg:grid-cols-3">
         <div class="w-full grid-cols-3 px-4 lg:grid-cols-1">
           <div class="mb-10 w-full">
             <h4 class="text-dark mb-4 text-lg font-semibold dark:text-white">SERVICIO AL CLIENTE</h4>
@@ -91,48 +91,49 @@
         <div class="w-full grid-cols-3 px-4 lg:grid-cols-1">
           <div class="mb-10 w-full">
             <h4 class="text-dark mb-4 text-lg font-semibold dark:text-white">OPCIONES D E PAGO</h4>
-          <section>
-            <ul class="flex items-center gap-4">
-              <li>
-                <img class="w-16" src="https://www.pngall.com/wp-content/uploads/2017/05/Visa-Logo-PNG-Image.png" />
-              </li>
-              <li>
-                <img class="w-16" src="https://kpenko.com/wp-content/uploads/2019/09/Logo-mastercard-01-1024x566.png" />
-              </li>
-              <li>
-                <img class="w-16" src="https://www.pngall.com/wp-content/uploads/9/American-Express-PNG-Image.png" />
-              </li>
-              <li>
-                <img class="w-16 invert" src="https://cdn.worldvectorlogo.com/logos/discover-3.svg" />
-              </li>
-            </ul>
+            <section class="grid gap-2">
+              <ul class="grid grid-cols-4 items-center gap-2">
+                <li>
+                  <img class="w-16" src="@/assets/images/paymentmethod/visa.webp" />
+                </li>
+                <li>
+                  <img class="w-20" src="@/assets/images/paymentmethod/mastercard.webp" />
+                </li>
+                <li>
+                  <img class="w-20" src="@/assets/images/paymentmethod/americanexpress.webp" />
+                </li>
+                <li>
+                  <img class="w-20 invert" src="@/assets/images/paymentmethod/discover.webp" />
+                </li>
+              </ul>
 
-            <ul class="flex items-center gap-4">
-              <li>
-                <img class="w-16" src="https://i0.wp.com/kpenko.com/wp-content/uploads/2019/09/Logo-paypal-01-1024x315.png?ssl=1" />
-              </li>
-              <li>
-                <img class="w-16 invert" src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/Apple_Pay_logo.svg/1280px-Apple_Pay_logo.svg.png" />
-              </li>
-              <li>
-                <img class="w-16 invert" src="https://w7.pngwing.com/pngs/306/265/png-transparent-gift-card-logo-voucher-credit-card-gift-card-miscellaneous-text-rectangle.png" />
-              </li>
-              <li>
-                <img class="w-16 " src="https://cusifit.com/wp-content/uploads/2021/07/zelle-logo-blanco.png" />
-              </li>
-            </ul>
-            
+              <ul class="grid grid-cols-4 items-center gap-2">
+                <li>
+                  <img class="w-20" src="@/assets/images/paymentmethod/paypal.webp" />
+                </li>
+                <li>
+                  <img class="w-16 invert" src="@/assets/images/paymentmethod/applepay.webp" />
+                </li>
+                <li>
+                  <img class="w-20 invert" src="@/assets/images/paymentmethod/giftcard.webp" />
+                </li>
+                <li>
+                  <img class="w-16" src="@/assets/images/paymentmethod/zelle.webp" />
+                </li>
+              </ul>
 
-            <ul class="flex items-center gap-4">
-              <li>
-                <img class="w-16" src="https://lh3.googleusercontent.com/proxy/coeeg9jNeG6PiNa1VlI2biH2NGSUaHaJIL6Z8-6QDC6KRfs1onV5AGYLSsDJWw9i5CDBbZ94tFNawcNESqdcpA1tF8kBu7oW1cpcM7j5PQ7pzJnPi4oTvO4Uhu5j" />
-              </li>
-              <li>
-                <img class="w-16 " src="https://upload.wikimedia.org/wikipedia/commons/4/47/Banco_Mercantil_Logo.png" />
-              </li>
-         
-            </ul>
-          </section>
+              <ul class="grid grid-cols-4 items-center gap-2">
+                <li>
+                  <img class="w-28" src="@/assets/images/paymentmethod/banesco.webp" />
+                </li>
+                <li>
+                  <img class="w-36" src="@/assets/images/paymentmethod/mercantil.webp" />
+                </li>
+                <li class="text-center">
+                  <p v-text="'PagoMóvil'" class="font-bold text-base" />
+                </li>
+              </ul>
+            </section>
           </div>
         </div>
       </div>
