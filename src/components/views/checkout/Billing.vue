@@ -251,10 +251,11 @@ onMounted(async () => {
                 class="w-32"
                 src="@/assets/images/banesco.png"
             /></template>
-            <Banesco :cart="cartStore.cart" :zoom="{
-              state: statesFormated?.find((state) => state.value == dataForm.zoomState)?.text,
+            <Banesco :cart="cartStore.cart" :carrier="{
+              carrierName: 'ZOOM',
+              state: statesFormated?.find((state) => state?.value == dataForm?.zoomState)?.text,
               office: dataForm?.zoomOffice,
-              address: offiecesFormated.find((office) => office.value == dataForm.zoomOffice)?.text,
+              address: offiecesFormated?.find((office) => office?.value == dataForm?.zoomOffice)?.text,
             }"/>
           </accordion>
 
@@ -264,10 +265,11 @@ onMounted(async () => {
                 class="w-32"
                 src="@/assets/images/paypal.png"
             /></template>
-            <Paypal :cart="cartStore.cart" :zoom="{
-              state: statesFormated?.find((state) => state.value == dataForm.zoomState)?.text,
+            <Paypal :cart="cartStore.cart" :carrier="{
+              carrierName: 'ZOOM',
+              state: statesFormated?.find((state) => state?.value == dataForm?.zoomState)?.text,
               office: dataForm?.zoomOffice,
-              address: offiecesFormated.find((office) => office.value == dataForm.zoomOffice)?.text,
+              address: offiecesFormated?.find((office) => office?.value == dataForm?.zoomOffice)?.text,
             }"/>
           </accordion>
           <accordion :title="'Tarjeta Eroca'">

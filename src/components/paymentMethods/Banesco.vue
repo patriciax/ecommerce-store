@@ -21,7 +21,7 @@ const props = defineProps({
     phone: {
         type: String
     },
-    zoom:{
+    carrier:{
         type: Object
     }
 })
@@ -55,7 +55,8 @@ const submitPay = async () => {
             carts:props.cart,
             name: props.name,
             email: props.email,
-            phone: props.phone
+            phone: props.phone,
+            carrier: props.carrier
         }
 
         await _submitPay(data)
