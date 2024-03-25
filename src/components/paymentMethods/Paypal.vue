@@ -15,6 +15,9 @@ const props = defineProps({
   phone: {
     type: String
   },
+  zoom:{
+    type: Object
+  }
 })
 const interval = ref(null)
 
