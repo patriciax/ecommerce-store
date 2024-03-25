@@ -34,6 +34,9 @@ const props = defineProps({
   noSpecialCharacters:{
     type: Boolean,
     default: false
+  },
+  msg:{
+    type: String,
   }
 })
 
@@ -79,6 +82,7 @@ const validateKeyPress = (event) => {
     <label v-show="props.label">
       <span :class="{ 'text-red-500': props.errorMessage }" class="text-sm font-bold" v-text="props.label" />
       <span v-if="isRequired" class="text-red-500">*</span>
+      <p v-if="props.msg" class="text-xs font-light" v-text="props.msg"/>
 
       <input
         :id="props.id"

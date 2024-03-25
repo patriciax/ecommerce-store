@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { XMarkIcon, ShoppingCartIcon, HeartIcon, UserIcon, Bars3BottomLeftIcon } from '@heroicons/vue/24/outline'
-import {ChevronDownIcon } from '@heroicons/vue/24/outline'
+import { ChevronDownIcon } from '@heroicons/vue/24/outline'
 import { onMounted, ref } from 'vue'
 import Btn from '@/components/common/Btn.vue'
 import { getAllCategoriesMenu } from '@/api/repositories/category.repository'
@@ -29,7 +29,9 @@ const logout = (_closeDropdown: () => void) => {
   cartStore.reset()
   _closeDropdown()
 }
-const goToCart = () => {router.push({ name: 'checkout' })}
+const goToCart = () => {
+  router.push({ name: 'checkout' })
+}
 
 onMounted(async () => {
   const response = await getAllCategoriesMenu()
@@ -98,10 +100,10 @@ onMounted(async () => {
               >
             </li>
             <li>
-              <a href="#"
+              <RouterLink to="/gift-card"
                 ><h4 class="h-full border-b-4 border-transparent p-3 text-base uppercase hover:border-b-4 hover:border-gray-900">
                   {{ $t('COMMON.GIFT_CART') }}
-                </h4></a
+                </h4></RouterLink
               >
             </li>
             <label for="check" class="close-menu"><XMarkIcon class="w-4 text-white" /></label>

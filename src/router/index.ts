@@ -5,6 +5,8 @@ import CountryStore from '@/stores/country'
 import _storeUser from '@/stores/user'
 import _storeCart from '@/stores/cart/cart'
 import Checkout from '../views/Checkout.vue'
+import OrderManagement from '@/views/OrderManagement.vue'
+import GiftCard from '@/views/GiftCard.vue'
 
 const router = createRouter({
   history: createWebHistory((import.meta as any).env.BASE_URL),
@@ -23,6 +25,16 @@ const router = createRouter({
       path: '/checkout',
       name: 'checkout',
       component: Checkout
+    },
+    {
+      path: '/order-management',
+      name: 'corder-management',
+      component: OrderManagement
+    },
+    {
+      path: '/gift-card',
+      name: 'gift-card',
+      component: GiftCard
     },
   ]
 })

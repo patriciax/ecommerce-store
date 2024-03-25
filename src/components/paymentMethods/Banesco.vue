@@ -1,11 +1,11 @@
 <script lang="ts" setup>
-import TextFields from '../common/TextFields.vue';
-import Document from '../common/Document.vue';
-import DateCard from '../common/DateCard.vue';
-import Btn from '../common/Btn.vue';
-import { _submitPay } from '@/api/repositories/banesco.repository';
+import TextFields from '../common/TextFields.vue'
+import Document from '../common/Document.vue'
+import DateCard from '../common/DateCard.vue'
+import Btn from '../common/Btn.vue'
+import { _submitPay } from '@/api/repositories/banesco.repository'
 import { ref } from 'vue'
-import { showNotification } from '@/composables/useNotification';
+import { showNotification } from '@/composables/useNotification'
 
 const props = defineProps({
     cart: {
@@ -30,10 +30,10 @@ const document = ref('')
 const cardHolder = ref('')
 const cardNumber = ref('')
 const cvc = ref('')
-const date:any = ref('')
+const date: any = ref('')
 
 const updateDate = (value: string) => {
-    date.value = value
+  date.value = value
 }
 
 const submitPay = async () => {
@@ -64,7 +64,6 @@ const submitPay = async () => {
         showNotification("Algo ha ido mal", 'error')
     }
 }
-
 </script>
 
 <template>
