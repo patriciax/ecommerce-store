@@ -244,7 +244,7 @@ onMounted(async () => {
                 class="w-32"
                 src="@/assets/images/banesco.png"
             /></template>
-            <Banesco />
+            <Banesco :total="`${cartStore.total}`" :cart="cartStore.cart" />
           </accordion>
 
           <accordion :title="''">
@@ -253,7 +253,7 @@ onMounted(async () => {
                 class="w-32"
                 src="@/assets/images/paypal.png"
             /></template>
-            <Paypal />
+            <Paypal  :total="`${cartStore.total}`" :cart="cartStore.cart"/>
           </accordion>
           <accordion :title="'Tarjeta Eroca'">
             <Card />
