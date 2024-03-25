@@ -5,7 +5,16 @@ const props = defineProps({
   cart: {
     type: Array,
     required: true
-  }
+  },
+  name: {
+    type: String
+  },
+  email: {
+    type: String
+  },
+  phone: {
+    type: String
+  },
 })
 const interval = ref(null)
 
@@ -30,12 +39,6 @@ interval.value = setInterval(() => {
             body: JSON.stringify({
               paymentMethod: "paypal-create-order",
               carts:props.cart
-              // cart: [
-              //   {
-              //     id: "YOUR_PRODUCT_ID",
-              //     quantity: "YOUR_PRODUCT_QUANTITY",
-              //   },
-              // ],
             }),
           });
           
@@ -57,13 +60,20 @@ interval.value = setInterval(() => {
       },
       async onApprove(data, actions) {
         try {
-          const response = await fetch(`${(import.meta as any).env.BASE_URL}/checkout/${data.orderID}/capture`, {
+          const token = localStorage.getItem((import.meta as any).env.VITE_BEARER_TOKEN_KEY)
+          const response = await fetch(`${(import.meta as any).env.VITE_API_URL}/v1/checkout`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
+              'Authorization': `Bearer ${token}`
             },
             body: JSON.stringify({
-              paymentMethod: "paypal-approve-order"
+              paymentMethod: "paypal-approve-order",
+              orderId: data.orderID,
+              carts:props.cart,
+              name: props.name,
+              email: props.email,
+              phone: props.phone
             })
           });
           
@@ -90,11 +100,6 @@ interval.value = setInterval(() => {
             const transaction =
               orderData?.purchase_units?.[0]?.payments?.captures?.[0] ||
               orderData?.purchase_units?.[0]?.payments?.authorizations?.[0];
-            console.log(
-              "Capture result",
-              orderData,
-              JSON.stringify(orderData, null, 2),
-            );
           }
         } catch (error) {
           console.error(error);

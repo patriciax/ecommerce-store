@@ -31,7 +31,6 @@ const lessItem = (index) => {
   emit('lessItem', index)
 }
 const moreItem = (index) => {
-  console.log(props.item)
   if(props.item.quantity >= props.item.stock){
     disableStock.value = true
     return
@@ -63,7 +62,7 @@ const moreItem = (index) => {
         </div>
       </section>
 
-      <p class="inline">${{ props.item.price || props.item.product?.price }}</p>
+      <p class="inline">${{ props.item.priceDiscount || props.item.price }}</p>
 
       <button class="text-gray-600 transition hover:text-red-600" @click="removeItem(props.index)">
         <TrashIcon class="w-6" />

@@ -23,7 +23,7 @@ export default defineStore({
     cartIsNew: (state) => state._isNew,
     quantityInCar: (state) => state._cart.reduce((acc, item) => acc + item.quantity, 0),
     total: (state) => {
-      const total = state._cart.reduce((acc, item) => acc + item.price * item.quantity, 0)
+      const total = state._cart.reduce((acc, item) => acc + (item.priceDiscount || item.price) * item.quantity, 0)
       return total
     },
     isCart: (state) => state._isCart,

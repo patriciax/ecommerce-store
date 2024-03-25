@@ -11,7 +11,16 @@ const props = defineProps({
     cart: {
         type: Array,
         required: true
-    }
+    },
+    name: {
+        type: String
+    },
+    email: {
+        type: String
+    },
+    phone: {
+        type: String
+    },
 })
 
 const document = ref('')
@@ -29,7 +38,6 @@ const submitPay = async () => {
     try{
 
         const banescoData = {
-            "amount": "200.00",
             "description": "ERoca",
             "cardHolder": cardHolder.value,
             "cardHolderId": document.value,
@@ -41,7 +49,10 @@ const submitPay = async () => {
         const data = {
             paymentMethod: 'banesco',
             banescoData,
-            carts:props.cart
+            carts:props.cart,
+            name: props.name,
+            email: props.email,
+            phone: props.phone
         }
 
         await _submitPay(data)
@@ -68,7 +79,7 @@ const submitPay = async () => {
             <div>
                 <Document v-model="cvc" :label="$t('PAYMENTS.CVC')" :maxLength="3"/>
             </div>
-            <div>
+            <div class="col-span-2">
                 <DateCard @changedDate="updateDate" :label="$t('PAYMENTS.EXPIRATION_DATE')" />
             </div>
             <div class="col-span-2">

@@ -31,7 +31,7 @@ const emailHasError = ref(null)
 const total = computed(() => {
   let total = 0
   cartStore.cart.forEach((item) => {
-    total += item.price * item.quantity
+    total += item.priceDiscount * item.quantity || item.price * item.quantity  
   })
   return total.toFixed(2)
 })
@@ -111,8 +111,15 @@ const fetchDataForm = () => {
 }
 
 onMounted(async () => {
-  if (storeUser.currentUser) fetchDataForm()
   await zoomStore.getState()
+  if (storeUser.currentUser){
+    fetchDataForm()
+    cartStore.productInfo()
+    return
+  }
+
+  cartStore.productInfoGuest({ cartProducts: cartStore.cart })
+ 
 })
 </script>
 <template>
@@ -224,7 +231,7 @@ onMounted(async () => {
         <li class="mb-4 flex justify-between border-b pb-2"><span class="font-bold">Product</span> <span class="font-bold">Total</span></li>
         <li v-for="(item, index) in cartStore.cart" :key="index" class="mb-4 flex justify-between border-b pb-2">
           <span class="" v-text="`${item.name} x ${item.quantity}`"></span>
-          <p class="font-bold" v-text="`$${item.price}`"></p>
+          <p class="font-bold" v-text="`$${item.priceDiscount || item.price}`"></p>
         </li>
         <li class="mb-4 flex justify-between border-b pb-2">
           <span class="font-bold">Envío </span> <span class="font-bold text-blue-900">ZOOM</span>
@@ -244,7 +251,7 @@ onMounted(async () => {
                 class="w-32"
                 src="@/assets/images/banesco.png"
             /></template>
-            <Banesco />
+            <Banesco :cart="cartStore.cart"/>
           </accordion>
 
           <accordion :title="''">
@@ -253,7 +260,7 @@ onMounted(async () => {
                 class="w-32"
                 src="@/assets/images/paypal.png"
             /></template>
-            <Paypal />
+            <Paypal :cart="cartStore.cart" />
           </accordion>
           <accordion :title="'Tarjeta Eroca'">
             <Card />
