@@ -9,8 +9,14 @@ import { showNotification } from '@/composables/useNotification'
 
 const props = defineProps({
     cart: {
-        type: Array,
-        required: true
+        type: Array
+    },
+    card:{
+        type: Object
+    },
+    isCard: {
+        type: Boolean,
+        default: false
     },
     name: {
         type: String
@@ -23,6 +29,10 @@ const props = defineProps({
     },
     carrier:{
         type: Object
+    },
+    endpoint:{
+        type: String,
+        default: 'checkout'
     }
 })
 
@@ -49,17 +59,31 @@ const submitPay = async () => {
             "expirationDate": `${date.value.month < 10 ? `0${date.value.month}` : date.value.month}/${date.value.year}`
         }
 
-        const data = {
-            paymentMethod: 'banesco',
-            banescoData,
-            carts:props.cart,
-            name: props.name,
-            email: props.email,
-            phone: props.phone,
-            carrier: props.carrier
+        let data = {}
+        if(props.isCard){
+            data = {
+                paymentMethod: 'banesco',
+                banescoData,
+                carts:props.cart,
+                name: props.name,
+                email: props.email,
+                phone: props.phone,
+                card: props.card
+            }
+        }else{
+            data = {
+                paymentMethod: 'banesco',
+                banescoData,
+                carts:props.cart,
+                name: props.name,
+                email: props.email,
+                phone: props.phone,
+                carrier: props.carrier
+            }
         }
+        
 
-        await _submitPay(data)
+        await _submitPay(data, props.endpoint)
     }catch(err){
         showNotification("Algo ha ido mal", 'error')
     }

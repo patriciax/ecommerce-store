@@ -9,6 +9,8 @@ import { email, required } from '@vuelidate/validators'
 import { useI18n } from 'vue-i18n'
 import { GiftIcon, ChevronRightIcon } from '@heroicons/vue/24/outline'
 import DateCard from '@/components/common/Calendar.vue'
+import Accordion from '@/components/common/Accordion.vue'
+import Banesco from '@/components/paymentMethods/Banesco.vue'
 
 const { t } = useI18n()
 const login = ref(false)
@@ -149,7 +151,31 @@ const send = async () => {
       />
 
       <section class="mb-10">
-        <Btn text="Enviar" isFull @click="send" />
+        <!-- <Btn text="Enviar" isFull @click="send" /> -->
+        <section>
+          <p class="text-lg font-bold mb-6" v-text="'Método de pago'" />
+          <div>
+            <Accordion :title="''">
+              <template #img>
+                <img
+                  class="w-32"
+                  src="@/assets/images/banesco.png"
+              /></template>
+              <Banesco 
+                :isCard="true" 
+                :card="{
+                  total: dataForm.priceGift,
+                  emailTo: dataForm.emailTo,
+                  name: dataForm.name,
+                  message: dataForm.message,
+                  date: dataForm.date,
+                }"
+                endpoint="gift-cards/purchase"  
+              />
+            </accordion>
+          </div>
+        </section>
+
       </section>
     </section>
   </section>
