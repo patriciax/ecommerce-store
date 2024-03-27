@@ -19,7 +19,8 @@
     "NEWS":"News",
     "RECOMMENDED": "Recommended products", 
     "POPULAR_NOW": "Popular right now",
-    "SELECT": "Select"
+    "SELECT": "Select",
+    "NOT_AVAILABLE": "Not available"
   },
   "CART":{
     "ERROR": "Error while adding to cart",

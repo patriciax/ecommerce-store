@@ -22,7 +22,8 @@
     "COLOR": "Color",
     "SIZE": "Tamaño",
     "DESCRIPTION": "Descripción",
-    "SELECT": "Seleccionar"
+    "SELECT": "Seleccionar",
+    "NOT_AVAILABLE": "No disponible"
   },
   "CART":{
     "ERROR": "Error al añadir al carrito",
