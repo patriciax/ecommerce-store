@@ -8,6 +8,7 @@ import _storeUser from '@/stores/user'
 import useVuelidate from '@vuelidate/core'
 import { email, required } from '@vuelidate/validators'
 import { useI18n } from 'vue-i18n'
+import { sendGiftCardBalance } from '@/api/repositories/giftCard.repository'
 
 const storeUser = _storeUser()
 const { t } = useI18n()
@@ -45,6 +46,9 @@ const setEmailErrors = computed(() => {
 const send = async () => {
   const _validate = await handlerValidate.value.$validate()
   if (!_validate) return
+
+  //await sendGiftCardBalance()
+
 }
 </script>
 <template>
@@ -69,7 +73,7 @@ const send = async () => {
         name="order"
         class="mb-4"
         placeholder="1234566"
-        :label="'Numero de pedido'"
+        :label="'Número de tarjeta'"
       />
       <TextFields
         id="email-order"
