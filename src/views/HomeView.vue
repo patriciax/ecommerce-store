@@ -10,6 +10,8 @@ const productStore = _storeProduct()
 
 onMounted(async () => {
   await productStore.getAllProducts()
+  localStorage.setItem('step', '1')
+
 })
 </script>
 

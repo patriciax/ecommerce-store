@@ -18,6 +18,7 @@ import Banesco from '@/components/paymentMethods/Banesco.vue'
 import Card from '@/components/paymentMethods/Card.vue'
 
 import Accordion from '@/components/common/Accordion.vue'
+import { validate } from '@babel/types'
 const { t } = useI18n()
 
 const page = ref(1)
@@ -27,11 +28,11 @@ const zoomStore = _ZoomStore()
 const { pushNotification } = useNotifications()
 const isDisabledStock = ref(false)
 const emailHasError = ref(null)
-
+const validateFormData = ref(false)
 const total = computed(() => {
   let total = 0
   cartStore.cart.forEach((item) => {
-    total += item.priceDiscount * item.quantity || item.price * item.quantity  
+    total += item.priceDiscount * item.quantity || item.price * item.quantity
   })
   return total.toFixed(2)
 })
@@ -112,18 +113,22 @@ const fetchDataForm = () => {
 
 onMounted(async () => {
   await zoomStore.getState()
-  if (storeUser.currentUser){
+  if (storeUser.currentUser) {
     fetchDataForm()
     cartStore.productInfo()
     return
   }
 
   cartStore.productInfoGuest({ cartProducts: cartStore.cart })
- 
 })
+
+const validateForm = async () => {
+  const result = await handlerValidate.value.$validate()
+  if (result) validateFormData.value = true
+}
 </script>
 <template>
-  <section class="grid px-10 lg:px-0 md:grid-cols-2 gap-12">
+  <section class="grid gap-12 px-10 md:grid-cols-2 lg:px-0">
     <div>
       <p class="mt-6 text-xl font-bold" v-text="'Datos de facturación'" />
       <p class="mb-6 font-light" v-text="`Tienes ${cartStore.cart.length} productos en el carrito`" />
@@ -196,8 +201,8 @@ onMounted(async () => {
           <SelectField
             v-model="dataForm.zoomState"
             :errorMessage="
-              handlerValidate?.['state']?.$errors?.length > 0
-                ? $t('VALIDATIONS.' + handlerValidate?.['state']?.$errors?.[0]?.$validator?.toUpperCase())
+              handlerValidate?.['zoomState']?.$errors?.length > 0
+                ? $t('VALIDATIONS.' + handlerValidate?.['zoomState']?.$errors?.[0]?.$validator?.toUpperCase())
                 : undefined
             "
             isRequired
@@ -209,8 +214,8 @@ onMounted(async () => {
           <SelectField
             v-model="dataForm.zoomOffice"
             :errorMessage="
-              handlerValidate?.['office']?.$errors?.length > 0
-                ? $t('VALIDATIONS.' + handlerValidate?.['office']?.$errors?.[0]?.$validator?.toUpperCase())
+              handlerValidate?.['zoomOffice']?.$errors?.length > 0
+                ? $t('VALIDATIONS.' + handlerValidate?.['zoomOffice']?.$errors?.[0]?.$validator?.toUpperCase())
                 : undefined
             "
             isRequired
@@ -243,34 +248,35 @@ onMounted(async () => {
       </ul>
 
       <section>
-        <p class="text-lg font-bold mb-6" v-text="'Método de pago'" />
+        <p class="mb-6 text-lg font-bold" v-text="'Método de pago'" />
         <div>
-          <accordion :title="''">
-            <template #img>
-              <img
-                class="w-32"
-                src="@/assets/images/banesco.png"
-            /></template>
-            <Banesco :cart="cartStore.cart" :carrier="{
-              carrierName: 'ZOOM',
-              state: statesFormated?.find((state) => state?.value == dataForm?.zoomState)?.text,
-              office: dataForm?.zoomOffice,
-              address: offiecesFormated?.find((office) => office?.value == dataForm?.zoomOffice)?.text,
-            }"/>
+          <accordion hidden :title="''">
+            <template #img> <img class="w-32" src="@/assets/images/banesco.png" /></template>
+            <Banesco
+              :validate-form="validateFormData"
+              @validate="validateForm"
+              @nextStep="$emit('nextStep')"
+              :cart="cartStore.cart"
+              :carrier="{
+                carrierName: 'ZOOM',
+                state: statesFormated?.find((state) => state?.value == dataForm?.zoomState)?.text,
+                office: dataForm?.zoomOffice,
+                address: offiecesFormated?.find((office) => office?.value == dataForm?.zoomOffice)?.text,
+              }"
+            />
           </accordion>
 
           <accordion :title="''">
-            <template #img>
-              <img
-                class="w-32"
-                src="@/assets/images/paypal.png"
-            /></template>
-            <Paypal :cart="cartStore.cart" :carrier="{
-              carrierName: 'ZOOM',
-              state: statesFormated?.find((state) => state?.value == dataForm?.zoomState)?.text,
-              office: dataForm?.zoomOffice,
-              address: offiecesFormated?.find((office) => office?.value == dataForm?.zoomOffice)?.text,
-            }"/>
+            <template #img> <img class="w-32" src="@/assets/images/paypal.png" /></template>
+            <Paypal
+              :cart="cartStore.cart"
+              :carrier="{
+                carrierName: 'ZOOM',
+                state: statesFormated?.find((state) => state?.value == dataForm?.zoomState)?.text,
+                office: dataForm?.zoomOffice,
+                address: offiecesFormated?.find((office) => office?.value == dataForm?.zoomOffice)?.text,
+              }"
+            />
           </accordion>
           <accordion :title="'Tarjeta Eroca'">
             <Card />

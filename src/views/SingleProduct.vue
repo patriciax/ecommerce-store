@@ -263,7 +263,7 @@ onMounted(async () => {
                   </section>
                 </div>
               </section>
-              <Btn with-icon is-full color="primaryProduct" :text="maxAmount <= 0 ? $t('COMMON.NOT_AVAILABLE') : $t('COMMON.ADD_TO_CART')" @click="addProduct()" :is-disabled="!size || !color || maxAmount <= 0">
+              <Btn class="flex justify-center h-10 items-center" with-icon is-full color="primaryProduct" :text="maxAmount <= 0 ? $t('COMMON.NOT_AVAILABLE') : $t('COMMON.ADD_TO_CART')" @click="addProduct()" :is-disabled="!size || !color || maxAmount <= 0">
                 <template #icon>
                   <ShoppingCartIcon class="mx-2 w-5" />
                 </template>

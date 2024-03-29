@@ -5,6 +5,7 @@ import _storeUser from '@/stores/user'
 import useNotifications from '@/composables/useNotifications'
 import { useI18n } from 'vue-i18n'
 import CartList from '@/components/common/CartList.vue'
+import { emit } from 'process'
 
 const { t } = useI18n()
 
@@ -14,7 +15,6 @@ const { pushNotification } = useNotifications()
 const isDisabledStock = ref(false)
 
 const removeItem = async (item) => {
-  
   if (storeUser.currentUser) {
     cartStore.removeCart(item.productId)
     if (cartStore.isError) {
@@ -66,8 +66,6 @@ const moreItem = (index) => {
         quantity: cart[index].quantity,
       })
     }
-
-
   }
 }
 
@@ -110,6 +108,15 @@ onMounted(async () => {
   </template>
 
   <p class="rounded-lg bg-gray-100 p-3 text-center text-xl font-bold" v-if="!cartStore.cart.length && cartStore.isReady">Empty cart</p>
-
   <Card />
+
+  <div class="flex justify-center gap-4">
+    <button
+      class="group flex items-center justify-center gap-1 rounded-xl bg-gray-800 p-8 py-3 text-sm font-bold leading-6 text-white shadow-sm hover:bg-opacity-90"
+      type="submit"
+      @click="$emit('nextStep')"
+    >
+      Continuar
+    </button>
+  </div>
 </template>

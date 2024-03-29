@@ -20,7 +20,8 @@
     "RECOMMENDED": "Recommended products", 
     "POPULAR_NOW": "Popular right now",
     "SELECT": "Select",
-    "NOT_AVAILABLE": "Not available"
+    "NOT_AVAILABLE": "Not available",
+    "QUANTITY": "Quantity"
   },
   "CART":{
     "ERROR": "Error while adding to cart",

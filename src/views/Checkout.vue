@@ -7,20 +7,13 @@ import useNotifications from '@/composables/useNotifications'
 import { useI18n } from 'vue-i18n'
 import Cart from '@/components/views/checkout/Cart.vue'
 import Billing from '@/components/views/checkout/Billing.vue'
+import Resume from '@/components/views/checkout/Resume.vue'
 
 const { t } = useI18n()
 
 const page = ref(1)
 const cartStore = CartStore()
 const storeUser = _storeUser()
-const { pushNotification } = useNotifications()
-const total = computed(() => {
-  let total = 0
-  cartStore.cart.forEach((item) => {
-    total += item.price * item.quantity
-  })
-  return total.toFixed(2)
-})
 
 const changePages = () => {
   page.value >= 1 && page.value < 4 ? (page.value += 1) : ''
@@ -36,10 +29,12 @@ watch(
 )
 
 onMounted(async () => {
-  if (localStorage.getItem('step')) {
-    page.value = Number(localStorage.getItem('step'))
-  } else {
-    localStorage.setItem('step', '1')
+  if (cartStore.cart.length) {
+    if (localStorage.getItem('step')) {
+      page.value = Number(localStorage.getItem('step'))
+    } else {
+      localStorage.setItem('step', '1')
+    }
   }
 })
 </script>
@@ -68,26 +63,28 @@ onMounted(async () => {
             <CheckIcon class="w-5 p-1" />
           </span>
 
-          <span class="hidden sm:block"> Resumen </span>
+          <span class="hidden sm:block"> Productos y envío </span>
         </li>
       </ol>
     </div>
 
     <section class="min-h-[360px]">
       <div v-if="page == 1">
-        <Cart />
+        <Cart @nextStep="changePages" />
       </div>
 
       <div v-if="page == 2">
-        <Billing />
+        <Billing @nextStep="changePages" />
       </div>
 
-      <div v-if="page == 3">TEST 3</div>
+      <div v-if="page == 3">
+        <Resume />
+      </div>
     </section>
 
-    <div class="flex justify-center gap-4">
+    <!-- <div class="flex justify-center gap-4">
       <button
-        v-if="page > 1"
+        v-if="page=== 2"
         class="mt-10 rounded-lg border border-gray-300 p-8 py-3 text-sm font-bold leading-6"
         type="submit"
         @click="page <= 4 && page > 1 ? (page -= 1) : ''"
@@ -95,8 +92,7 @@ onMounted(async () => {
         Volver
       </button>
       <button
-        v-if="cartStore.cart.length"
-        :class="{ hidden: page == 2 }"
+        v-if="cartStore.cart.length && page === 2"
         :disabled="!cartStore.cart.length || cartStore.isLoading"
         class="group flex items-center justify-center gap-1 rounded-xl bg-gray-800 p-8 py-3 text-sm font-bold leading-6 text-white shadow-sm hover:bg-opacity-90"
         type="submit"
@@ -104,6 +100,6 @@ onMounted(async () => {
       >
         Continuar
       </button>
-    </div>
+    </div> -->
   </section>
 </template>
