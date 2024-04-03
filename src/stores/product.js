@@ -1,4 +1,4 @@
-import { _getAllHome, _getSingleProduct } from '@/api/repositories/product.repository'
+import { _getAllHome, _getSingleProduct, _getPrice } from '@/api/repositories/product.repository'
 import { defineStore } from 'pinia'
 
 export default defineStore({
@@ -8,6 +8,7 @@ export default defineStore({
     _error: null,
     _allProduct: null,
     _product: null,
+    _price: null,
   }),
   getters: {
     isLoading: (state) => state._status === 'loading',
@@ -16,6 +17,7 @@ export default defineStore({
     error: (state) => state._error,
     allProduct: (state) => state._allProduct,
     product: (state) => state._product,
+    price: (state) => state._price,
   },
   actions: {
     async getAllProducts() {
@@ -40,6 +42,18 @@ export default defineStore({
         }
       } catch (error) {
         this.changeStatus('error', error)
+      }
+    },
+    async getPrice() {
+      this.changeStatus('loading')
+      try {
+        const response = await _getPrice()
+        if (response) {
+          this._price = response.price
+          this.changeStatus('ready')
+        }
+      } catch (error) {
+        console.error(error)
       }
     },
 

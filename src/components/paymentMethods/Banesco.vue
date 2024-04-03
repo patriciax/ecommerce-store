@@ -53,10 +53,6 @@ const dataPayment = ref({
   cvc: '',
 })
 const paymentMethods = PaymentMethods()
-// const document = ref('')
-// const cardHolder = ref('')
-// const cardNumber = ref('')
-// const cvc = ref('')
 const date: any = ref('')
 const isLoading = ref(false)
 const updateDate = (value: string) => {
