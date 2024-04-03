@@ -2,9 +2,9 @@
 import { computed } from 'vue'
 
 const colorBtn = {
-  disabled: 'bg-gray-300 text-gray-500 cursor-not-allowed',
+  disabled: 'bg-gray-300 text-gray-500  cursor-not-allowed',
   primary:
-    'bg-gray-800 text-white font-bold p-4 rounded-xl text-sm font-semibold leading-6 shadow-sm   hover:bg-opacity-90 flex gap-1 items-center justify-center group relative mx-auto',
+    'bg-gray-800 text-white font-bold p-4 rounded-xl text-md font-semibold leading-6 shadow-sm   hover:bg-opacity-90 flex gap-1 items-center justify-center group relative mx-auto',
   secondary:
     'bg-white hover:bg-opacity-90 font-bold flex gap-1 item-pcenter group relative hover:bg-gray-700 hover:text-white text-gray-800 flex justify-center',
   cart: 'bg-gray-100 font-bold flex gap-1 item-pcenter group relative hover:bg-gray-800 hover:text-white text-gray-800 flex justify-center',

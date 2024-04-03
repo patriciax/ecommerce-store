@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { defineStore } from 'pinia'
+import { _getPrice } from '@/api/repositories/product.repository'
 
 export default defineStore({
   id: 'country',
@@ -12,18 +13,19 @@ export default defineStore({
   actions: {
 
     async getCountry() {
-      
-      try{
+      try {
 
         const response = await axios.get("https://ipapi.co/json/")
-        if(response.status == 200){
-            this._country = response.data.country_name
+        if (response.status == 200) {
+          this._country = response.data.country_name
+
         }
 
-      }catch(err){
+      } catch (err) {
         console.error(err)
       }
 
-    }
+    },
+
   },
 })

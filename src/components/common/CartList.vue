@@ -1,6 +1,6 @@
 <script setup>
 import { ChevronLeftIcon, TrashIcon, ChevronRightIcon } from '@heroicons/vue/24/outline'
-import { ref } from 'vue';
+import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 const emit = defineEmits(['removeItem', 'lessItem', 'moreItem'])
@@ -21,9 +21,6 @@ const props = defineProps({
   isLoading: {
     type: Boolean,
   },
-  disableStock: {
-    type: Boolean,
-  },
 })
 const removeItem = (index) => emit('removeItem', index)
 const lessItem = (index) => {
@@ -31,7 +28,7 @@ const lessItem = (index) => {
   emit('lessItem', index)
 }
 const moreItem = (index) => {
-  if(props.item.quantity >= props.item.stock){
+  if (props.item.quantity >= props.item.stock) {
     disableStock.value = true
     return
   }
@@ -42,13 +39,17 @@ const moreItem = (index) => {
 <template>
   <li class="mb-6 flex items-center gap-4 rounded-2xl bg-white px-6 py-2 text-lg shadow-[0px_2px_5px_#00000038]">
     <img :src="props.item.mainImage || props.item.product?.mainImage" alt="" class="h-24 w-24 rounded-lg object-cover" />
-    <h3 class="max-w-72 text-lg text-gray-900">
-      {{ locale === 'en_US' ? props.item.nameEnglish || props.item.product?.nameEnglish : props.item.name || props.item.product?.name }}
-    </h3>
+    <section>
+      <h3 class="max-w-72 text-lg text-gray-900">
+        {{ locale === 'en_US' ? props.item.nameEnglish || props.item.product?.nameEnglish : props.item.name || props.item.product?.name }}
+      </h3>
 
-    <p>{{ $t('COLOR')  }}: {{ item?.color?.name }}</p>
-    <p>{{ $t('SIZE')  }}: {{ item?.size?.name }}</p>
-
+      <div class="flex items-center">
+        <p class="text-sm text-gray-700">{{ $t('COLOR') }}: {{ item?.color?.name }}</p>
+        <div v-if="item?.color?.name" class="mx-2 h-4 w-0.5 bg-gray-200" />
+        <p class="text-sm text-gray-700">{{ $t('SIZE') }}: {{ item?.size?.name }}</p>
+      </div>
+    </section>
     <div class="flex flex-1 items-center justify-end gap-16">
       <section class="flex items-center justify-between">
         <div class="border-burgerPrimary flex w-24 items-center justify-between rounded-md border px-3 py-1">

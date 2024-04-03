@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import Btn from '@/components/common/Btn.vue'
-import { HeartIcon, ShoppingCartIcon, PhotoIcon } from '@heroicons/vue/24/outline'
+import { HeartIcon, ShoppingCartIcon, PhotoIcon, EyeIcon } from '@heroicons/vue/24/outline'
 import { useRouter } from 'vue-router'
 import CartStore from '@/stores/cart/cart'
 import { useI18n } from 'vue-i18n'
@@ -46,7 +46,7 @@ const addToCart = (_id: any) => {
   })
 }
 
-const goToProduct = (id: number) => router.push({ name: 'singleProduct', params: { id: id } })
+const goToProduct = (slug: any) => router.push({ name: 'singleProduct', params: { slug: slug } })
 </script>
 <template>
   <section class="relative w-full text-start">
@@ -55,7 +55,7 @@ const goToProduct = (id: number) => router.push({ name: 'singleProduct', params:
 
       <img
         v-else
-        @click="goToProduct(props.data._id)"
+        @click="goToProduct(props.data.slug)"
         :src="props.data.mainImage"
         alt="product"
         class="h-full w-full rounded-lg bg-center object-cover"
@@ -74,9 +74,9 @@ const goToProduct = (id: number) => router.push({ name: 'singleProduct', params:
         <p v-text="locale === 'en_US' ? props.data.nameEnglish : props.data.name" />
         <p class="text-xl font-bold" v-text="`$` + props.data.price" />
       </div>
-      <Btn color="cart" is-tooltip :text="$t('COMMON.ADD_TO_CART')" with-icon @click="addToCart(props.data._id)">
+      <Btn color="cart"  with-icon @click="goToProduct(props.data.slug)">
         <template #icon>
-          <ShoppingCartIcon class="w-5" />
+          <EyeIcon class="w-5" />
         </template>
       </Btn>
     </section>

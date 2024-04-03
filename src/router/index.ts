@@ -7,6 +7,7 @@ import _storeCart from '@/stores/cart/cart'
 import Checkout from '../views/Checkout.vue'
 import OrderManagement from '@/views/OrderManagement.vue'
 import GiftCard from '@/views/GiftCard.vue'
+import Search from '../views/Search.vue'
 
 const router = createRouter({
   history: createWebHistory((import.meta as any).env.BASE_URL),
@@ -17,7 +18,7 @@ const router = createRouter({
       component: HomeView
     },
     {
-      path: '/product/:id',
+      path: '/product/:slug',
       name: 'singleProduct',
       component: Product
     },
@@ -35,6 +36,11 @@ const router = createRouter({
       path: '/gift-card',
       name: 'gift-card',
       component: GiftCard
+    },
+    {
+      path: '/search',
+      name: 'seaech',
+      component: Search
     },
   ]
 })

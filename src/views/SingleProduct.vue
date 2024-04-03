@@ -12,6 +12,7 @@ import { HeartIcon, ChevronLeftIcon, ChevronRightIcon, ShoppingCartIcon } from '
 import Btn from '@/components/common/Btn.vue'
 import NewProducts from '@/components/views/home/NewProducts.vue'
 import useNotifications from '@/composables/useNotifications'
+import { watch } from 'vue'
 
 const productStore = _storeProduct()
 const cartStore = CartStore()
@@ -124,7 +125,7 @@ const sizesToShow = computed(() => {
 })
 
 onMounted(async () => {
-  await productStore.getSingleProduct(router.currentRoute.value.params.id)
+  await productStore.getSingleProduct(router.currentRoute.value.params.slug)
   await productStore.getAllProducts()
 
   if (productStore.product) {
@@ -144,12 +145,23 @@ onMounted(async () => {
   size.value = sizesToShow.value[0]?._id ?? null
   maxAmount.value = variations.value?.find((item) => item.color[0]._id == color.value && item.size[0]._id == size.value)?.stock ?? 0
 })
+
+// const goToProduct = (slug: any) => router.push({ name: 'singleProduct', params: { slug: slug } })
+
+
+watch(
+  () => router.currentRoute.value.params.slug,
+  async () => {
+    router.push({ name: 'singleProduct', params: { slug: router.currentRoute.value.params.slug } })
+  }
+)
+
 </script>
 <template>
   <div class="mx-auto bg-white pb-20 lg:max-w-7xl">
-    <div class="pt-6">
+    <div class="pt-2">
       <nav aria-label="Breadcrumb" class="">
-        <ol role="list" class="mb-16 flex max-w-2xl items-center space-x-2 lg:max-w-7xl">
+        <ol role="list" class="mb-4 flex max-w-2xl items-center space-x-2 lg:max-w-7xl">
           <li @click="goToRoute">
             <div class="flex items-center">
               <div class="mt-1 -rotate-180 transform cursor-pointer text-sm font-medium text-gray-900">
@@ -263,7 +275,7 @@ onMounted(async () => {
                   </section>
                 </div>
               </section>
-              <Btn with-icon is-full color="primaryProduct" :text="maxAmount <= 0 ? $t('COMMON.NOT_AVAILABLE') : $t('COMMON.ADD_TO_CART')" @click="addProduct()" :is-disabled="!size || !color || maxAmount <= 0">
+              <Btn class="flex justify-center h-10 items-center" with-icon is-full color="primaryProduct" :text="maxAmount <= 0 ? $t('COMMON.NOT_AVAILABLE') : $t('COMMON.ADD_TO_CART')" @click="addProduct()" :is-disabled="!size || !color || maxAmount <= 0">
                 <template #icon>
                   <ShoppingCartIcon class="mx-2 w-5" />
                 </template>
