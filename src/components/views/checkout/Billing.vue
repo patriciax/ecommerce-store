@@ -16,6 +16,7 @@ import _ZoomStore from '@/stores/zoom'
 import Paypal from '@/components/paymentMethods/Paypal.vue'
 import Banesco from '@/components/paymentMethods/Banesco.vue'
 import Card from '@/components/paymentMethods/Card.vue'
+import GiftCard from '@/components/paymentMethods/GiftCard.vue'
 
 import Accordion from '@/components/common/Accordion.vue'
 const { t } = useI18n()
@@ -274,6 +275,9 @@ onMounted(async () => {
           </accordion>
           <accordion :title="'Tarjeta Eroca'">
             <Card />
+          </accordion>
+          <accordion :title="'Tarjeta Eroca'">
+            <GiftCard />
           </accordion>
         </div>
       </section>

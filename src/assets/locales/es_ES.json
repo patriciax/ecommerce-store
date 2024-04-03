@@ -96,7 +96,7 @@
     "CARD_HOLDER":"Card holder",
     "CARD_HOLDER_ID":"Card holder ID",
     "CARD_NUMBER":"Card number",
-    "CVC": "cvc",
+    "CVC": "CVC",
     "EXPIRATION_DATE": "Expiration date"
   }
 }
