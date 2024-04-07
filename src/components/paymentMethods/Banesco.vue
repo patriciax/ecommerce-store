@@ -10,7 +10,10 @@ import useNotifications from '@/composables/useNotifications'
 import PaymentMethods from '@/stores/paymentMethods'
 import useVuelidate from '@vuelidate/core'
 import { required } from '@vuelidate/validators'
+import { watch } from 'vue'
+import { computed } from 'vue'
 
+// let handlerValidateBanesco = null
 const emit = defineEmits(['nextStep', 'validate'])
 
 const props = defineProps({
@@ -43,6 +46,9 @@ const props = defineProps({
   validateForm: {
     type: Boolean,
   },
+  selectedPayment: {
+    type: String,
+  },
 })
 
 const { pushNotification } = useNotifications()
@@ -59,9 +65,9 @@ const updateDate = (value: string) => {
   date.value = value
 }
 
-const submitPay = async () => {
-  emit('validate')
-  if (props.validateForm) {
+const completePay = async() => {
+
+  if (props.validateForm && props.selectedPayment === 'Banesco') {
     isLoading.value = true
     try {
       const banescoData = {
@@ -112,8 +118,12 @@ const submitPay = async () => {
   }
 }
 
-const handlerValidate = useVuelidate(
-  {
+const submitPay = async () => {
+  emit('validate', 'Banesco')
+}
+
+const rulesBanesco = computed(() => {
+  return {
     document: {
       required,
     },
@@ -126,9 +136,18 @@ const handlerValidate = useVuelidate(
     cvc: {
       required,
     },
-  },
-  dataPayment
-)
+  }
+})
+
+const handlerValidateBanesco = useVuelidate(
+    rulesBanesco,
+    dataPayment
+  )
+
+watch(() => props.validateForm, () => {
+  completePay()
+});
+
 </script>
 
 <template>
@@ -138,8 +157,8 @@ const handlerValidate = useVuelidate(
         <TextFields
           v-model="dataPayment.cardHolder"
           :errorMessage="
-            handlerValidate?.['cardHolder']?.$errors?.length > 0
-              ? $t('VALIDATIONS.' + handlerValidate?.['cardHolder']?.$errors?.[0]?.$validator?.toUpperCase())
+            handlerValidateBanesco?.['cardHolder']?.$errors?.length > 0
+              ? $t('VALIDATIONS.' + handlerValidateBanesco?.['cardHolder']?.$errors?.[0]?.$validator?.toUpperCase())
               : undefined
           "
           noSpecialCharacters
@@ -149,8 +168,8 @@ const handlerValidate = useVuelidate(
       <div>
         <Document
           :errorMessage="
-            handlerValidate?.['document']?.$errors?.length > 0
-              ? $t('VALIDATIONS.' + handlerValidate?.['document']?.$errors?.[0]?.$validator?.toUpperCase())
+            handlerValidateBanesco?.['document']?.$errors?.length > 0
+              ? $t('VALIDATIONS.' + handlerValidateBanesco?.['document']?.$errors?.[0]?.$validator?.toUpperCase())
               : undefined
           "
           v-model="dataPayment.document"
@@ -162,8 +181,8 @@ const handlerValidate = useVuelidate(
       <div>
         <Document
           :errorMessage="
-            handlerValidate?.['cardNumber']?.$errors?.length > 0
-              ? $t('VALIDATIONS.' + handlerValidate?.['cardNumber']?.$errors?.[0]?.$validator?.toUpperCase())
+            handlerValidateBanesco?.['cardNumber']?.$errors?.length > 0
+              ? $t('VALIDATIONS.' + handlerValidateBanesco?.['cardNumber']?.$errors?.[0]?.$validator?.toUpperCase())
               : undefined
           "
           v-model="dataPayment.cardNumber"
@@ -175,8 +194,8 @@ const handlerValidate = useVuelidate(
       <div>
         <Document
           :errorMessage="
-            handlerValidate?.['cvc']?.$errors?.length > 0
-              ? $t('VALIDATIONS.' + handlerValidate?.['cvc']?.$errors?.[0]?.$validator?.toUpperCase())
+            handlerValidateBanesco?.['cvc']?.$errors?.length > 0
+              ? $t('VALIDATIONS.' + handlerValidateBanesco?.['cvc']?.$errors?.[0]?.$validator?.toUpperCase())
               : undefined
           "
           v-model="dataPayment.cvc"
@@ -187,8 +206,8 @@ const handlerValidate = useVuelidate(
       <div class="col-span-2">
         <DateCard
           :errorMessage="
-            handlerValidate?.['date']?.$errors?.length > 0
-              ? $t('VALIDATIONS.' + handlerValidate?.['date']?.$errors?.[0]?.$validator?.toUpperCase())
+            handlerValidateBanesco?.['date']?.$errors?.length > 0
+              ? $t('VALIDATIONS.' + handlerValidateBanesco?.['date']?.$errors?.[0]?.$validator?.toUpperCase())
               : undefined
           "
           @changedDate="updateDate"

@@ -29,6 +29,7 @@ const zoomStore = _ZoomStore()
 const { pushNotification } = useNotifications()
 const isDisabledStock = ref(false)
 const emailHasError = ref(null)
+const selectPaymentMethod = ref(null)
 const validateFormData = ref(false)
 const total = computed(() => {
   let total = 0
@@ -38,7 +39,7 @@ const total = computed(() => {
   return total.toFixed(2)
 })
 
-const dataForm = ref({
+const dataForm:any = ref({
   name: '',
   lastname: '',
   email: '',
@@ -48,8 +49,8 @@ const dataForm = ref({
   zoomOffice: '',
 })
 
-const handlerValidate = useVuelidate(
-  {
+const rules = computed(() => {
+  return {
     email: {
       required,
       email,
@@ -63,16 +64,17 @@ const handlerValidate = useVuelidate(
     phone: {
       required,
     },
-    address: {
-      required,
-    },
     zoomState: {
       required,
     },
     zoomOffice: {
       required,
     },
-  },
+  }
+})
+
+const handlerValidate = useVuelidate(
+  rules,
   dataForm
 )
 
@@ -123,9 +125,20 @@ onMounted(async () => {
   cartStore.productInfoGuest({ cartProducts: cartStore.cart })
 })
 
-const validateForm = async () => {
+const validateForm = async (paymentMethod) => {
+
+  handlerValidate.value.$touch()
   const result = await handlerValidate.value.$validate()
-  if (result) validateFormData.value = true
+  if(paymentMethod === 'Paypal') {
+     
+      dataForm.value.cardHolder =  '123123'
+      dataForm.value.cardHolderId =  '123123'
+      dataForm.value.cardNumber= '123123'
+      dataForm.value.cvc= '123123'
+    
+  }
+
+  validateFormData.value = result
 }
 </script>
 <template>
@@ -257,6 +270,7 @@ const validateForm = async () => {
               :validate-form="validateFormData"
               @validate="validateForm"
               @nextStep="$emit('nextStep')"
+              :selectedPayment="selectPaymentMethod"
               :cart="cartStore.cart"
               :carrier="{
                 carrierName: 'ZOOM',
@@ -270,7 +284,11 @@ const validateForm = async () => {
           <accordion :title="''">
             <template #img> <img class="w-32" src="@/assets/images/paypal.png" /></template>
             <Paypal
+              @validate="validateForm"
+              :validate-form="validateFormData"
               :cart="cartStore.cart"
+              @nextStep="$emit('nextStep')"
+              :selectedPayment="selectPaymentMethod"
               :carrier="{
                 carrierName: 'ZOOM',
                 state: statesFormated?.find((state) => state?.value == dataForm?.zoomState)?.text,
@@ -279,7 +297,7 @@ const validateForm = async () => {
               }"
             />
           </accordion>
-          <accordion :title="'Tarjeta Eroca'">
+          <accordion :title="'Tarjeta de crédito'">
             <Card />
           </accordion>
           <accordion :title="'Tarjeta Eroca'">
