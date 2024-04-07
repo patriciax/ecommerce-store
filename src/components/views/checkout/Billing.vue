@@ -75,7 +75,8 @@ const rules = computed(() => {
 
 const handlerValidate = useVuelidate(
   rules,
-  dataForm
+  dataForm,
+  { $scope: false }
 )
 
 const handleInputStates = async (_value) => {
@@ -127,16 +128,9 @@ onMounted(async () => {
 
 const validateForm = async (paymentMethod) => {
 
+  handlerValidate.value.$reset()
   handlerValidate.value.$touch()
   const result = await handlerValidate.value.$validate()
-  if(paymentMethod === 'Paypal') {
-     
-      dataForm.value.cardHolder =  '123123'
-      dataForm.value.cardHolderId =  '123123'
-      dataForm.value.cardNumber= '123123'
-      dataForm.value.cvc= '123123'
-    
-  }
 
   validateFormData.value = result
 }
@@ -270,7 +264,6 @@ const validateForm = async (paymentMethod) => {
               :validate-form="validateFormData"
               @validate="validateForm"
               @nextStep="$emit('nextStep')"
-              :selectedPayment="selectPaymentMethod"
               :cart="cartStore.cart"
               :carrier="{
                 carrierName: 'ZOOM',
@@ -288,7 +281,6 @@ const validateForm = async (paymentMethod) => {
               :validate-form="validateFormData"
               :cart="cartStore.cart"
               @nextStep="$emit('nextStep')"
-              :selectedPayment="selectPaymentMethod"
               :carrier="{
                 carrierName: 'ZOOM',
                 state: statesFormated?.find((state) => state?.value == dataForm?.zoomState)?.text,

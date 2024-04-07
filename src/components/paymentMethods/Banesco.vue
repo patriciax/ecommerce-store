@@ -119,7 +119,13 @@ const completePay = async() => {
 }
 
 const submitPay = async () => {
-  emit('validate', 'Banesco')
+
+  handlerValidateBanesco.value.$reset()
+  handlerValidateBanesco.value.$touch()
+  const result = await handlerValidateBanesco.value.$validate()
+
+  if(result)
+    emit('validate')
 }
 
 const rulesBanesco = computed(() => {
@@ -141,7 +147,8 @@ const rulesBanesco = computed(() => {
 
 const handlerValidateBanesco = useVuelidate(
     rulesBanesco,
-    dataPayment
+    dataPayment,
+    { $scope: false }
   )
 
 watch(() => props.validateForm, () => {

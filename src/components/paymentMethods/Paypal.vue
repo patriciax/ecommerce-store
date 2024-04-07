@@ -51,7 +51,7 @@ interval.value = setInterval(() => {
         onClick: async (data, actions) => {
           // Return a promise from onClick for async validation
 
-          emit('validate', 'Paypal')
+          emit('validate')
           await timeout(1000);
 
           if (props.validateForm) {
