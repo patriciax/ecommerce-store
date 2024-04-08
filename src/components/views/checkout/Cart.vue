@@ -60,8 +60,16 @@ const moreItem = (index) => {
     if (storeUser.currentUser) {
       cartStore.update({
         productId: cart[index].productId,
-        size: cart[index].size._id,
-        color: cart[index].color._id,
+        size: 
+          {
+            _id: cart[index].size._id
+          }
+        ,
+        color: 
+          {
+            _id: cart[index].color._id
+          }
+        ,
         quantity: cart[index].quantity,
       })
     }

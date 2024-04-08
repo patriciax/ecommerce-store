@@ -2,8 +2,16 @@
 import InputsOpt from '@/components/common/InputsOpt.vue'
 import useNotifications from '@/composables/useNotifications'
 import _storeAuth from '@/stores/auth'
+import { onMounted } from 'vue'
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
+
+const props = defineProps({
+  isLogin: {
+    type: Boolean,
+    default: false,
+  },
+})
 
 const emit = defineEmits(['close'])
 const { t } = useI18n()
@@ -15,13 +23,22 @@ const currentCode = ref('')
 const verifyCode = async() => {
   await storeAuth.verifyCode({ email: storeAuth.data.user?.email, emailOtp: currentCode.value })
   if (storeAuth.isReady) {
-      pushNotification({
-        id: '',
-        title: t('COMMON.SUCCEFULLY_REGISTER'),
-        type: 'success',
-      })
-    }
+    pushNotification({
+      id: '',
+      title: t('COMMON.SUCCEFULLY_REGISTER'),
+      type: 'success',
+    })
     emit('close')
+  }
+
+  else{
+    pushNotification({
+      id: '',
+      title: t('COMMON.ERROR'),
+      type: 'error',
+    })
+  }
+    
 }
 
 const resendCode = async() => {
@@ -33,6 +50,13 @@ const resendCode = async() => {
       })
   
 }
+
+onMounted(() => {
+  if(props.isLogin){
+    resendCode()
+  }
+})
+
 </script>
 <template>
   <div class="flex min-h-full md:w-[500px] flex-col justify-center rounded-2xl bg-white px-6 py-6 md:py-12 lg:px-16">
@@ -42,7 +66,7 @@ const resendCode = async() => {
           <p>Verificacion de Email</p>
         </div>
         <div class="flex flex-row text-sm font-medium text-gray-400">
-          <p>Hemos enviado un código a su correo electrónico <b>{{ storeAuth.data.user?.email }}</b> </p>
+          <p v-if="storeAuth?.data">Hemos enviado un código a su correo electrónico <b>{{ storeAuth?.data?.user?.email }}</b> </p>
         </div>
       </div>
 

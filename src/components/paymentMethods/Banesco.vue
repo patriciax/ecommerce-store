@@ -15,6 +15,7 @@ import { computed } from 'vue'
 
 // let handlerValidateBanesco = null
 const emit = defineEmits(['nextStep', 'validate'])
+const result = ref(false)
 
 const props = defineProps({
   cart: {
@@ -46,9 +47,6 @@ const props = defineProps({
   validateForm: {
     type: Boolean,
   },
-  selectedPayment: {
-    type: String,
-  },
 })
 
 const { pushNotification } = useNotifications()
@@ -57,17 +55,18 @@ const dataPayment = ref({
   cardHolder: '',
   cardNumber: '',
   cvc: '',
+  date: null
 })
 const paymentMethods = PaymentMethods()
 const date: any = ref('')
 const isLoading = ref(false)
 const updateDate = (value: string) => {
-  date.value = value
+  dataPayment.value.date = value
 }
 
 const completePay = async() => {
 
-  if (props.validateForm && props.selectedPayment === 'Banesco') {
+  if (props.validateForm && result.value) {
     isLoading.value = true
     try {
       const banescoData = {
@@ -76,7 +75,7 @@ const completePay = async() => {
         cardHolderId: dataPayment.value.document,
         cardNumber: dataPayment.value.cardNumber,
         cvc: dataPayment.value.cvc,
-        expirationDate: `${date.value.month < 10 ? `0${date.value.month}` : date.value.month}/${date.value.year}`,
+        expirationDate: `${dataPayment.value.date.month < 10 ? `0${dataPayment.value.date.month}` : dataPayment.value.date.month}/${dataPayment.value.date.year}`,
       }
 
       let data = {}
@@ -103,6 +102,10 @@ const completePay = async() => {
       }
 
       const response = await _submitPay(data, props.endpoint)
+      if(response.data.status != 'success'){
+        showNotification('Algo ha ido mal', 'error')
+        return
+      }
       paymentMethods.setPaymentData(response.data.data)
       pushNotification({
         id: '',
@@ -121,11 +124,8 @@ const completePay = async() => {
 const submitPay = async () => {
 
   handlerValidateBanesco.value.$reset()
-  handlerValidateBanesco.value.$touch()
-  const result = await handlerValidateBanesco.value.$validate()
-
-  if(result)
-    emit('validate')
+  result.value = await handlerValidateBanesco.value.$validate()
+  emit('validate')
 }
 
 const rulesBanesco = computed(() => {
@@ -140,6 +140,9 @@ const rulesBanesco = computed(() => {
       required,
     },
     cvc: {
+      required,
+    },
+    date: {
       required,
     },
   }

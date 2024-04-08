@@ -11,22 +11,30 @@ import { GiftIcon, ChevronRightIcon } from '@heroicons/vue/24/outline'
 import DateCard from '@/components/common/Calendar.vue'
 import Accordion from '@/components/common/Accordion.vue'
 import Banesco from '@/components/paymentMethods/Banesco.vue'
+import GiftCardStore from '@/stores/giftCard'
 
+const giftCardStore = GiftCardStore()
 const { t } = useI18n()
 const login = ref(false)
 const register = ref(false)
 const emailHasError = ref(null)
 const price = ref([50, 70, 90, 120, 500])
+const validateForm = ref(false)
 const dataForm = ref({
+  date: null,
   emailTo: '',
   name: '',
   message: '',
   priceGift: price.value[0],
 })
 
+const updateDate = (value) => {
+  dataForm.value.date = value
+}
+
 const handlerValidate = useVuelidate(
   {
-    email: {
+    emailTo: {
       required,
       email,
     },
@@ -43,7 +51,8 @@ const handlerValidate = useVuelidate(
       required,
     },
   },
-  dataForm
+  dataForm,
+  {$scope: false}
 )
 
 const setEmailErrors = computed(() => {
@@ -56,8 +65,13 @@ const setEmailErrors = computed(() => {
 })
 
 const send = async () => {
+  handlerValidate.value.$reset()
   const _validate = await handlerValidate.value.$validate()
+  console.log("validate", _validate)
   if (!_validate) return
+
+  validateForm.value = _validate
+
 }
 </script>
 <template>
@@ -145,7 +159,7 @@ const send = async () => {
             ? $t('VALIDATIONS.' + handlerValidate?.['date']?.$errors?.[0]?.$validator?.toUpperCase())
             : undefined
         "
-        v-model="dataForm.date"
+        @changedDate="updateDate"
         class="mb-6"
         label="Fecha de entrega"
       />
@@ -163,6 +177,8 @@ const send = async () => {
               /></template>
               <Banesco 
                 :isCard="true" 
+                :validate-form="validateForm"
+                @validate="send"
                 :card="{
                   total: dataForm.priceGift,
                   emailTo: dataForm.emailTo,

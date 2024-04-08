@@ -162,6 +162,6 @@ onMounted(async () => {
     </nav>
   </header>
 
-  <Register v-if="register" @close="register = false" @closeRegister="login = true" @login="(login = true), (register = false)" />
+  <Register v-if="register" @close="register = false" @closeRegister="login = true; register = false" @login="(login = true), (register = false)" />
   <Login v-if="login" @close="login = false" @register="(login = false), (register = true)" />
 </template>

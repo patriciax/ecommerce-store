@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import useNotifications from '@/composables/useNotifications'
-import { watch } from 'vue';
+import PaymentMethods from '@/stores/paymentMethods'
 
 const emit = defineEmits(['nextStep', 'validate'])
 const { pushNotification } = useNotifications()
@@ -26,19 +26,14 @@ const props = defineProps({
   validateForm: {
     type: Boolean,
   },
-  selectedPayment: {
-    type: String,
-  },
 })
+
+const paymentMethods = PaymentMethods()
 const interval = ref(null)
 
 function timeout(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
-
-watch(() => props.validateForm, () => {
-  console.log("validate", props.validateForm)
-});
 
 interval.value = setInterval(() => {
   const elementExists = !document.getElementById('paypal-button')
@@ -115,7 +110,6 @@ interval.value = setInterval(() => {
             })
 
             const orderData = await response.json()
-            console.log("orderData", orderData)
             // Three cases to handle:
             //   (1) Recoverable INSTRUMENT_DECLINED -> call actions.restart()
             //   (2) Other non-recoverable errors -> Show a failure message
@@ -137,7 +131,7 @@ interval.value = setInterval(() => {
               // Or go to another URL:  actions.redirect('thank_you.html');
               // const transaction =
               //   orderData?.purchase_units?.[0]?.payments?.captures?.[0] || orderData?.purchase_units?.[0]?.payments?.authorizations?.[0]
-
+              paymentMethods.setPaymentData(orderData.data)
               pushNotification({
                 id: '',
                 title: 'Pago exitoso',

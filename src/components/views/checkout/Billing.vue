@@ -128,6 +128,7 @@ onMounted(async () => {
 
 const validateForm = async (paymentMethod) => {
 
+  validateFormData.value = false
   handlerValidate.value.$reset()
   handlerValidate.value.$touch()
   const result = await handlerValidate.value.$validate()
@@ -265,6 +266,9 @@ const validateForm = async (paymentMethod) => {
               @validate="validateForm"
               @nextStep="$emit('nextStep')"
               :cart="cartStore.cart"
+              :name="dataForm.name"
+              :email="dataForm.email"
+              :phone="dataForm.phone"
               :carrier="{
                 carrierName: 'ZOOM',
                 state: statesFormated?.find((state) => state?.value == dataForm?.zoomState)?.text,
@@ -280,6 +284,9 @@ const validateForm = async (paymentMethod) => {
               @validate="validateForm"
               :validate-form="validateFormData"
               :cart="cartStore.cart"
+              :name="dataForm.name"
+              :email="dataForm.email"
+              :phone="dataForm.phone"
               @nextStep="$emit('nextStep')"
               :carrier="{
                 carrierName: 'ZOOM',
@@ -290,10 +297,38 @@ const validateForm = async (paymentMethod) => {
             />
           </accordion>
           <accordion :title="'Tarjeta de crédito'">
-            <Card />
+            <Card
+              @validate="validateForm"
+              :validate-form="validateFormData"
+              :cart="cartStore.cart"
+              :name="dataForm.name"
+              :email="dataForm.email"
+              :phone="dataForm.phone"
+              @nextStep="$emit('nextStep')"
+              :carrier="{
+                carrierName: 'ZOOM',
+                state: statesFormated?.find((state) => state?.value == dataForm?.zoomState)?.text,
+                office: dataForm?.zoomOffice,
+                address: offiecesFormated?.find((office) => office?.value == dataForm?.zoomOffice)?.text,
+              }"
+            />
           </accordion>
           <accordion :title="'Tarjeta Eroca'">
-            <GiftCard />
+            <GiftCard 
+              @validate="validateForm"
+              :validate-form="validateFormData"
+              :cart="cartStore.cart"
+              :name="dataForm.name"
+              :email="dataForm.email"
+              :phone="dataForm.phone"
+              @nextStep="$emit('nextStep')"
+              :carrier="{
+                carrierName: 'ZOOM',
+                state: statesFormated?.find((state) => state?.value == dataForm?.zoomState)?.text,
+                office: dataForm?.zoomOffice,
+                address: offiecesFormated?.find((office) => office?.value == dataForm?.zoomOffice)?.text,
+              }"
+            />
           </accordion>
         </div>
       </section>
