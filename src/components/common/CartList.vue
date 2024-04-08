@@ -1,5 +1,6 @@
 <script setup>
-import { ChevronLeftIcon, TrashIcon, ChevronRightIcon } from '@heroicons/vue/24/outline'
+import _storeProduct from '@/stores/product'
+import { ChevronLeftIcon, ChevronRightIcon, TrashIcon } from '@heroicons/vue/24/outline'
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
@@ -7,6 +8,7 @@ const emit = defineEmits(['removeItem', 'lessItem', 'moreItem'])
 const { locale } = useI18n()
 
 const disableStock = ref(false)
+const productStore = _storeProduct()
 
 const props = defineProps({
   item: {
@@ -63,7 +65,13 @@ const moreItem = (index) => {
         </div>
       </section>
 
-      <p class="inline">${{ props.item.priceDiscount || props.item.price }}</p>
+      <div>
+        <p class="inline">${{ props.item.priceDiscount || props.item.price }}</p>
+
+        <span v-if="productStore.price" class="font-sans text-sm text-gray-500 ml-2 "> Bs.{{ (productStore.price * (props.item.priceDiscount || props.item.price)).toLocaleString() }}</span>
+
+      </div>
+
 
       <button class="text-gray-600 transition hover:text-red-600" @click="removeItem(props.index)">
         <TrashIcon class="w-6" />

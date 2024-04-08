@@ -1,26 +1,25 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, watch } from 'vue'
-import { CheckIcon } from '@heroicons/vue/24/outline'
-import CartStore from '@/stores/cart/cart'
-import _storeUser from '@/stores/user'
-import useNotifications from '@/composables/useNotifications'
-import TextFields from '@/components/common/TextFields.vue'
+import Accordion from '@/components/common/Accordion.vue'
 import InputPhoneNumber from '@/components/common/InputPhoneNumber.vue'
-import Btn from '@/components/common/Btn.vue'
-import useVuelidate from '@vuelidate/core'
-import { email, required } from '@vuelidate/validators'
-import { useI18n } from 'vue-i18n'
-import Cart from '@/components/views/checkout/Cart.vue'
 import SelectField from '@/components/common/SelectField.vue'
-import _ZoomStore from '@/stores/zoom'
-import Paypal from '@/components/paymentMethods/Paypal.vue'
+import TextFields from '@/components/common/TextFields.vue'
 import Banesco from '@/components/paymentMethods/Banesco.vue'
 import Card from '@/components/paymentMethods/Card.vue'
 import GiftCard from '@/components/paymentMethods/GiftCard.vue'
+import Paypal from '@/components/paymentMethods/Paypal.vue'
+import useNotifications from '@/composables/useNotifications'
+import CartStore from '@/stores/cart/cart'
+import _storeProduct from '@/stores/product'
+import _storeUser from '@/stores/user'
+import _ZoomStore from '@/stores/zoom'
+import useVuelidate from '@vuelidate/core'
+import { email, required } from '@vuelidate/validators'
+import { computed, onMounted, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 
-import Accordion from '@/components/common/Accordion.vue'
-import { validate } from '@babel/types'
+
 const { t } = useI18n()
+const productStore = _storeProduct()
 
 const page = ref(1)
 const cartStore = CartStore()
@@ -134,12 +133,18 @@ const validateForm = async (paymentMethod) => {
 
   validateFormData.value = result
 }
+
+// watch(() => storeUser.currentUser, () => {
+//   fetchDataForm()
+//   cartStore.productInfo()
+
+// })
 </script>
 <template>
   <section class="grid gap-12 px-10 md:grid-cols-2 lg:px-0">
     <div>
       <p class="mt-6 text-xl font-bold" v-text="'Datos de facturación'" />
-      <p class="mb-6 font-light" v-text="`Tienes ${cartStore.cart.length} productos en el carrito`" />
+      <p class="mb-4 font-light" v-text="`Tienes ${cartStore.cart.length} productos en el carrito`" />
 
       <form class="flex flex-col gap-2">
         <TextFields
@@ -244,14 +249,26 @@ const validateForm = async (paymentMethod) => {
         <li class="mb-4 flex justify-between border-b pb-2"><span class="font-bold">Product</span> <span class="font-bold">Total</span></li>
         <li v-for="(item, index) in cartStore.cart" :key="index" class="mb-4 flex justify-between border-b pb-2">
           <span class="" v-text="`${item.name} x ${item.quantity}`"></span>
-          <p class="font-bold" v-text="`$${item.priceDiscount || item.price}`"></p>
+          <p class="font-bold" >
+            ${{item.priceDiscount || item.price}}
+          </p>
         </li>
         <li class="mb-4 flex justify-between border-b pb-2">
           <span class="font-bold">Envío </span> <span class="font-bold text-blue-900">ZOOM</span>
         </li>
         <li class="mb-4 flex justify-between border-b pb-2">
           <span class="text-lg font-bold">Total</span>
-          <p class="text-lg font-bold" v-text="`$${cartStore.total}`"></p>
+          <p class="text-lg font-bold">
+            ${{cartStore.total}}
+
+          </p>
+        </li>
+        <li class="mb-4 flex justify-between border-b pb-2">
+          <span class="text-lg font-bold">Total en Bolivares</span>
+          <p class="text-lg font-bold">
+           Bs.{{ (productStore.price * cartStore.total).toLocaleString()}}
+
+          </p>
         </li>
       </ul>
 

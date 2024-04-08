@@ -1,6 +1,6 @@
 <script setup>
-import Navbar from '@/components/common/Navbar.vue'
 import Footer from '@/components/common/Footer.vue'
+import Navbar from '@/components/common/Navbar.vue'
 import useNotifications from '@/composables/useNotifications'
 import Alert from './components/common/Alert.vue'
 

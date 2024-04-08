@@ -1,18 +1,15 @@
 <script setup lang="ts">
-import CartStore from '@/stores/cart/cart'
-import { computed, ref } from 'vue'
-import { useRouter } from 'vue-router'
-import _storeProduct from '@/stores/product'
-import { onMounted } from 'vue'
-import Gallery from '@/components/common/Gallery.vue'
-import Products from '@/components/views/home/Products.vue'
-import { useI18n } from 'vue-i18n'
-import RadioCheck from '@/components/common/RadioCheck.vue'
-import { HeartIcon, ChevronLeftIcon, ChevronRightIcon, ShoppingCartIcon } from '@heroicons/vue/24/outline'
 import Btn from '@/components/common/Btn.vue'
+import Gallery from '@/components/common/Gallery.vue'
+import RadioCheck from '@/components/common/RadioCheck.vue'
 import NewProducts from '@/components/views/home/NewProducts.vue'
 import useNotifications from '@/composables/useNotifications'
-import { watch } from 'vue'
+import CartStore from '@/stores/cart/cart'
+import _storeProduct from '@/stores/product'
+import { ChevronLeftIcon, ChevronRightIcon, HeartIcon, ShoppingCartIcon } from '@heroicons/vue/24/outline'
+import { computed, onMounted, ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { useRouter } from 'vue-router'
 
 const productStore = _storeProduct()
 const cartStore = CartStore()
@@ -146,9 +143,6 @@ onMounted(async () => {
   maxAmount.value = variations.value?.find((item) => item.color[0]._id == color.value && item.size[0]._id == size.value)?.stock ?? 0
 })
 
-// const goToProduct = (slug: any) => router.push({ name: 'singleProduct', params: { slug: slug } })
-
-
 watch(
   () => router.currentRoute.value.params.slug,
   async () => {
@@ -205,7 +199,10 @@ watch(
               class="mb-4 mr-8 max-w-4xl text-3xl font-bold text-gray-900"
             />
 
-            <p class="text-2xl tracking-tight text-gray-900">${{ productStore.product?.price }}</p>
+            <p class="text-2xl tracking-tight text-gray-900">${{ productStore.product?.price }}
+              <span v-if="productStore.price" class="font-sans text-sm text-gray-500 ml-2 "> Bs.{{ (productStore.price * productStore.product?.price).toLocaleString() }}</span>
+</p>
+            
           </div>
 
           <div class="pb-10 lg:col-span-2 lg:col-start-1 lg:pb-16 lg:pt-6">

@@ -1,17 +1,21 @@
 <script setup lang="ts">
-import { XMarkIcon, ShoppingCartIcon, HeartIcon, UserIcon, Bars3BottomLeftIcon } from '@heroicons/vue/24/outline'
-import { ChevronDownIcon } from '@heroicons/vue/24/outline'
-import { onMounted, ref } from 'vue'
-import Btn from '@/components/common/Btn.vue'
 import { getAllCategoriesMenu } from '@/api/repositories/category.repository'
+import Btn from '@/components/common/Btn.vue'
 import InputSearch from '@/components/common/InputSearch.vue'
-import LanguageSelector from './LanguageSelector.vue'
-import CartStore from '@/stores/cart/cart'
-import Register from '@/components/views/home/auth/Register.vue'
 import Login from '@/components/views/home/auth/Login.vue'
-import _storeUser from '@/stores/user'
-import Dropdown from './Dropdown.vue'
+import Register from '@/components/views/home/auth/Register.vue'
 import router from '@/router'
+import CartStore from '@/stores/cart/cart'
+import CountryStore from '@/stores/country'
+import _storeProduct from '@/stores/product'
+import _storeUser from '@/stores/user'
+import { Bars3BottomLeftIcon, ChevronDownIcon, HeartIcon, ShoppingCartIcon, UserIcon, XMarkIcon } from '@heroicons/vue/24/outline'
+import { onMounted, ref } from 'vue'
+import Dropdown from './Dropdown.vue'
+import LanguageSelector from './LanguageSelector.vue'
+
+const productStore = _storeProduct()
+const countryStore = CountryStore()
 
 const cartStore = CartStore()
 const storeUser = _storeUser()
@@ -39,6 +43,10 @@ onMounted(async () => {
     mainCategories.value = response.data?.mainCategories
     subCategories.value = response.data?.subCategories
     finalCategories.value = response.data?.finalCategories
+  }
+
+  if (countryStore.country === 'Venezuela') {
+    await productStore.getPrice()
   }
 })
 </script>
@@ -80,11 +88,18 @@ onMounted(async () => {
                     </li>
                     <li class="flex flex-col gap-2 text-sm">
                       <!---ITEMS DE SUBCATEGORIA------>
-                      <a
+                      <router-link
                         v-for="finalCategory in finalCategories.filter((category) => category.parent_id == subCategory._id)"
-                        href="#"
+                        :to="{
+                          name: 'category',
+                          params: { slug: finalCategory?.slug },
+                          query: {
+                            id: finalCategory?._id,
+                            name: $i18n.locale.toLowerCase() == 'es_es' ? finalCategory?.name : finalCategory?.englishName,
+                          },
+                        }"
                         class="hover:underline"
-                        >{{ $i18n.locale.toLowerCase() == 'es_es' ? finalCategory?.name : finalCategory?.englishName }}</a
+                        >{{ $i18n.locale.toLowerCase() == 'es_es' ? finalCategory?.name : finalCategory?.englishName }}</router-link
                       >
                     </li>
                   </ul>
@@ -93,10 +108,10 @@ onMounted(async () => {
             </li>
 
             <li>
-              <a href="#"
+              <router-link to="/offers"
                 ><h4 class="h-full border-b-4 border-transparent p-3 text-base uppercase hover:border-b-4 hover:border-gray-900">
                   Ofertas del dia
-                </h4></a
+                </h4></router-link
               >
             </li>
             <li>

@@ -1,13 +1,15 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
-import Product from '../views/SingleProduct.vue'
+import _storeCart from '@/stores/cart/cart'
 import CountryStore from '@/stores/country'
 import _storeUser from '@/stores/user'
-import _storeCart from '@/stores/cart/cart'
-import Checkout from '../views/Checkout.vue'
-import OrderManagement from '@/views/OrderManagement.vue'
+import Category from '@/views/Category.vue'
 import GiftCard from '@/views/GiftCard.vue'
+import Offers from '@/views/Offers.vue'
+import OrderManagement from '@/views/OrderManagement.vue'
+import { createRouter, createWebHistory } from 'vue-router'
+import Checkout from '../views/Checkout.vue'
+import HomeView from '../views/HomeView.vue'
 import Search from '../views/Search.vue'
+import Product from '../views/SingleProduct.vue'
 
 const router = createRouter({
   history: createWebHistory((import.meta as any).env.BASE_URL),
@@ -41,6 +43,20 @@ const router = createRouter({
       path: '/search',
       name: 'seaech',
       component: Search
+    },
+    {
+      path: '/category/:slug',
+      name: 'category',
+      component: Category,
+      props: (route) => ({
+        id: route.query.id,
+        name: route.query.name
+      }),
+    },
+    {
+      path: '/offers',
+      name: 'offers',
+      component: Offers
     },
   ]
 })

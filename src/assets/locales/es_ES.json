@@ -24,7 +24,9 @@
     "QUANTITY":"Cantidad",
     "DESCRIPTION": "Descripción",
     "SELECT": "Seleccionar",
-    "NOT_AVAILABLE": "No disponible"
+    "NOT_AVAILABLE": "No disponible",
+    "PAGINATE": "Mostrando {from} {to} de {total} registros"
+
   },
   "CART":{
     "ERROR": "Error al añadir al carrito",

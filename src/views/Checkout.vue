@@ -1,19 +1,16 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, watch } from 'vue'
-import { CheckIcon } from '@heroicons/vue/24/outline'
-import CartStore from '@/stores/cart/cart'
-import _storeUser from '@/stores/user'
-import useNotifications from '@/composables/useNotifications'
-import { useI18n } from 'vue-i18n'
-import Cart from '@/components/views/checkout/Cart.vue'
 import Billing from '@/components/views/checkout/Billing.vue'
+import Cart from '@/components/views/checkout/Cart.vue'
 import Resume from '@/components/views/checkout/Resume.vue'
+import CartStore from '@/stores/cart/cart'
+import { CheckIcon } from '@heroicons/vue/24/outline'
+import { onMounted, ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n()
 
 const page = ref(1)
 const cartStore = CartStore()
-const storeUser = _storeUser()
 
 const changePages = () => {
   page.value >= 1 && page.value < 4 ? (page.value += 1) : ''
