@@ -4,7 +4,10 @@ import StorePaymentMethods from '@/stores/paymentMethods'
 import { ref, computed } from 'vue'
 const storePaymentMethods = StorePaymentMethods()
 import router from '@/router'
+import { onMounted } from 'vue';
+import CartStore from '@/stores/cart/cart'
 
+const cartStore = CartStore()
 const total = computed(() => {
   let total = 0
   storePaymentMethods?._data?.cart?.forEach((item) => {
@@ -16,6 +19,12 @@ const total = computed(() => {
 const goToHome = () => {
   router.push({ name: 'home' })
 }
+
+onMounted(() => {
+
+  sessionStorage.setItem('cart', [])
+  cartStore.reset()
+})
 
 </script>
 <template>

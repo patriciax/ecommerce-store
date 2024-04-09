@@ -130,7 +130,6 @@ const validateForm = async (paymentMethod) => {
 
   validateFormData.value = false
   handlerValidate.value.$reset()
-  handlerValidate.value.$touch()
   const result = await handlerValidate.value.$validate()
 
   validateFormData.value = result

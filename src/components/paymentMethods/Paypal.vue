@@ -96,7 +96,7 @@ interval.value = setInterval(() => {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: `Bearer ${token}`,
+                Authorization: token ? `Bearer ${token}` : null,
               },
               body: JSON.stringify({
                 paymentMethod: 'paypal-approve-order',
