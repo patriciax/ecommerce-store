@@ -20,7 +20,6 @@ export default defineStore({
         this.changeStatus('loading')
         try {
             const response = await this.purchaseGiftCard(data)
-            console.log(response)
             if (response) {
             this._purchaseData = response.data
             this.changeStatus('ready')

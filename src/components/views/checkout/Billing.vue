@@ -17,11 +17,15 @@ import Paypal from '@/components/paymentMethods/Paypal.vue'
 import Banesco from '@/components/paymentMethods/Banesco.vue'
 import Card from '@/components/paymentMethods/Card.vue'
 import GiftCard from '@/components/paymentMethods/GiftCard.vue'
+import { getAllCountries } from '@/api/repositories/country.repository'
+import CountryStore from '@/stores/country'
 
 import Accordion from '@/components/common/Accordion.vue'
 import { validate } from '@babel/types'
 const { t } = useI18n()
+const countryStore = CountryStore()
 
+const countries = ref([])
 const page = ref(1)
 const cartStore = CartStore()
 const storeUser = _storeUser()
@@ -31,6 +35,7 @@ const isDisabledStock = ref(false)
 const emailHasError = ref(null)
 const selectPaymentMethod = ref(null)
 const validateFormData = ref(false)
+
 const total = computed(() => {
   let total = 0
   cartStore.cart.forEach((item) => {
@@ -38,6 +43,11 @@ const total = computed(() => {
   })
   return total.toFixed(2)
 })
+
+const getCountries = async () => {
+  const response = await getAllCountries()
+  countries.value = response.data?.countries
+}
 
 const dataForm:any = ref({
   name: '',
@@ -47,6 +57,9 @@ const dataForm:any = ref({
   address: '',
   zoomState: '',
   zoomOffice: '',
+  foreignCountry: '',
+  foreignState: '',
+  foreignAddress: ''
 })
 
 const rules = computed(() => {
@@ -69,6 +82,15 @@ const rules = computed(() => {
     },
     zoomOffice: {
       required,
+    },
+    foreignCountry: {
+      requiredIf: (value) => countryStore.country != 'Venezuela',
+    },
+    foreignState: {
+      requiredIf: (value) => countryStore.country != 'Venezuela',
+    },
+    foreignAddress: {
+      requiredIf: (value) => countryStore.country != 'Venezuela',
     },
   }
 })
@@ -116,7 +138,13 @@ const fetchDataForm = () => {
 }
 
 onMounted(async () => {
-  await zoomStore.getState()
+
+  if(countryStore.country == 'Venezuela'){
+    await zoomStore.getState()
+  }else{
+    await getCountries()
+  }
+  
   if (storeUser.currentUser) {
     fetchDataForm()
     cartStore.productInfo()
@@ -200,7 +228,7 @@ const validateForm = async (paymentMethod) => {
           :label="t('FORM.ADDRESS')"
         />
 
-        <section class="mt-4 border-t py-4">
+        <section class="mt-4 border-t py-4" v-if="countryStore.country == 'Venezuela'">
           <p class="mb-3 text-lg font-bold" v-text="'Dirección de envío'" />
 
           <div class="mb-4">
@@ -230,6 +258,40 @@ const validateForm = async (paymentMethod) => {
             :is-disabled="!dataForm.zoomState"
             :label="'Oficina'"
             :options="offiecesFormated"
+            @update:modelValue="(_value) => (dataForm.zoomOffice = _value)"
+          />
+        </section>
+
+        <section class="mt-4 border-t py-4" v-else>
+          <p class="mb-3 text-lg font-bold" v-text="'Dirección de envío'" />
+
+          <div class="mb-4">
+            <img class="w-32" src="@/assets/images/zoom.png" />
+          </div>
+          <SelectField
+            v-model="dataForm.foreignCountry"
+            :errorMessage="
+              handlerValidate?.['zoomState']?.$errors?.length > 0
+                ? $t('VALIDATIONS.' + handlerValidate?.['zoomState']?.$errors?.[0]?.$validator?.toUpperCase())
+                : undefined
+            "
+            isRequired
+            class="mb-2 w-full"
+            :label="'País'"
+            :options="countries?.map((country) => ({ value: country._id, text: country.name }))"
+            @update:modelValue="(_value) => (dataForm.foreignCountry = _value)"
+          />
+          <SelectField
+            v-model="dataForm.foreignState"
+            :errorMessage="
+              handlerValidate?.['zoomOffice']?.$errors?.length > 0
+                ? $t('VALIDATIONS.' + handlerValidate?.['zoomOffice']?.$errors?.[0]?.$validator?.toUpperCase())
+                : undefined
+            "
+            isRequired
+            :is-disabled="!dataForm.foreignCountry"
+            :label="'Oficina'"
+            :options="countries?.find((country) => country._id == dataForm.foreignCountry)?.states?.map((state, index) => ({ value: index + 1, text: state }))"
             @update:modelValue="(_value) => (dataForm.zoomOffice = _value)"
           />
         </section>
