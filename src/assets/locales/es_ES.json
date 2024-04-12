@@ -94,10 +94,13 @@
   },
   "ACTIONS": {},
   "PAYMENTS": {
-    "CARD_HOLDER":"Card holder",
-    "CARD_HOLDER_ID":"Card holder ID",
-    "CARD_NUMBER":"Card number",
+    "CARD_HOLDER":"Nombre del titular de la tarjeta",
+    "CARD_HOLDER_ID":"Cédula del titular de la tarjeta",
+    "CARD_NUMBER":"Número de tarjeta",
     "CVC": "CVC",
-    "EXPIRATION_DATE": "Expiration date"
+    "EXPIRATION_DATE": "Expiration date",
+    "COUNTRY": "País",
+    "STATE": "Estado",
+    "ADDRESS": "Dirección"
   }
 }

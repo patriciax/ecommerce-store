@@ -8,7 +8,7 @@ import TextFields from '@/components/common/TextFields.vue'
 import InputPhoneNumber from '@/components/common/InputPhoneNumber.vue'
 import Btn from '@/components/common/Btn.vue'
 import useVuelidate from '@vuelidate/core'
-import { email, required } from '@vuelidate/validators'
+import { email, required, requiredIf } from '@vuelidate/validators'
 import { useI18n } from 'vue-i18n'
 import Cart from '@/components/views/checkout/Cart.vue'
 import SelectField from '@/components/common/SelectField.vue'
@@ -78,19 +78,19 @@ const rules = computed(() => {
       required,
     },
     zoomState: {
-      required,
+      required: requiredIf(() => countryStore.country == 'Venezuela')
     },
     zoomOffice: {
-      required,
+      required: requiredIf(() => countryStore.country == 'Venezuela')
     },
     foreignCountry: {
-      requiredIf: (value) => countryStore.country != 'Venezuela',
+      required: requiredIf(() => countryStore.country != 'Venezuela')
     },
     foreignState: {
-      requiredIf: (value) => countryStore.country != 'Venezuela',
+      required: requiredIf(() => countryStore.country != 'Venezuela')
     },
     foreignAddress: {
-      requiredIf: (value) => countryStore.country != 'Venezuela',
+      required: requiredIf(() => countryStore.country != 'Venezuela')
     },
   }
 })
@@ -136,6 +136,26 @@ const fetchDataForm = () => {
   dataForm.value.email = storeUser.currentUser?.email
   dataForm.value.phone = storeUser.currentUser?.phone
 }
+
+const carrierObject = computed(() => {
+
+  const zoomObject = {
+    carrierName: 'ZOOM',
+    state: statesFormated.value?.find((state) => state?.value == dataForm?.zoomState)?.text,
+    office: dataForm.value?.zoomOffice,
+    address: offiecesFormated.value?.find((office) => office?.value == dataForm?.zoomOffice)?.text,
+  }
+
+  const upsObject = {
+    carrierName: 'UPS',
+    country: countries.value.find((country) => country?.value == dataForm?.foreignCountry)?.name,
+    state: countries.value.find((country) => country?.value == dataForm?.foreignCountry)?.states?.find((state, index) => index + 1 == dataForm?.foreignState),
+    address: dataForm?.foreignAddress,
+  }
+
+  return countryStore.country == 'Venezuela' ? zoomObject : upsObject
+
+})
 
 onMounted(async () => {
 
@@ -271,28 +291,41 @@ const validateForm = async (paymentMethod) => {
           <SelectField
             v-model="dataForm.foreignCountry"
             :errorMessage="
-              handlerValidate?.['zoomState']?.$errors?.length > 0
-                ? $t('VALIDATIONS.' + handlerValidate?.['zoomState']?.$errors?.[0]?.$validator?.toUpperCase())
+              handlerValidate?.['foreignCountry']?.$errors?.length > 0
+                ? $t('VALIDATIONS.' + handlerValidate?.['foreignCountry']?.$errors?.[0]?.$validator?.toUpperCase())
                 : undefined
             "
             isRequired
             class="mb-2 w-full"
-            :label="'País'"
+            :label="$t('PAYMENTS.COUNTRY')"
             :options="countries?.map((country) => ({ value: country._id, text: country.name }))"
             @update:modelValue="(_value) => (dataForm.foreignCountry = _value)"
           />
           <SelectField
             v-model="dataForm.foreignState"
             :errorMessage="
-              handlerValidate?.['zoomOffice']?.$errors?.length > 0
-                ? $t('VALIDATIONS.' + handlerValidate?.['zoomOffice']?.$errors?.[0]?.$validator?.toUpperCase())
+              handlerValidate?.['foreignState']?.$errors?.length > 0
+                ? $t('VALIDATIONS.' + handlerValidate?.['foreignState']?.$errors?.[0]?.$validator?.toUpperCase())
                 : undefined
             "
             isRequired
             :is-disabled="!dataForm.foreignCountry"
-            :label="'Oficina'"
+            :label="$t('PAYMENTS.STATE')"
             :options="countries?.find((country) => country._id == dataForm.foreignCountry)?.states?.map((state, index) => ({ value: index + 1, text: state }))"
-            @update:modelValue="(_value) => (dataForm.zoomOffice = _value)"
+            @update:modelValue="(_value) => (dataForm.foreignState = _value)"
+          />
+          <TextFields
+            id="foreignAddress"
+            v-model="dataForm.foreignAddress"
+            :is-disabled="!dataForm.foreignCountry || !dataForm.foreignState"
+            :errorMessage="
+              handlerValidate?.['foreignAddress']?.$errors?.length > 0
+                ? $t('VALIDATIONS.' + handlerValidate?.['foreignAddress']?.$errors?.[0]?.$validator?.toUpperCase())
+                : undefined
+            "
+            name="foreignAddress"
+            placeholder="212 New york"
+            :label="t('PAYMENTS.ADDRESS')"
           />
         </section>
       </form>
@@ -330,12 +363,7 @@ const validateForm = async (paymentMethod) => {
               :name="dataForm.name"
               :email="dataForm.email"
               :phone="dataForm.phone"
-              :carrier="{
-                carrierName: 'ZOOM',
-                state: statesFormated?.find((state) => state?.value == dataForm?.zoomState)?.text,
-                office: dataForm?.zoomOffice,
-                address: offiecesFormated?.find((office) => office?.value == dataForm?.zoomOffice)?.text,
-              }"
+              :carrier="carrierObject"
             />
           </accordion>
 
@@ -349,12 +377,7 @@ const validateForm = async (paymentMethod) => {
               :email="dataForm.email"
               :phone="dataForm.phone"
               @nextStep="$emit('nextStep')"
-              :carrier="{
-                carrierName: 'ZOOM',
-                state: statesFormated?.find((state) => state?.value == dataForm?.zoomState)?.text,
-                office: dataForm?.zoomOffice,
-                address: offiecesFormated?.find((office) => office?.value == dataForm?.zoomOffice)?.text,
-              }"
+              :carrier="carrierObject"
             />
           </accordion>
           <accordion :title="'Tarjeta de crédito'">
@@ -366,12 +389,7 @@ const validateForm = async (paymentMethod) => {
               :email="dataForm.email"
               :phone="dataForm.phone"
               @nextStep="$emit('nextStep')"
-              :carrier="{
-                carrierName: 'ZOOM',
-                state: statesFormated?.find((state) => state?.value == dataForm?.zoomState)?.text,
-                office: dataForm?.zoomOffice,
-                address: offiecesFormated?.find((office) => office?.value == dataForm?.zoomOffice)?.text,
-              }"
+              :carrier="carrierObject"
             />
           </accordion>
           <accordion :title="'Tarjeta Eroca'">
@@ -383,12 +401,7 @@ const validateForm = async (paymentMethod) => {
               :email="dataForm.email"
               :phone="dataForm.phone"
               @nextStep="$emit('nextStep')"
-              :carrier="{
-                carrierName: 'ZOOM',
-                state: statesFormated?.find((state) => state?.value == dataForm?.zoomState)?.text,
-                office: dataForm?.zoomOffice,
-                address: offiecesFormated?.find((office) => office?.value == dataForm?.zoomOffice)?.text,
-              }"
+              :carrier="carrierObject"
             />
           </accordion>
         </div>
