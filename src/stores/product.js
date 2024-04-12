@@ -70,7 +70,7 @@ export default defineStore({
         console.error(error)
       }
     },
-    async getOnSale(page = 1, limit = 2) {
+    async getOnSale(page = 1, limit = 10) {
       this.changeStatus('loading')
       try {
         const response = await _getOnSale( page, limit)

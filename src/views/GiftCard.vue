@@ -1,32 +1,33 @@
 <script setup>
+import { getPrice } from '@/api/repositories/giftCard.repository'
+import Accordion from '@/components/common/Accordion.vue'
 import TextFields from '@/components/common/TextFields.vue'
-import { ref, computed } from 'vue'
-import Btn from '@/components/common/Btn.vue'
+import Banesco from '@/components/paymentMethods/Banesco.vue'
 import Login from '@/components/views/home/auth/Login.vue'
 import Register from '@/components/views/home/auth/Register.vue'
+import { CheckCircleIcon, ChevronRightIcon, GiftIcon } from '@heroicons/vue/24/outline'
 import useVuelidate from '@vuelidate/core'
 import { email, required } from '@vuelidate/validators'
+import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { GiftIcon, ChevronRightIcon } from '@heroicons/vue/24/outline'
-import DateCard from '@/components/common/Calendar.vue'
-import Accordion from '@/components/common/Accordion.vue'
-import Banesco from '@/components/paymentMethods/Banesco.vue'
 
 const { t } = useI18n()
 const login = ref(false)
 const register = ref(false)
 const emailHasError = ref(null)
-const price = ref([50, 70, 90, 120, 500])
+const validateFormData = ref(false)
+const prices = ref([])
+const successPayment = ref(false)
 const dataForm = ref({
   emailTo: '',
   name: '',
   message: '',
-  priceGift: price.value[0],
+  priceGift: prices.value[0],
 })
 
 const handlerValidate = useVuelidate(
   {
-    email: {
+    emailTo: {
       required,
       email,
     },
@@ -39,15 +40,12 @@ const handlerValidate = useVuelidate(
     priceGift: {
       required,
     },
-    date: {
-      required,
-    },
   },
   dataForm
 )
 
 const setEmailErrors = computed(() => {
-  const validator = handlerValidate.value?.['email']?.$errors?.[0]?.$validator
+  const validator = handlerValidate.value?.['emailTo']?.$errors?.[0]?.$validator
   if (validator == 'required') return t('VALIDATIONS.REQUIRED')
   if (validator == 'email') return t('VALIDATIONS.EMAIL')
   else if (emailHasError.value) return t('VALIDATIONS.EMAIL_IN_USE')
@@ -55,13 +53,26 @@ const setEmailErrors = computed(() => {
   return undefined
 })
 
+const validateForm = async (paymentMethod) => {
+  handlerValidate.value.$reset()
+  handlerValidate.value.$touch()
+  const result = await handlerValidate.value.$validate()
+
+  validateFormData.value = result
+}
+
 const send = async () => {
   const _validate = await handlerValidate.value.$validate()
   if (!_validate) return
 }
+onMounted(async () => {
+  const response = await getPrice()
+
+  if (response?.status === 'success') prices.value = response.data.giftCards
+})
 </script>
 <template>
-  <section class="-mt-12 min-h-[80vh] text-center">
+  <section class="-mt-12 lg:h-[130vh] text-center">
     <div class="relative mb-6">
       <div class="absolute left-0 top-0 flex h-full w-full flex-col items-start justify-end p-20">
         <p class="text-4xl font-bold uppercase text-white" v-text="'El regalo perfecto'" />
@@ -76,107 +87,171 @@ const send = async () => {
     <p class="mb-2 text-2xl font-bold text-gray-900" v-text="'Comprar tarjeta de regalo electronica'" />
     <p class="mx-auto mb-10 max-w-xl" v-text="'Escribe los detalles de la tarjeta de regalo'" />
 
-    <section class="mx-auto max-w-xl px-6 text-start">
-      <span class="mb-1 text-sm font-bold text-gray-900 dark:text-white">Importe:</span>
-      <ul class="mb-4 flex w-full flex-wrap gap-4">
-        <li v-for="(item, index) in price" :key="item">
-          <input
-            type="radio"
-            :id="'hosting-' + index"
-            name="hosting"
-            :value="item"
-            v-model="dataForm.priceGift"
-            class="peer hidden"
-            required
+    <section class="m-auto grid max-w-6xl lg:grid-cols-2 gap-2 xl:gap-10">
+      <section class="col-span-2 mb-10 rounded-lg bg-gray-100 p-6 text-center" v-if="successPayment">
+        <CheckCircleIcon class="mx-auto w-16 text-green-500" />
+        <p class="mb-1 text-xl font-bold text-gray-900" v-text="'Gracias por su compra'" />
+        <p v-text="'Se ha enviado un correo electronico a al remitente de su tarjeta de regalo.'" />
+      </section>
+      <template v-else>
+        <section class="mx-auto w-full px-6 text-start">
+          <span class="mb-1 text-sm font-bold text-gray-900 dark:text-white">Importe:</span>
+          <ul class="mb-4 flex w-full flex-wrap gap-4">
+            <li v-for="(item, index) in prices" :key="item">
+              <input
+                type="radio"
+                :id="'hosting-' + index"
+                name="hosting"
+                :value="item.amount"
+                v-model="dataForm.priceGift"
+                class="peer hidden"
+                required
+              />
+
+              <label
+                :for="'hosting-' + index"
+                class="inline-flex w-[102%] cursor-pointer items-center justify-between gap-2 rounded-lg border border-gray-200 bg-white p-2 text-gray-500 hover:bg-gray-100 hover:text-gray-600 peer-checked:border-gray-800 peer-checked:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300 dark:peer-checked:text-gray-800"
+              >
+                <div class="block">
+                  <div class="w-full text-sm font-semibold">US $ {{ item.amount }}</div>
+                </div>
+
+                <GiftIcon class="h-5 w-5" />
+              </label>
+            </li>
+          </ul>
+
+          <TextFields
+            id="email-gift"
+            v-model="dataForm.emailTo"
+            isRequired
+            :errorMessage="setEmailErrors || emailHasError"
+            name="name"
+            class="mb-4"
+            placeholder="example@gmail.com"
+            :label="'Para:'"
+          />
+          <TextFields
+            v-model="dataForm.name"
+            isRequired
+            :errorMessage="
+              handlerValidate?.['name']?.$errors?.length > 0
+                ? $t('VALIDATIONS.' + handlerValidate?.['name']?.$errors?.[0]?.$validator?.toUpperCase())
+                : undefined
+            "
+            name="name"
+            class="mb-4"
+            placeholder="Jane Doe"
+            :label="'De:'"
+            :msg="'Ingresa tu nombre para enviar la tarjeta de regalo'"
           />
 
-          <label
-            :for="'hosting-' + index"
-            class="inline-flex w-[102%] cursor-pointer items-center justify-between gap-2 rounded-lg border border-gray-200 bg-white p-2 text-gray-500 hover:bg-gray-100 hover:text-gray-600 peer-checked:border-gray-800 peer-checked:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300 dark:peer-checked:text-gray-800"
-          >
-            <div class="block">
-              <div class="w-full text-sm font-semibold">US $ {{ item }}</div>
-            </div>
+          <section class="relative mb-4">
+            <label
+              :class="{
+                'text-red-500':
+                  handlerValidate?.['message']?.$errors?.length > 0
+                    ? $t('VALIDATIONS.' + handlerValidate?.['message']?.$errors?.[0]?.$validator?.toUpperCase())
+                    : undefined,
+              }"
+              for="message"
+              class="block text-sm font-bold text-gray-900 dark:text-white"
+              >Tu mensaje</label
+            >
+            <textarea
+              :class="{
+                'border border-red-500  dark:border-red-500 ':
+                  handlerValidate?.['message']?.$errors?.length > 0
+                    ? $t('VALIDATIONS.' + handlerValidate?.['message']?.$errors?.[0]?.$validator?.toUpperCase())
+                    : undefined,
+              }"
+              v-model="dataForm.message"
+              id="message"
+              rows="4"
+              class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 outline-none focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+              placeholder="Espero que disfrutes tu compra...."
+            ></textarea>
+            <p
+              v-if="
+                handlerValidate?.['message']?.$errors?.length > 0
+                  ? $t('VALIDATIONS.' + handlerValidate?.['message']?.$errors?.[0]?.$validator?.toUpperCase())
+                  : undefined
+              "
+              class="absolute right-0 mt-0.5 text-xs font-medium text-red-500"
+              v-text="
+                handlerValidate?.['message']?.$errors?.length > 0
+                  ? $t('VALIDATIONS.' + handlerValidate?.['message']?.$errors?.[0]?.$validator?.toUpperCase())
+                  : undefined
+              "
+            />
+          </section>
 
-            <GiftIcon class="h-5 w-5" />
-          </label>
-        </li>
-      </ul>
-
-      <TextFields
-        id="email-gift"
-        v-model="dataForm.emailTo"
-        isRequired
-        :errorMessage="setEmailErrors || emailHasError"
-        name="name"
-        class="mb-4"
-        placeholder="example@gmail.com"
-        :label="'Para:'"
-      />
-      <TextFields
-        v-model="dataForm.name"
-        isRequired
-        :errorMessage="
-          handlerValidate?.['name']?.$errors?.length > 0
-            ? $t('VALIDATIONS.' + handlerValidate?.['name']?.$errors?.[0]?.$validator?.toUpperCase())
-            : undefined
-        "
-        name="name"
-        class="mb-4"
-        placeholder="Jane Doe"
-        :label="'De:'"
-        :msg="'Ingresa tu nombre para enviar la tarjeta de regalo'"
-      />
-
-      <section class="mb-4">
-        <label for="message" class="block text-sm font-bold text-gray-900 dark:text-white">Tu mensaje</label>
-        <textarea
-          v-model="dataForm.message"
-          id="message"
-          rows="4"
-          class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-          placeholder="Espero que disfrutes tu compra...."
-        ></textarea>
-      </section>
-
-      <DateCard
-        :errorMessage="
-          handlerValidate?.['date']?.$errors?.length > 0
-            ? $t('VALIDATIONS.' + handlerValidate?.['date']?.$errors?.[0]?.$validator?.toUpperCase())
-            : undefined
-        "
-        v-model="dataForm.date"
-        class="mb-6"
-        label="Fecha de entrega"
-      />
-
-      <section class="mb-10">
-        <!-- <Btn text="Enviar" isFull @click="send" /> -->
-        <section>
-          <p class="text-lg font-bold mb-6" v-text="'Método de pago'" />
-          <div>
-            <Accordion :title="''">
-              <template #img>
-                <img
-                  class="w-32"
-                  src="@/assets/images/banesco.png"
-              /></template>
-              <Banesco 
-                :isCard="true" 
-                :card="{
-                  total: dataForm.priceGift,
-                  emailTo: dataForm.emailTo,
-                  name: dataForm.name,
-                  message: dataForm.message,
-                  date: dataForm.date,
-                }"
-                endpoint="gift-cards/purchase"  
-              />
-            </accordion>
-          </div>
+          <!-- <DateCard
+          :errorMessage="
+            handlerValidate?.['date']?.$errors?.length > 0
+              ? $t('VALIDATIONS.' + handlerValidate?.['date']?.$errors?.[0]?.$validator?.toUpperCase())
+              : undefined
+          "
+          v-model="dataForm.date"
+          class="mb-6"
+          label="Fecha de entrega"
+        /> -->
         </section>
 
-      </section>
+        <section class="mb-10 rounded-lg bg-gray-100 p-6 text-start">
+          <section>
+            <p class="mb-6 text-lg font-bold" v-text="'Método de pago'" />
+            <div>
+              <Accordion :title="''">
+                <template #img> <img class="w-32" src="@/assets/images/banesco.png" /></template>
+                <Banesco
+                  :validate-form="validateFormData"
+                  @validate="validateForm"
+                  :isCard="true"
+                  :card="{
+                    total: dataForm.priceGift,
+                    emailTo: dataForm.emailTo,
+                    name: dataForm.name,
+                    message: dataForm.message,
+                    date: dataForm.date,
+                  }"
+                  @nextStep="successPayment = true"
+                  endpoint="gift-cards/purchase"
+                />
+              </Accordion>
+              <!-- <Accordion :title="''">
+                <template #img> <img class="w-32" src="@/assets/images/paypal.png" /></template>
+                <Paypal
+                  @validate="validateForm"
+                  :validate-form="validateFormData"
+                  @nextStep="successPayment = true"
+                  endpoint="gift-cards/purchase"
+                  :card="{
+                    total: dataForm.priceGift,
+                    emailTo: dataForm.emailTo,
+                    name: dataForm.name,
+                    message: dataForm.message,
+                    date: dataForm.date,
+                  }"
+                />
+              </Accordion>
+              <Accordion :title="'Tarjeta de crédito'">
+                <Card   @validate="validateForm"
+                  :validate-form="validateFormData"
+                  @nextStep="successPayment = true"
+                  endpoint="gift-cards/purchase"
+                  :card="{
+                    total: dataForm.priceGift,
+                    emailTo: dataForm.emailTo,
+                    name: dataForm.name,
+                    message: dataForm.message,
+                    date: dataForm.date,
+                  }"/>
+              </Accordion> -->
+            </div>
+          </section>
+        </section>
+      </template>
     </section>
   </section>
   <Login v-if="login" @close="login = false" @register="(login = false), (register = true)" />

@@ -111,9 +111,9 @@
                 <li>
                   <img class="w-20" src="@/assets/images/paymentmethod/paypal.webp" />
                 </li>
-                <li>
+                <!-- <li>
                   <img class="w-16 invert" src="@/assets/images/paymentmethod/applepay.webp" />
-                </li>
+                </li> -->
                 <li>
                   <img class="w-20 invert" src="@/assets/images/paymentmethod/giftcard.webp" />
                 </li>
