@@ -1,6 +1,8 @@
 <script setup>
+import Btn from '@/components/common/Btn.vue'
 import Modal from '@/components/common/Modal.vue'
 import TextFields from '@/components/common/TextFields.vue'
+import VerificationCode from '@/components/views/home/auth/Verification.vue'
 import useNotifications from '@/composables/useNotifications'
 import _storeAuth from '@/stores/auth'
 import _storeUser from '@/stores/user'
@@ -8,7 +10,6 @@ import useVuelidate from '@vuelidate/core'
 import { email, required } from '@vuelidate/validators'
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import Btn from '@/components/common/Btn.vue'
 
 const emit = defineEmits(['close'])
 
@@ -18,6 +19,7 @@ const storeAuth = _storeAuth()
 const storeUser = _storeUser()
 const emailHasError = ref(null)
 const passwordHasError = ref(null)
+const showVerification = ref(false)
 const dataForm = ref({
   email: '',
   password: '',
@@ -78,6 +80,18 @@ const sendForm = async () => {
     })
     await storeUser.getUser()
     emit('close')
+    window.location.reload()
+  }
+
+  if (storeAuth.isEmailVerifyNeeded) {
+    storeAuth.setEmailLoginVerification(dataForm.value.email)
+    showVerification.value = true
+    pushNotification({
+      id: '',
+      title: 'Debes verificar tu email',
+      type: 'error',
+    })
+  
   }
 }
 watch(
@@ -98,10 +112,14 @@ watch(
     }
   }
 )
+
 </script>
 <template>
   <Modal size="w-[675px]" @close="$emit('close')">
-    <div class="flex h-[599px] min-h-full flex-col justify-center rounded-xl bg-white px-6 py-6 md:py-12 lg:px-16">
+
+    <VerificationCode v-if="showVerification" :isLogin="true" @close="showVerification = false"/>
+
+    <div v-else class="flex h-[599px] min-h-full flex-col justify-center rounded-xl bg-white px-6 py-6 md:py-12 lg:px-16">
       <div class="text-center sm:mx-auto sm:w-full sm:max-w-sm">
         <p v-text="' LOGO'" class="hidden md:block" />
         <!-- <img class="mx-auto h-10 w-auto" src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600" alt="Your Company" /> -->

@@ -11,6 +11,7 @@ import { computed, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 
+const isLoading = ref(false)
 const productStore = _storeProduct()
 const cartStore = CartStore()
 const router = useRouter()
@@ -53,6 +54,8 @@ const remove = () => {
 
 const addProduct = async() => {
 
+  isLoading.value = true
+
   if(cartStore.getAmountInCartByProduct({
     _id: productStore.product?._id,
     size: {
@@ -62,6 +65,7 @@ const addProduct = async() => {
       _id: color.value
     },
   }) + quantity.value > maxAmount.value){
+    isLoading.value = false
     pushNotification({
       id: '',
       title: t('QUANTITY_EXCEEDS_STOCK'),
@@ -82,6 +86,8 @@ const addProduct = async() => {
     },
     quantity: quantity.value,
   })
+
+  isLoading.value = false
 
   if(response.data?.status == 'success'){
     pushNotification({
@@ -272,7 +278,7 @@ watch(
                   </section>
                 </div>
               </section>
-              <Btn class="flex justify-center h-10 items-center" with-icon is-full color="primaryProduct" :text="maxAmount <= 0 ? $t('COMMON.NOT_AVAILABLE') : $t('COMMON.ADD_TO_CART')" @click="addProduct()" :is-disabled="!size || !color || maxAmount <= 0">
+              <Btn class="flex justify-center h-10 items-center" with-icon is-full color="primaryProduct" :text="maxAmount <= 0 ? $t('COMMON.NOT_AVAILABLE') : $t('COMMON.ADD_TO_CART')" :isLoading="isLoading" @click="addProduct()" :is-disabled="!size || !color || maxAmount <= 0">
                 <template #icon>
                   <ShoppingCartIcon class="mx-2 w-5" />
                 </template>

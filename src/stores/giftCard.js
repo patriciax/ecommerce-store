@@ -1,34 +1,47 @@
-import { _getSearch } from '@/api/repositories/search.repository'
+import { _getAllHome, _getSingleProduct, _getPrice } from '@/api/repositories/product.repository'
 import { defineStore } from 'pinia'
 
 export default defineStore({
-  id: 'search',
+  id: 'GiftCard',
   state: () => ({
     _status: null,
     _error: null,
-    _search: null,
+    _purchaseData: null
   }),
   getters: {
     isLoading: (state) => state._status === 'loading',
     isReady: (state) => state._status === 'ready',
     isError: (state) => state._status === 'error',
     error: (state) => state._error,
-    search: (state) => state._search,
   },
   actions: {
-    async getSearch(body) {
+
+    async purchaseGiftCard(data){
+        this.changeStatus('loading')
+        try {
+            const response = await this.purchaseGiftCard(data)
+            if (response) {
+            this._purchaseData = response.data
+            this.changeStatus('ready')
+            }
+        } catch (error) {
+            this.changeStatus('error', error)
+        }
+    },
+    async getAllProducts() {
       this.changeStatus('loading')
       try {
-        const response = await _getSearch(body)
+        const response = await _getAllHome()
         if (response) {
-          this._search = response.data.data.products
+          this._allProduct = response.data
           this.changeStatus('ready')
         }
       } catch (error) {
         this.changeStatus('error', error)
       }
     },
-    reset() {},
+    
+
     changeStatus(status, error = null) {
       this._status = status
       if (status === 'error') this._error = error

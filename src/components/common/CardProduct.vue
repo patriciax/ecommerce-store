@@ -29,7 +29,7 @@ const goToProduct = (slug: any) => router.push({ name: 'singleProduct', params: 
 </script>
 <template>
   <section class="relative w-full text-start">
-    <div class="group/card mb-2 flex h-[350px] w-full overflow-hidden rounded-lg bg-gray-100">
+    <div class="group/card mb-2 flex h-[300px] w-full overflow-hidden rounded-lg bg-gray-100">
       <PhotoIcon v-if="imageError" class="mx-auto w-7 text-gray-500" />
       <img
         v-else

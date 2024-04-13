@@ -40,8 +40,8 @@ const router = createRouter({
       component: GiftCard
     },
     {
-      path: '/search',
-      name: 'seaech',
+      path: '/search/:search',
+      name: 'search',
       component: Search
     },
     {

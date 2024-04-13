@@ -8,6 +8,7 @@ import router from '@/router'
 import CartStore from '@/stores/cart/cart'
 import CountryStore from '@/stores/country'
 import _storeProduct from '@/stores/product'
+import _stroreSearch from '@/stores/search'
 import _storeUser from '@/stores/user'
 import { Bars3BottomLeftIcon, ChevronDownIcon, HeartIcon, ShoppingCartIcon, UserIcon, XMarkIcon } from '@heroicons/vue/24/outline'
 import { onMounted, ref } from 'vue'
@@ -16,7 +17,7 @@ import LanguageSelector from './LanguageSelector.vue'
 
 const productStore = _storeProduct()
 const countryStore = CountryStore()
-
+const storeSearch = _stroreSearch()
 const cartStore = CartStore()
 const storeUser = _storeUser()
 
@@ -37,6 +38,11 @@ const goToCart = () => {
   router.push({ name: 'checkout' })
 }
 
+const search = () => {
+  console.log(filter.value)
+  router.push({ name: 'search', params: { search: filter.value } })
+}
+
 onMounted(async () => {
   const response = await getAllCategoriesMenu()
   if (response.status === 'success') {
@@ -49,6 +55,7 @@ onMounted(async () => {
     await productStore.getPrice()
   }
 })
+
 </script>
 <template>
   <header>
@@ -114,7 +121,7 @@ onMounted(async () => {
                 </h4></router-link
               >
             </li>
-            <li>
+            <li v-if="storeUser.currentUser">
               <RouterLink to="/gift-card"
                 ><h4 class="h-full border-b-4 border-transparent p-3 text-base uppercase hover:border-b-4 hover:border-gray-900">
                   {{ $t('COMMON.GIFT_CART') }}
@@ -126,6 +133,7 @@ onMounted(async () => {
 
           <div class="mr-5 flex items-center gap-2 lg:mr-10">
             <InputSearch
+              @search="search"
               class="mr-4 hidden xl:block"
               id="search"
               v-model="filter"
@@ -177,6 +185,12 @@ onMounted(async () => {
     </nav>
   </header>
 
-  <Register v-if="register" @close="register = false" @closeRegister="login = true" @login="(login = true), (register = false)" />
+  <Register
+    v-if="register"
+    @close="register = false"
+    @closeRegister=" login = true, register = false
+    "
+    @login="(login = true), (register = false)"
+  />
   <Login v-if="login" @close="login = false" @register="(login = false), (register = true)" />
 </template>

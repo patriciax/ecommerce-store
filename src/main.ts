@@ -7,7 +7,6 @@ import App from './App.vue'
 import './assets/styles/main.scss'
 import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css'
-import VueCryptojs from 'vue-cryptojs'
 
 import router from './router'
 
@@ -16,4 +15,4 @@ const i18n = createI18n({ locale: localStorage.getItem('lang') || 'es_ES', messa
 const app = createApp(App)
 
 app.component('VueDatePicker', VueDatePicker);
-app.use(createPinia()).use(VueCryptojs).use(router).use(i18n).mount('#app')
+app.use(createPinia()).use(router).use(i18n).mount('#app')

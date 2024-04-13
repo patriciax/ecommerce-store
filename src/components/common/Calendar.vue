@@ -3,7 +3,8 @@ import { computed, ref, watch } from 'vue'
 import Datepicker, { DatePickerInstance } from '@vuepic/vue-datepicker'
 import '@vuepic/vue-datepicker/dist/main.css'
 
-const date = ref(new Date())
+const date = ref()
+const datepicker = ref<DatePickerInstance>(null)
 
 const props = defineProps({
   label: {
@@ -34,6 +35,7 @@ const handleDate = (modelData) => {
       <span v-if="isRequired" class="text-red-500">*</span>
     </label>
     <Datepicker
+    :ref="datepicker"
       v-model="date"
       date-picker
       @update:model-value="handleDate"

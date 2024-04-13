@@ -1,7 +1,39 @@
 <script setup lang="ts">
+import PaymentMethods from '@/stores/paymentMethods'
+import useNotificationsStore from '@/composables/useNotifications';
 import { ref } from 'vue'
 
+const paymentMethods = PaymentMethods()
+const emit = defineEmits(['nextStep', 'validate'])
+const { pushNotification } = useNotificationsStore()
+
+const props = defineProps({
+  cart: {
+    type: Array,
+    required: true,
+  },
+  name: {
+    type: String,
+  },
+  email: {
+    type: String,
+  },
+  phone: {
+    type: String,
+  },
+  carrier: {
+    type: Object,
+  },
+  validateForm: {
+    type: Boolean,
+  },
+})
+
 const interval = ref(null)
+
+function timeout(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
 
 interval.value = setInterval(() => {
   const elementExists = !document.getElementById('paypal-button')
@@ -10,9 +42,21 @@ interval.value = setInterval(() => {
     (window as any).paypal
       .Buttons({
         fundingSource: (window as any).paypal.FUNDING.CARD,
+        onClick: async (data, actions) => {
+          // Return a promise from onClick for async validation
+
+          emit('validate')
+          await timeout(1000);
+
+          if (props.validateForm) {
+            return actions.resolve()
+          } else {
+            return actions.reject()
+          }
+        },
         async createOrder() {
           try {
-            const response = await fetch(`${(import.meta as any).env.BASE_URL}/checkout`, {
+            const response = await fetch(`${(import.meta as any).env.VITE_API_URL}/v1/checkout`, {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
@@ -21,19 +65,14 @@ interval.value = setInterval(() => {
               // like product ids and quantities
               body: JSON.stringify({
                 paymentMethod: 'paypal-create-order',
-                // cart: [
-                //   {
-                //     id: "YOUR_PRODUCT_ID",
-                //     quantity: "YOUR_PRODUCT_QUANTITY",
-                //   },
-                // ],
+                carts: props.cart,
               }),
             })
 
             const orderData = await response.json()
 
-            if (orderData.id) {
-              return orderData.id
+            if (orderData?.order?.id) {
+              return orderData.order.id
             } else {
               const errorDetail = orderData?.details?.[0]
               const errorMessage = errorDetail
@@ -48,13 +87,21 @@ interval.value = setInterval(() => {
         },
         async onApprove(data, actions) {
           try {
-            const response = await fetch(`${(import.meta as any).env.BASE_URL}/checkout/${data.orderID}/capture`, {
+            const token = localStorage.getItem((import.meta as any).env.VITE_BEARER_TOKEN_KEY)
+            const response = await fetch(`${(import.meta as any).env.VITE_API_URL}/v1/checkout`, {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
+                Authorization: token ? `Bearer ${token}` : null,
               },
               body: JSON.stringify({
                 paymentMethod: 'paypal-approve-order',
+                orderId: data.orderID,
+                carts: props.cart,
+                name: props.name,
+                email: props.email,
+                phone: props.phone,
+                carrier: props.carrier,
               }),
             })
 
@@ -73,14 +120,18 @@ interval.value = setInterval(() => {
             } else if (errorDetail) {
               // (2) Other non-recoverable errors -> Show a failure message
               throw new Error(`${errorDetail.description} (${orderData.debug_id})`)
-            } else if (!orderData.purchase_units) {
+            } else if (orderData.status != 'success') {
               throw new Error(JSON.stringify(orderData))
             } else {
               // (3) Successful transaction -> Show confirmation or thank you message
               // Or go to another URL:  actions.redirect('thank_you.html');
-              const transaction =
-                orderData?.purchase_units?.[0]?.payments?.captures?.[0] || orderData?.purchase_units?.[0]?.payments?.authorizations?.[0]
-              console.log('Capture result', orderData, JSON.stringify(orderData, null, 2))
+              paymentMethods.setPaymentData(orderData.data)
+              pushNotification({
+                id: '',
+                title: 'Pago exitoso',
+                type: 'success',
+              })
+              emit('nextStep')
             }
           } catch (error) {
             console.error(error)

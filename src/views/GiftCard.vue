@@ -3,14 +3,18 @@ import { getPrice } from '@/api/repositories/giftCard.repository'
 import Accordion from '@/components/common/Accordion.vue'
 import TextFields from '@/components/common/TextFields.vue'
 import Banesco from '@/components/paymentMethods/Banesco.vue'
+import Card from '@/components/paymentMethods/Card.vue'
+import Paypal from '@/components/paymentMethods/Paypal.vue'
 import Login from '@/components/views/home/auth/Login.vue'
 import Register from '@/components/views/home/auth/Register.vue'
+import GiftCardStore from '@/stores/giftCard'
 import { CheckCircleIcon, ChevronRightIcon, GiftIcon } from '@heroicons/vue/24/outline'
 import useVuelidate from '@vuelidate/core'
 import { email, required } from '@vuelidate/validators'
 import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
+const giftCardStore = GiftCardStore()
 const { t } = useI18n()
 const login = ref(false)
 const register = ref(false)
@@ -19,11 +23,16 @@ const validateFormData = ref(false)
 const prices = ref([])
 const successPayment = ref(false)
 const dataForm = ref({
+  date: null,
   emailTo: '',
   name: '',
   message: '',
   priceGift: prices.value[0],
 })
+
+const updateDate = (value) => {
+  dataForm.value.date = value
+}
 
 const handlerValidate = useVuelidate(
   {
@@ -41,7 +50,8 @@ const handlerValidate = useVuelidate(
       required,
     },
   },
-  dataForm
+  dataForm,
+  {$scope: false}
 )
 
 const setEmailErrors = computed(() => {
@@ -62,17 +72,21 @@ const validateForm = async (paymentMethod) => {
 }
 
 const send = async () => {
+  handlerValidate.value.$reset()
   const _validate = await handlerValidate.value.$validate()
+  console.log("validate", _validate)
   if (!_validate) return
+
+  validateForm.value = _validate
+
 }
 onMounted(async () => {
   const response = await getPrice()
-
   if (response?.status === 'success') prices.value = response.data.giftCards
 })
 </script>
 <template>
-  <section class="-mt-12 lg:h-[130vh] text-center">
+  <section class="-mt-12 text-center lg:h-[130vh]">
     <div class="relative mb-6">
       <div class="absolute left-0 top-0 flex h-full w-full flex-col items-start justify-end p-20">
         <p class="text-4xl font-bold uppercase text-white" v-text="'El regalo perfecto'" />
@@ -87,7 +101,7 @@ onMounted(async () => {
     <p class="mb-2 text-2xl font-bold text-gray-900" v-text="'Comprar tarjeta de regalo electronica'" />
     <p class="mx-auto mb-10 max-w-xl" v-text="'Escribe los detalles de la tarjeta de regalo'" />
 
-    <section class="m-auto grid max-w-6xl lg:grid-cols-2 gap-2 xl:gap-10">
+    <section class="m-auto grid max-w-6xl gap-2 lg:grid-cols-2 xl:gap-10">
       <section class="col-span-2 mb-10 rounded-lg bg-gray-100 p-6 text-center" v-if="successPayment">
         <CheckCircleIcon class="mx-auto w-16 text-green-500" />
         <p class="mb-1 text-xl font-bold text-gray-900" v-text="'Gracias por su compra'" />
@@ -219,7 +233,7 @@ onMounted(async () => {
                   endpoint="gift-cards/purchase"
                 />
               </Accordion>
-              <!-- <Accordion :title="''">
+              <Accordion :title="''">
                 <template #img> <img class="w-32" src="@/assets/images/paypal.png" /></template>
                 <Paypal
                   @validate="validateForm"
@@ -247,7 +261,7 @@ onMounted(async () => {
                     message: dataForm.message,
                     date: dataForm.date,
                   }"/>
-              </Accordion> -->
+              </Accordion>
             </div>
           </section>
         </section>

@@ -3,11 +3,20 @@
 import TextFields from '@/components/common/TextFields.vue';
 import Document from '@/components/common/Document.vue';
 import Btn from '@/components/common/Btn.vue'
+import { required } from '@vuelidate/validators'
+import PaymentMethods from '@/stores/paymentMethods'
+import useNotifications from '@/composables/useNotifications'
 
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { showNotification } from '@/composables/useNotification';
 import { _submitPay } from '@/api/repositories/banesco.repository';
+import useVuelidate from '@vuelidate/core';
+import { watch } from 'vue';
 
+
+const paymentMethods = PaymentMethods()
+const isLoading = ref(false)
+const emit = defineEmits(['validate', 'nextStep'])
 const props = defineProps({
     cart: {
         type: Array
@@ -34,44 +43,106 @@ const props = defineProps({
     endpoint:{
         type: String,
         default: 'checkout'
-    }
+    },
+    validateForm: {
+        type: Boolean,
+    },
 })
 
+const { pushNotification } = useNotifications()
+const validate = ref(false)
 const cardNumber = ref('')
 const cvc = ref('')
-const date: any = ref('')
 const email = ref('')
 
-const submitPay = async () => {
+const completePay = async() => {
     
-    try{
+    if(props.validateForm && validate.value){
+        try{
+            isLoading.value = true
+            let data = {}
+            if(props.isCard){
+                data = {
+                    paymentMethod: 'giftCard',
+                    carts:props.cart,
+                    name: props.name,
+                    email: email.value,
+                    phone: props.phone,
+                    card: props.card,
+                    cardNumber: cardNumber.value,
+                    cardPin: cvc.value
+                }
+            }else{
+                data = {
+                    paymentMethod: 'giftCard',
+                    carts:props.cart,
+                    name: props.name,
+                    email: email.value,
+                    phone: props.phone,
+                    carrier: props.carrier,
+                    cardNumber: cardNumber.value,
+                    cardPin: cvc.value
+                }
+            }
 
-        let data = {}
-        if(props.isCard){
-            data = {
-                paymentMethod: 'giftCard',
-                carts:props.cart,
-                name: props.name,
-                email: props.email,
-                phone: props.phone,
-                card: props.card
+            const response = await _submitPay(data, props.endpoint)
+            isLoading.value = false
+
+            if(response.data.status != 'success'){
+                showNotification('Algo ha ido mal', 'error')
+                return
             }
-        }else{
-            data = {
-                paymentMethod: 'giftCard',
-                carts:props.cart,
-                name: props.name,
-                email: props.email,
-                phone: props.phone,
-                carrier: props.carrier
-            }
+            paymentMethods.setPaymentData(response.data.data)
+            pushNotification({
+                id: '',
+                title: 'Pago exitoso',
+                type: 'success',
+            })
+
+            emit('nextStep')
+
+        }catch(err){
+            isLoading.value = false
+            showNotification("Algo ha ido mal", 'error')
         }
-        
-        await _submitPay(data, props.endpoint)
-    }catch(err){
-        showNotification("Algo ha ido mal", 'error')
     }
+    
 }
+
+const submitPay = async () => {
+
+    handlerValidateGiftCard.value.$reset()
+    validate.value = await handlerValidateGiftCard.value.$validate()
+    emit('validate')
+}
+
+const rulesGiftCard = computed(() => {
+  return {
+    email: {
+      required,
+    },
+    cardNumber: {
+      required,
+    },
+    cvc: {
+      required,
+    }
+  }
+})
+
+const handlerValidateGiftCard = useVuelidate(
+    rulesGiftCard,
+    {
+        "cardNumber": cardNumber,
+        "cvc": cvc,
+        "email": email
+    },
+    { $scope: false }
+  )
+
+watch(() => props.validateForm, () => {
+  completePay()
+});
 
 </script>
 
@@ -80,17 +151,31 @@ const submitPay = async () => {
 
         <form class="flex flex-col" @submit.prevent="submitPay">
 
-            <TextFields v-model="email" :label="$t('FORM.EMAIL')" />
+            <TextFields
+            :errorMessage="
+            handlerValidateGiftCard?.['email']?.$errors?.length > 0
+              ? $t('VALIDATIONS.' + handlerValidateGiftCard?.['email']?.$errors?.[0]?.$validator?.toUpperCase())
+              : undefined
+            "
+            v-model="email" :label="$t('FORM.EMAIL')" />
 
             <div>
-                <Document v-model="cardNumber" :label="$t('PAYMENTS.CARD_NUMBER')" :minLength="15" :maxLength="16" />
+                <Document v-model="cardNumber" :label="$t('PAYMENTS.CARD_NUMBER')" :minLength="15" :maxLength="16" :errorMessage="
+                handlerValidateGiftCard?.['cardNumber']?.$errors?.length > 0
+                ? $t('VALIDATIONS.' + handlerValidateGiftCard?.['cardNumber']?.$errors?.[0]?.$validator?.toUpperCase())
+                : undefined
+            "/>
             </div>
             <div>
-                <Document v-model="cvc" :label="$t('PAYMENTS.CVC')" :maxLength="3"/>
+                <Document :errorMessage="
+                handlerValidateGiftCard?.['cvc']?.$errors?.length > 0
+                ? $t('VALIDATIONS.' + handlerValidateGiftCard?.['cvc']?.$errors?.[0]?.$validator?.toUpperCase())
+                : undefined
+                " v-model="cvc" :label="$t('PAYMENTS.CVC')" :maxLength="4"/>
             </div>
 
             <div class="col-span-2 mt-3">
-                <Btn text="Pagar" isFull/>
+                <Btn :is-loading="isLoading" text="Pagar" isFull/>
             </div>
 
         </form>

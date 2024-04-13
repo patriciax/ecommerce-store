@@ -111,7 +111,7 @@ const sendForm = async () => {
 </script>
 <template>
   <Modal size="max-w-2xl" @close="$emit('close')">
-    <VerificationCode v-if="showVerification" @close="$emit('closeRegister')"/>
+    <VerificationCode v-if="showVerification" @close="$emit('closeRegister'); showVerification = false"/>
     <div v-else class="flex min-h-full flex-col justify-center rounded-2xl bg-white px-6 py-6 md:py-12 lg:px-16">
       <div class="text-center sm:mx-auto sm:w-full sm:max-w-sm">
         <p v-text="' LOGO'" class="hidden md:block" />

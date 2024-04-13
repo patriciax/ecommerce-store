@@ -10,7 +10,7 @@ const setHeaders = () => {
     const token = localStorage.getItem((import.meta as any).env.VITE_BEARER_TOKEN_KEY)
     const headers = {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
+        'Authorization': token ? `Bearer ${token}` : null
     }
 
     return headers

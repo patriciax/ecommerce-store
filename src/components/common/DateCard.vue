@@ -52,7 +52,11 @@ const minDate = computed(() => {
       :min-date="`${new Date().getFullYear()}-${new Date().getMonth() + 1}-01`"
       auto-apply
     />
+    <div>
+      <p v-if="props.errorMessage" class="mt-0.5 text-xs font-medium text-red-500" v-text="props.errorMessage" />
+    </div>
   </div>
+  
 </template>
 <style>
 .dp--menu-wrapper {

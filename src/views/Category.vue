@@ -1,8 +1,10 @@
 <script setup>
 import CardProduct from '@/components/common/CardProduct.vue'
 import Pagination from '@/components/common/Pagination.vue'
+import SkeletonCard from '@/components/skeleton/Card.vue'
 import _storeProduct from '@/stores/product'
 import { onMounted } from 'vue'
+
 import { useRoute, useRouter } from 'vue-router'
 const props = defineProps({
   id: {
