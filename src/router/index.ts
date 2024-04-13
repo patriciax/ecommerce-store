@@ -1,4 +1,5 @@
 import _storeCart from '@/stores/cart/cart'
+import _storeFavorite from '@/stores/favorite'
 import CountryStore from '@/stores/country'
 import _storeUser from '@/stores/user'
 import Category from '@/views/Category.vue'
@@ -10,6 +11,7 @@ import Checkout from '../views/Checkout.vue'
 import HomeView from '../views/HomeView.vue'
 import Search from '../views/Search.vue'
 import Product from '../views/SingleProduct.vue'
+import Favorites from '../views/Favorites.vue'
 
 const router = createRouter({
   history: createWebHistory((import.meta as any).env.BASE_URL),
@@ -45,6 +47,11 @@ const router = createRouter({
       component: Search
     },
     {
+      path: '/favorites',
+      name: 'favorites',
+      component: Favorites
+    },
+    {
       path: '/category/:slug',
       name: 'category',
       component: Category,
@@ -64,6 +71,7 @@ const router = createRouter({
 router.beforeEach(async (to, from) => {
 
   const countryStore = CountryStore()
+  const favoriteStore = _storeFavorite()
 
   if(!countryStore.country){
     await countryStore.getCountry()
@@ -75,6 +83,9 @@ router.beforeEach(async (to, from) => {
   if (!storeUser.currentUser && localStorage.getItem((import.meta as any).env.VITE_BEARER_TOKEN_KEY)) {
     await storeUser.getUser()
     await storeCart.productInfo()
+    await favoriteStore.getFavorites()
+    favoriteStore.setFirstLoad()
+
   }
 
   else{

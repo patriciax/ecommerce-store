@@ -23,6 +23,10 @@ const props = defineProps({
   isLoading: {
     type: Boolean,
   },
+  isCart: {
+    type: Boolean,
+    default: true,
+  },
 })
 const removeItem = (index) => emit('removeItem', index)
 const lessItem = (index) => {
@@ -53,7 +57,7 @@ const moreItem = (index) => {
       </div>
     </section>
     <div class="flex flex-1 items-center justify-end gap-16">
-      <section class="flex items-center justify-between">
+      <section class="flex items-center justify-between" v-if="props.isCart">
         <div class="border-burgerPrimary flex w-24 items-center justify-between rounded-md border px-3 py-1">
           <button class="transition duration-500 hover:opacity-50" :disabled="isLoading" @click="lessItem(props.index)">
             <ChevronLeftIcon class="w-4 text-gray-900" />

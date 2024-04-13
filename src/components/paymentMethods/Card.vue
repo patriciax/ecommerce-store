@@ -27,6 +27,17 @@ const props = defineProps({
   validateForm: {
     type: Boolean,
   },
+  endpoint: {
+    type: String,
+    default: 'checkout',
+  },
+  card: {
+    type: Object,
+  },
+  isCard: {
+    type: Boolean,
+    default: false,
+  },
 })
 
 const interval = ref(null)
@@ -56,17 +67,24 @@ interval.value = setInterval(() => {
         },
         async createOrder() {
           try {
-            const response = await fetch(`${(import.meta as any).env.VITE_API_URL}/v1/checkout`, {
+            const object = props.isCard ? {
+              paymentMethod: 'paypal-create-order',
+              card: props.card
+            } : {
+              paymentMethod: 'paypal-create-order',
+              carts: props.cart
+            } 
+            
+            const token = localStorage.getItem((import.meta as any).env.VITE_BEARER_TOKEN_KEY)
+            const response = await fetch(`${(import.meta as any).env.VITE_API_URL}/v1/${props.endpoint}`, {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
+                Authorization: token ? `Bearer ${token}` : null,
               },
               // use the "body" param to optionally pass additional order information
               // like product ids and quantities
-              body: JSON.stringify({
-                paymentMethod: 'paypal-create-order',
-                carts: props.cart,
-              }),
+              body: JSON.stringify(object),
             })
 
             const orderData = await response.json()
@@ -87,22 +105,33 @@ interval.value = setInterval(() => {
         },
         async onApprove(data, actions) {
           try {
+
+            const object = props.isCard ? {
+              paymentMethod: 'paypal-approve-order',
+              orderId: data.orderID,
+              card: props.card,
+              name: props.name,
+              email: props.email,
+              phone: props.phone,
+              carrier: props.carrier,
+            } : {
+              paymentMethod: 'paypal-approve-order',
+              orderId: data.orderID,
+              carts: props.cart,
+              name: props.name,
+              email: props.email,
+              phone: props.phone,
+              carrier: props.carrier,
+            }
+
             const token = localStorage.getItem((import.meta as any).env.VITE_BEARER_TOKEN_KEY)
-            const response = await fetch(`${(import.meta as any).env.VITE_API_URL}/v1/checkout`, {
+            const response = await fetch(`${(import.meta as any).env.VITE_API_URL}/v1/${props.endpoint}`, {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
                 Authorization: token ? `Bearer ${token}` : null,
               },
-              body: JSON.stringify({
-                paymentMethod: 'paypal-approve-order',
-                orderId: data.orderID,
-                carts: props.cart,
-                name: props.name,
-                email: props.email,
-                phone: props.phone,
-                carrier: props.carrier,
-              }),
+              body: JSON.stringify(object),
             })
 
             const orderData = await response.json()

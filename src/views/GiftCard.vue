@@ -13,7 +13,9 @@ import useVuelidate from '@vuelidate/core'
 import { email, required } from '@vuelidate/validators'
 import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
+import CountryStore from '@/stores/country'
 
+const countryStore = CountryStore()
 const giftCardStore = GiftCardStore()
 const { t } = useI18n()
 const login = ref(false)
@@ -109,7 +111,7 @@ onMounted(async () => {
       </section>
       <template v-else>
         <section class="mx-auto w-full px-6 text-start">
-          <span class="mb-1 text-sm font-bold text-gray-900 dark:text-white">Importe:</span>
+          <span :class="{ 'text-red-500': handlerValidate?.['priceGift']?.$errors?.length > 0 }" class="mb-1 text-sm font-bold text-gray-900 dark:text-white">Importe:</span>
           <ul class="mb-4 flex w-full flex-wrap gap-4">
             <li v-for="(item, index) in prices" :key="item">
               <input
@@ -134,6 +136,11 @@ onMounted(async () => {
               </label>
             </li>
           </ul>
+          <p class="text-sm font-bold text-red-500 mb-2" v-if="handlerValidate?.['priceGift']?.$errors?.length > 0">
+            {{ 
+                $t('VALIDATIONS.' + handlerValidate?.['priceGift']?.$errors?.[0]?.$validator?.toUpperCase())
+            }}
+          </p>
 
           <TextFields
             id="email-gift"
@@ -216,7 +223,7 @@ onMounted(async () => {
           <section>
             <p class="mb-6 text-lg font-bold" v-text="'Método de pago'" />
             <div>
-              <Accordion :title="''">
+              <Accordion :title="''" v-if="countryStore.country == 'Venezuela'">
                 <template #img> <img class="w-32" src="@/assets/images/banesco.png" /></template>
                 <Banesco
                   :validate-form="validateFormData"
@@ -240,6 +247,7 @@ onMounted(async () => {
                   :validate-form="validateFormData"
                   @nextStep="successPayment = true"
                   endpoint="gift-cards/purchase"
+                  :isCard="true"
                   :card="{
                     total: dataForm.priceGift,
                     emailTo: dataForm.emailTo,
@@ -254,6 +262,7 @@ onMounted(async () => {
                   :validate-form="validateFormData"
                   @nextStep="successPayment = true"
                   endpoint="gift-cards/purchase"
+                  :isCard="true"
                   :card="{
                     total: dataForm.priceGift,
                     emailTo: dataForm.emailTo,

@@ -358,7 +358,7 @@ const validateForm = async (paymentMethod) => {
 
           </p>
         </li>
-        <li class="mb-4 flex justify-between border-b pb-2">
+        <li class="mb-4 flex justify-between border-b pb-2" v-if="countryStore.country == 'Venezuela'">
           <span class="text-lg font-bold">Total en Bolivares</span>
           <p class="text-lg font-bold">
            Bs.{{ (productStore.price * cartStore.total).toLocaleString()}}
@@ -370,7 +370,7 @@ const validateForm = async (paymentMethod) => {
       <section>
         <p class="mb-6 text-lg font-bold" v-text="'Método de pago'" />
         <div>
-          <accordion hidden :title="''">
+          <accordion hidden :title="''" v-if="countryStore.country == 'Venezuela'">
             <template #img> <img class="w-32" src="@/assets/images/banesco.png" /></template>
             <Banesco
               :validate-form="validateFormData"

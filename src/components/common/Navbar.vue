@@ -38,6 +38,10 @@ const goToCart = () => {
   router.push({ name: 'checkout' })
 }
 
+const goToFavorite = () => {
+  router.push({ name: 'favorites' })
+}
+
 const search = () => {
   console.log(filter.value)
   router.push({ name: 'search', params: { search: filter.value } })
@@ -64,9 +68,9 @@ onMounted(async () => {
         <label for="check" class="open-menu"><Bars3BottomLeftIcon class="w-6 text-gray-800" /></label>
 
         <div class="ml-14 w-1/6 xl:ml-12">
-          <a class="logo" href="/">
+          <RouterLink to="/">
             <h3 class="text-2xl font-bold">LOGO</h3>
-          </a>
+          </RouterLink>
         </div>
 
         <section class="flex justify-between xl:w-4/5">
@@ -165,12 +169,12 @@ onMounted(async () => {
                 <UserIcon class="w-5" />
               </template>
             </Btn>
-            <Btn color="secondary" class="hidden lg:block" is-tooltip with-icon :text="$t('COMMON.FAVORITE')" isFull>
+            <Btn @click="goToFavorite" color="secondary" class="hidden lg:block" is-tooltip with-icon :text="$t('COMMON.FAVORITE')" isFull v-if="storeUser.currentUser">
               <template #icon>
                 <HeartIcon class="w-5" />
               </template>
             </Btn>
-            <Btn @click="goToCart" color="secondary" is-tooltip with-icon :text="$t('COMMON.CART')" isFull>
+            <Btn @click="goToCart" color="secondary" is-tooltip with-icon :text="$t('COMMON.CART')" isFull v-if="storeUser.currentUser">
               <template #icon>
                 <ShoppingCartIcon class="w-5" />
               </template>
