@@ -174,7 +174,7 @@ onMounted(async () => {
                 <HeartIcon class="w-5" />
               </template>
             </Btn>
-            <Btn @click="goToCart" color="secondary" is-tooltip with-icon :text="$t('COMMON.CART')" isFull v-if="storeUser.currentUser">
+            <Btn @click="goToCart" color="secondary" is-tooltip with-icon :text="$t('COMMON.CART')" isFull>
               <template #icon>
                 <ShoppingCartIcon class="w-5" />
               </template>

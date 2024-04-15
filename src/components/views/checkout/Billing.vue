@@ -147,8 +147,8 @@ const carrierObject = computed(() => {
 
   const upsObject = {
     carrierName: 'UPS',
-    country: countries.value.find((country) => country?.value == dataForm.value?.foreignCountry)?.name,
-    state: countries.value.find((country) => country?.value == dataForm.value?.foreignCountry)?.states?.find((state, index) => index + 1 == dataForm.value?.foreignState),
+    country: countries.value.find((country) => country?._id == dataForm.value?.foreignCountry)?.name,
+    state: countries.value.find((country) => country?._id == dataForm.value?.foreignCountry)?.states?.find((state, index) => index + 1 == dataForm.value?.foreignState),
     address: dataForm.value?.foreignAddress,
   }
 
