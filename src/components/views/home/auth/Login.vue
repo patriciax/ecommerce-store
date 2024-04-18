@@ -149,12 +149,16 @@ watch(
           placeholder="********"
           :label="t('FORM.PASSWORD')"
         />
+        <router-link to="/reset-password" @click="$emit('close')"  class="block text-end text-sm font-semibold leading-6 text-indigo-600 hover:text-indigo-500  " >
+        ¿Has olvidado tu contraseña?
+      </router-link>
 
         <div class="col-span-2 mt-6">
           <Btn :isLoading="storeAuth.isLoading" :isDisabled="storeAuth.isLoading" text="Iniciar Sesion" isFull />
         </div>
       </form>
 
+  
       <p class="mt-6 text-center text-sm text-gray-500 md:mt-10" @click="$emit('register')">
         Aun no tienes cuenta?<a href="#" class="font-semibold leading-6 text-indigo-600 hover:text-indigo-500"> Registrate</a>
       </p>

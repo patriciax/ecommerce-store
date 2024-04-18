@@ -8,13 +8,15 @@ import router from '@/router'
 import CartStore from '@/stores/cart/cart'
 import CountryStore from '@/stores/country'
 import _storeProduct from '@/stores/product'
+import RestorePassword from '@/stores/resetPassword.js'
 import _stroreSearch from '@/stores/search'
 import _storeUser from '@/stores/user'
 import { Bars3BottomLeftIcon, ChevronDownIcon, HeartIcon, ShoppingCartIcon, UserIcon, XMarkIcon } from '@heroicons/vue/24/outline'
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import Dropdown from './Dropdown.vue'
 import LanguageSelector from './LanguageSelector.vue'
 
+const restorePassStore = RestorePassword()
 const productStore = _storeProduct()
 const countryStore = CountryStore()
 const storeSearch = _stroreSearch()
@@ -60,6 +62,12 @@ onMounted(async () => {
   }
 })
 
+watch(
+  () => restorePassStore.login,
+  () => {
+    if (restorePassStore.login) login.value = true
+  }
+)
 </script>
 <template>
   <header>
@@ -169,7 +177,16 @@ onMounted(async () => {
                 <UserIcon class="w-5" />
               </template>
             </Btn>
-            <Btn @click="goToFavorite" color="secondary" class="hidden lg:block" is-tooltip with-icon :text="$t('COMMON.FAVORITE')" isFull v-if="storeUser.currentUser">
+            <Btn
+              @click="goToFavorite"
+              color="secondary"
+              class="hidden lg:block"
+              is-tooltip
+              with-icon
+              :text="$t('COMMON.FAVORITE')"
+              isFull
+              v-if="storeUser.currentUser"
+            >
               <template #icon>
                 <HeartIcon class="w-5" />
               </template>
@@ -192,8 +209,7 @@ onMounted(async () => {
   <Register
     v-if="register"
     @close="register = false"
-    @closeRegister=" login = true, register = false
-    "
+    @closeRegister="(login = true), (register = false)"
     @login="(login = true), (register = false)"
   />
   <Login v-if="login" @close="login = false" @register="(login = false), (register = true)" />

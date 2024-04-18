@@ -1,19 +1,20 @@
 <script setup>
 import { getPrice } from '@/api/repositories/giftCard.repository'
 import Accordion from '@/components/common/Accordion.vue'
+import ConsultBalance from '@/components/common/ConsultBalance.vue'
 import TextFields from '@/components/common/TextFields.vue'
 import Banesco from '@/components/paymentMethods/Banesco.vue'
 import Card from '@/components/paymentMethods/Card.vue'
 import Paypal from '@/components/paymentMethods/Paypal.vue'
 import Login from '@/components/views/home/auth/Login.vue'
 import Register from '@/components/views/home/auth/Register.vue'
+import CountryStore from '@/stores/country'
 import GiftCardStore from '@/stores/giftCard'
 import { CheckCircleIcon, ChevronRightIcon, GiftIcon } from '@heroicons/vue/24/outline'
 import useVuelidate from '@vuelidate/core'
 import { email, required } from '@vuelidate/validators'
 import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import CountryStore from '@/stores/country'
 
 const countryStore = CountryStore()
 const giftCardStore = GiftCardStore()
@@ -24,6 +25,7 @@ const emailHasError = ref(null)
 const validateFormData = ref(false)
 const prices = ref([])
 const successPayment = ref(false)
+const isOpenModal = ref(false)
 const dataForm = ref({
   date: null,
   emailTo: '',
@@ -53,7 +55,7 @@ const handlerValidate = useVuelidate(
     },
   },
   dataForm,
-  {$scope: false}
+  { $scope: false }
 )
 
 const setEmailErrors = computed(() => {
@@ -76,11 +78,10 @@ const validateForm = async (paymentMethod) => {
 const send = async () => {
   handlerValidate.value.$reset()
   const _validate = await handlerValidate.value.$validate()
-  console.log("validate", _validate)
+  console.log('validate', _validate)
   if (!_validate) return
 
   validateForm.value = _validate
-
 }
 onMounted(async () => {
   const response = await getPrice()
@@ -93,7 +94,7 @@ onMounted(async () => {
       <div class="absolute left-0 top-0 flex h-full w-full flex-col items-start justify-end p-20">
         <p class="text-4xl font-bold uppercase text-white" v-text="'El regalo perfecto'" />
         <p class="text-lg font-light text-white" v-text="'una tarjeta de regalo de eroca es la opción perfecta.'"></p>
-        <button class="mt-4 flex items-center rounded-lg bg-white px-4 py-2 text-gray-800">
+        <button @click="isOpenModal = true" class="mt-4 flex items-center rounded-lg bg-white px-4 py-2 text-gray-800">
           Consultar saldo
           <ChevronRightIcon class="w-5" />
         </button>
@@ -111,7 +112,11 @@ onMounted(async () => {
       </section>
       <template v-else>
         <section class="mx-auto w-full px-6 text-start">
-          <span :class="{ 'text-red-500': handlerValidate?.['priceGift']?.$errors?.length > 0 }" class="mb-1 text-sm font-bold text-gray-900 dark:text-white">Importe:</span>
+          <span
+            :class="{ 'text-red-500': handlerValidate?.['priceGift']?.$errors?.length > 0 }"
+            class="mb-1 text-sm font-bold text-gray-900 dark:text-white"
+            >Importe:</span
+          >
           <ul class="mb-4 flex w-full flex-wrap gap-4">
             <li v-for="(item, index) in prices" :key="item">
               <input
@@ -136,10 +141,8 @@ onMounted(async () => {
               </label>
             </li>
           </ul>
-          <p class="text-sm font-bold text-red-500 mb-2" v-if="handlerValidate?.['priceGift']?.$errors?.length > 0">
-            {{ 
-                $t('VALIDATIONS.' + handlerValidate?.['priceGift']?.$errors?.[0]?.$validator?.toUpperCase())
-            }}
+          <p class="mb-2 text-sm font-bold text-red-500" v-if="handlerValidate?.['priceGift']?.$errors?.length > 0">
+            {{ $t('VALIDATIONS.' + handlerValidate?.['priceGift']?.$errors?.[0]?.$validator?.toUpperCase()) }}
           </p>
 
           <TextFields
@@ -258,7 +261,8 @@ onMounted(async () => {
                 />
               </Accordion>
               <Accordion :title="'Tarjeta de crédito'">
-                <Card   @validate="validateForm"
+                <Card
+                  @validate="validateForm"
                   :validate-form="validateFormData"
                   @nextStep="successPayment = true"
                   endpoint="gift-cards/purchase"
@@ -269,7 +273,8 @@ onMounted(async () => {
                     name: dataForm.name,
                     message: dataForm.message,
                     date: dataForm.date,
-                  }"/>
+                  }"
+                />
               </Accordion>
             </div>
           </section>
@@ -279,4 +284,6 @@ onMounted(async () => {
   </section>
   <Login v-if="login" @close="login = false" @register="(login = false), (register = true)" />
   <Register v-if="register" @close="register = false" @closeRegister="login = true" @login="(login = true), (register = false)" />
+
+  <ConsultBalance v-if="isOpenModal" @close="isOpenModal = false" />
 </template>
