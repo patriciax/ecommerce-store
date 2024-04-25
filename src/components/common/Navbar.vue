@@ -10,6 +10,8 @@ import CountryStore from '@/stores/country'
 import _storeProduct from '@/stores/product'
 import _stroreSearch from '@/stores/search'
 import _storeUser from '@/stores/user'
+import _storePagoMovil from '@/stores/pagoMovil'
+import _storeZelle from '@/stores/zelle'
 import { Bars3BottomLeftIcon, ChevronDownIcon, HeartIcon, ShoppingCartIcon, UserIcon, XMarkIcon } from '@heroicons/vue/24/outline'
 import { onMounted, ref } from 'vue'
 import Dropdown from './Dropdown.vue'
@@ -20,6 +22,8 @@ const countryStore = CountryStore()
 const storeSearch = _stroreSearch()
 const cartStore = CartStore()
 const storeUser = _storeUser()
+const pagoMovilStore = _storePagoMovil()
+const zelleStore = _storeZelle()
 
 const filter = ref('')
 const mainCategories = ref([])
@@ -57,7 +61,11 @@ onMounted(async () => {
 
   if (countryStore.country === 'Venezuela') {
     await productStore.getPrice()
+    await pagoMovilStore.getPagoMovil()
   }
+
+  await zelleStore.getZelle()
+
 })
 
 </script>

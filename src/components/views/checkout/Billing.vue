@@ -4,6 +4,7 @@ import InputPhoneNumber from '@/components/common/InputPhoneNumber.vue'
 import SelectField from '@/components/common/SelectField.vue'
 import TextFields from '@/components/common/TextFields.vue'
 import Banesco from '@/components/paymentMethods/Banesco.vue'
+import MobilePayment from '@/components/paymentMethods/mobilePayment.vue'
 import Card from '@/components/paymentMethods/Card.vue'
 import GiftCard from '@/components/paymentMethods/GiftCard.vue'
 import Paypal from '@/components/paymentMethods/Paypal.vue'
@@ -373,6 +374,35 @@ const validateForm = async (paymentMethod) => {
           <accordion hidden :title="''" v-if="countryStore.country == 'Venezuela'">
             <template #img> <img class="w-32" src="@/assets/images/banesco.png" /></template>
             <Banesco
+              :validate-form="validateFormData"
+              @validate="validateForm"
+              @nextStep="$emit('nextStep')"
+              :cart="cartStore.cart"
+              :name="dataForm.name"
+              :email="dataForm.email"
+              :phone="dataForm.phone"
+              :carrier="carrierObject"
+            />
+          </accordion>
+
+          <accordion hidden :title="''" v-if="countryStore.country == 'Venezuela'">
+            <template #img> Pago móvil</template>
+            <MobilePayment
+              :validate-form="validateFormData"
+              @validate="validateForm"
+              @nextStep="$emit('nextStep')"
+              :cart="cartStore.cart"
+              :name="dataForm.name"
+              :email="dataForm.email"
+              :phone="dataForm.phone"
+              :carrier="carrierObject"
+            />
+          </accordion>
+
+          <accordion hidden :title="''">
+            <template #img>Zelle</template>
+            <MobilePayment
+              paymentMethod="zelle"
               :validate-form="validateFormData"
               @validate="validateForm"
               @nextStep="$emit('nextStep')"

@@ -100,9 +100,10 @@
     "CARD_HOLDER_ID":"Cédula del titular de la tarjeta",
     "CARD_NUMBER":"Número de tarjeta",
     "CVC": "CVC",
-    "EXPIRATION_DATE": "Expiration date",
+    "EXPIRATION_DATE": "Fecha de expiración",
     "COUNTRY": "País",
     "STATE": "Estado",
-    "ADDRESS": "Dirección"
+    "ADDRESS": "Dirección",
+    "REFERENCE": "Referencia"
   }
 }

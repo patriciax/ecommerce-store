@@ -14,6 +14,7 @@ import { email, required } from '@vuelidate/validators'
 import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import CountryStore from '@/stores/country'
+import MobilePayment from '@/components/paymentMethods/mobilePayment.vue'
 
 const countryStore = CountryStore()
 const giftCardStore = GiftCardStore()
@@ -271,6 +272,23 @@ onMounted(async () => {
                     date: dataForm.date,
                   }"/>
               </Accordion>
+              <accordion hidden :title="''" v-if="countryStore.country == 'Venezuela'">
+                <template #img> Pago móvil</template>
+                <MobilePayment
+                  :validate-form="validateFormData"
+                  @validate="validateForm"
+                  endpoint="gift-cards/purchase"
+                  @nextStep="successPayment = true"
+                  isCard
+                  :card="{
+                    total: dataForm.priceGift,
+                    emailTo: dataForm.emailTo,
+                    name: dataForm.name,
+                    message: dataForm.message,
+                    date: dataForm.date,
+                  }"
+                />
+              </accordion>
             </div>
           </section>
         </section>
