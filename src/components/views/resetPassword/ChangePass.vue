@@ -12,6 +12,7 @@ const props = defineProps({
   email: {
     type: String,
   },
+  passwordOtp:String
 })
 
 const { pushNotification } = useNotifications()
@@ -24,7 +25,8 @@ const login = ref(false)
 const dataForm = ref({
   email: props.email,
   password: '',
-  passwordOtp: '',
+  passwordOtp: props.passwordOtp,
+  passwordConfirm: '',
 })
 
 const handlerValidate = useVuelidate(
@@ -32,7 +34,7 @@ const handlerValidate = useVuelidate(
     password: {
       required,
     },
-    passwordOtp: {
+    passwordConfirm: {
       required,
     },
   },
@@ -48,7 +50,7 @@ const setEmailErrors = computed(() => {
 })
 
 const setPasswordErrors = computed(() => {
-  const validator = handlerValidate.value?.['passwordOtp']?.$errors?.[0]?.$validator
+  const validator = handlerValidate.value?.['passwordConfirm']?.$errors?.[0]?.$validator
   if (validator == 'required') return t('VALIDATIONS.REQUIRED')
   else if (passwordHasError.value) return 'Las contraseñas no coinciden'
 
@@ -59,7 +61,7 @@ const sendForm = async () => {
   const _validate = await handlerValidate.value.$validate()
   if (!_validate) return
 
-  if (dataForm.value.password !== dataForm.value.passwordOtp) {
+  if (dataForm.value.password !== dataForm.value.passwordConfirm) {
     passwordHasError.value = true
     pushNotification({
       id: '',
@@ -130,7 +132,7 @@ const sendForm = async () => {
               class="col-span-2 md:col-span-1"
               id="pass"
               type="password"
-              v-model="dataForm.passwordOtp"
+              v-model="dataForm.passwordConfirm"
               isRequired
               :errorMessage="setPasswordErrors || passwordHasError"
               name="name"
@@ -150,5 +152,4 @@ const sendForm = async () => {
     </div>
   </section>
 
-  <!-- <Login v-if="login" @close="login = false" @register="(login = false), (register = true)" /> -->
 </template>

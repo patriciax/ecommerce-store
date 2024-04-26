@@ -1,4 +1,5 @@
-import { _getAllHome, _getSingleProduct, _getPrice } from '@/api/repositories/product.repository'
+import { sendGiftCardBalance } from '@/api/repositories/giftCard.repository'
+import { _getAllHome } from '@/api/repositories/product.repository'
 import { defineStore } from 'pinia'
 
 export default defineStore({
@@ -6,7 +7,8 @@ export default defineStore({
   state: () => ({
     _status: null,
     _error: null,
-    _purchaseData: null
+    _purchaseData: null,
+    _balance:null
   }),
   getters: {
     isLoading: (state) => state._status === 'loading',
@@ -15,18 +17,17 @@ export default defineStore({
     error: (state) => state._error,
   },
   actions: {
-
-    async purchaseGiftCard(data){
-        this.changeStatus('loading')
-        try {
-            const response = await this.purchaseGiftCard(data)
-            if (response) {
-            this._purchaseData = response.data
-            this.changeStatus('ready')
-            }
-        } catch (error) {
-            this.changeStatus('error', error)
+    async purchaseGiftCard(data) {
+      this.changeStatus('loading')
+      try {
+        const response = await this.purchaseGiftCard(data)
+        if (response) {
+          this._purchaseData = response.data
+          this.changeStatus('ready')
         }
+      } catch (error) {
+        this.changeStatus('error', error)
+      }
     },
     async getAllProducts() {
       this.changeStatus('loading')
@@ -40,7 +41,21 @@ export default defineStore({
         this.changeStatus('error', error)
       }
     },
-    
+    async getBalance(data) {
+      this.changeStatus('loading')
+      try {
+        const response = await sendGiftCardBalance(data)
+        console.log(response)
+        if (response?.data?.status === 'success') {
+          this.changeStatus('ready')
+        }else {
+          this.changeStatus('error')
+        }
+      } catch (error) {
+        this.changeStatus('error', error)
+      }
+    },
+
 
     changeStatus(status, error = null) {
       this._status = status

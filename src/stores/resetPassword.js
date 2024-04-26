@@ -55,11 +55,8 @@ export default defineStore({
       this.changeStatus('loading')
       try {
         const response = await _updatePass(body)
-        if (!response?.data) {
-          this.changeStatus('error')
-        }
-
-        if (response?.data?.status === 'success') {
+        console.log(response)
+        if (response?.status === 'success') {
           this.changeStatus('ready')
         } else {
           this.changeStatus('error')

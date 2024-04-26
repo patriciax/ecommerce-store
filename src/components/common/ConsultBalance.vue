@@ -2,20 +2,24 @@
 import Btn from '@/components/common/Btn.vue'
 import Document from '@/components/common/Document.vue'
 import Modal from '@/components/common/Modal.vue'
+import TextFields from '@/components/common/TextFields.vue'
 import useNotifications from '@/composables/useNotifications'
+import BalanceStore from '@/stores/giftCard'
 import useVuelidate from '@vuelidate/core'
-import { required } from '@vuelidate/validators'
-import { ref } from 'vue'
+import { email, required } from '@vuelidate/validators'
+import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 const emit = defineEmits(['close'])
-
 const { t } = useI18n()
 const { pushNotification } = useNotifications()
-
+const emailHasError = ref(null)
+const showVerification = ref(true)
+const balanceStore = BalanceStore()
 const dataForm = ref({
- cardNumber: '',
-  cvc: '',
+  cardNumber: '',
+  cardPin: '',
+  email: '',
 })
 
 const handlerValidate = useVuelidate(
@@ -24,39 +28,40 @@ const handlerValidate = useVuelidate(
       required,
     },
 
-    cvc: {
+    cardPin: {
       required,
+    },
+    email: {
+      required,
+      email,
     },
   },
   dataForm
 )
 
+const setEmailErrors = computed(() => {
+  const validator = handlerValidate.value?.['email']?.$errors?.[0]?.$validator
+  if (validator == 'required') return t('VALIDATIONS.REQUIRED')
+  if (validator == 'email') return t('VALIDATIONS.EMAIL')
+  else if (emailHasError.value) return ' '
+
+  return undefined
+})
+const handleConsult = () => {
+  showVerification.value = true
+  dataForm.value.cardNumber = ''
+  dataForm.value.cardPin = ''
+  dataForm.value.email = ''
+}
 
 const sendForm = async () => {
-    
+  console.log(dataForm.value)
   const _validate = await handlerValidate.value.$validate()
   if (!_validate) return
 
-
-  if (isError) {
-    pushNotification({
-      id: '',
-      title: 'La tarjeta no se encuentra',
-      type: 'error',
-    })
-  }
-
-  if (isReady) {
-    pushNotification({
-      id: '',
-      title: 'Consulta enviada al correo',
-      type: 'success',
-    })
-    emit('close')
-  }
-
+  await balanceStore.getBalance(dataForm.value)
+  showVerification.value = false
 }
-
 </script>
 <template>
   <Modal size="w-[500px]" @close="$emit('close')">
@@ -66,7 +71,18 @@ const sendForm = async () => {
         <h2 class="mb-4 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900" v-text="'Consultar saldo'"></h2>
       </div>
 
-      <form class="px-6" @submit.prevent="sendForm">
+      <form v-if="showVerification" class="px-6" @submit.prevent="sendForm">
+        <TextFields
+          id="email"
+          class="mb-4"
+          v-model="dataForm.email"
+          isRequired
+          :errorMessage="setEmailErrors || emailHasError"
+          name="name"
+          placeholder="example@gmail.com"
+          :label="t('FORM.EMAIL')"
+        />
+
         <div>
           <Document
             v-model="dataForm.cardNumber"
@@ -84,12 +100,12 @@ const sendForm = async () => {
         <div>
           <Document
             :errorMessage="
-              handlerValidate?.['cvc']?.$errors?.length > 0
-                ? $t('VALIDATIONS.' + handlerValidate?.['cvc']?.$errors?.[0]?.$validator?.toUpperCase())
+              handlerValidate?.['cardPin']?.$errors?.length > 0
+                ? $t('VALIDATIONS.' + handlerValidate?.['cardPin']?.$errors?.[0]?.$validator?.toUpperCase())
                 : undefined
             "
-            v-model="dataForm.cvc"
-            :label="$t('PAYMENTS.CVC')"
+            v-model="dataForm.cardPin"
+            :label="$t('PAYMENTS.cardPin')"
             :maxLength="4"
           />
         </div>
@@ -98,6 +114,44 @@ const sendForm = async () => {
           <Btn text="Consultar" isFull />
         </div>
       </form>
+
+      <section v-else class="text-center">
+        <div v-if="balanceStore.isError">
+          <svg
+            clas
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="mx-auto h-10 w-10 text-red-500"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+            />
+          </svg>
+
+          <p class="text-xl font-bold text-red-500 mb-4">No se encuentra la tarjeta de crédito</p>
+          <div class="col-span-2 mt-6">
+          <Btn text="Volver a consultar" isFull @click="handleConsult"/>
+        </div>
+        </div>
+        <div v-if="balanceStore.isReady">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="mx-auto h-10 w-10 text-green-500"
+          >
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+          </svg>
+          <p class="text-xl font-bold text-green-500">Consulta enviada al correo</p>
+        </div>
+      </section>
     </div>
   </Modal>
 </template>

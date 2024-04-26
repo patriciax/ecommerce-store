@@ -88,8 +88,8 @@ const sendForm = async () => {
             Reset passwod
           </button>
         </form>
-        <Verification v-if="showVerification" :email="dataForm.email" @close="(changePassword = true), (showVerification = false)" />
-        <ChangePass v-if="changePassword" :email="dataForm.email" />
+        <Verification v-if="showVerification" :email="dataForm.email" @close="(changePassword = true), (showVerification = false)"  @currentCode="passwordOtp = $event"/>
+        <ChangePass v-if="changePassword" :email="dataForm.email" :passwordOtp="passwordOtp" />
       </div>
     </div>
   </section>

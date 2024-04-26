@@ -20,39 +20,35 @@ const storeResetPass = RestorePassword()
 const currentCode = ref('')
 
 const verifyCode = async () => {
-  emit('close')
-  // await storeResetPass.verifyCode({ email: props.email, passwordOtp: currentCode.value })
-  // if (storeResetPass.isReady) {
-  //   pushNotification({
-  //     id: '',
-  //     title:'Verificacion exitosa',
-  //     type: 'success',
-  //   })
-  //   emit('close')
-  // } else {
-  //   pushNotification({
-  //     id: '',
-  //     title: t('COMMON.ERROR'),
-  //     type: 'error',
-  //   })
-  // }
+  await storeResetPass.verifyCode({ email: props.email, passwordOtp: currentCode.value })
+  if (storeResetPass.isReady) {
+    pushNotification({
+      id: '',
+      title: 'Verificacion exitosa',
+      type: 'success',
+    })
+    emit('close')
+    emit('currentCode', currentCode.value)
+  } else {
+    pushNotification({
+      id: '',
+      title: 'Codigo incorrecto',
+      type: 'error',
+    })
+  }
 }
 
-// const resendCode = async() => {
-//   await storeResetPass.resendCode({ email: storeResetPass.data.user?.email })
-//   pushNotification({
-//         id: '',
-//         title: 'Codigo reenviado',
-//         type: 'success',
-//       })
+const resendCode = async () => {
+  await storeResetPass.restorePass({ email: props.email })
 
-// }
+  pushNotification({
+    id: '',
+    title: 'Codigo reenviado',
+    type: 'success',
+  })
+}
 
-// onMounted(() => {
-//   if(props.isLogin){
-//     resendCode()
-//   }
-// })
+
 </script>
 <template>
   <div class="flex min-h-full flex-col justify-center rounded-2xl bg-white px-4 py-6 md:w-[410px] md:py-12 lg:px-4">
@@ -76,7 +72,7 @@ const verifyCode = async () => {
         <div class="flex flex-col space-y-5">
           <div>
             <button
-            :class=" storeResetPass.isLoading || !currentCode ? 'bg-gray-300' : 'bg-gray-900'"
+              :class="storeResetPass.isLoading || !currentCode ? 'bg-gray-300' : 'bg-gray-900'"
               :disabled="storeResetPass.isLoading || !currentCode"
               @click="verifyCode"
               class="mx-auto flex w-5/6 justify-center rounded-xl p-3 text-sm font-semibold leading-6 text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
