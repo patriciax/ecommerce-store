@@ -1,17 +1,18 @@
 import _storeCart from '@/stores/cart/cart'
-import _storeFavorite from '@/stores/favorite'
 import CountryStore from '@/stores/country'
+import _storeFavorite from '@/stores/favorite'
 import _storeUser from '@/stores/user'
 import Category from '@/views/Category.vue'
 import GiftCard from '@/views/GiftCard.vue'
 import Offers from '@/views/Offers.vue'
 import OrderManagement from '@/views/OrderManagement.vue'
 import { createRouter, createWebHistory } from 'vue-router'
+import ResetPassword from '../components/views/resetPassword/ResetPassword.vue'
 import Checkout from '../views/Checkout.vue'
+import Favorites from '../views/Favorites.vue'
 import HomeView from '../views/HomeView.vue'
 import Search from '../views/Search.vue'
 import Product from '../views/SingleProduct.vue'
-import Favorites from '../views/Favorites.vue'
 
 const router = createRouter({
   history: createWebHistory((import.meta as any).env.BASE_URL),
@@ -19,7 +20,8 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: HomeView
+      component: HomeView,
+    
     },
     {
       path: '/product/:slug',
@@ -59,6 +61,11 @@ const router = createRouter({
         id: route.query.id,
         name: route.query.name
       }),
+    },
+    {
+      path: '/reset-password',
+      name: 'reset-password',
+      component: ResetPassword,
     },
     {
       path: '/offers',
