@@ -15,7 +15,6 @@ import useVuelidate from '@vuelidate/core'
 import { email, required } from '@vuelidate/validators'
 import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import CountryStore from '@/stores/country'
 import MobilePayment from '@/components/paymentMethods/mobilePayment.vue'
 
 const countryStore = CountryStore()
