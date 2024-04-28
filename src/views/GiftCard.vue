@@ -289,6 +289,24 @@ onMounted(async () => {
                   }"
                 />
               </accordion>
+              <accordion hidden :title="''">
+                <template #img> Zelle</template>
+                <MobilePayment
+                  :validate-form="validateFormData"
+                  @validate="validateForm"
+                  endpoint="gift-cards/purchase"
+                  @nextStep="successPayment = true"
+                  :paymentMethod="'zelle'"
+                  isCard
+                  :card="{
+                    total: dataForm.priceGift,
+                    emailTo: dataForm.emailTo,
+                    name: dataForm.name,
+                    message: dataForm.message,
+                    date: dataForm.date,
+                  }"
+                />
+              </accordion>
             </div>
           </section>
         </section>
