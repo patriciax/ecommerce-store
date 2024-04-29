@@ -69,8 +69,8 @@ const setEmailErrors = computed(() => {
 })
 
 const validateForm = async (paymentMethod) => {
+  validateFormData.value = null
   handlerValidate.value.$reset()
-  handlerValidate.value.$touch()
   const result = await handlerValidate.value.$validate()
 
   validateFormData.value = result
@@ -79,7 +79,6 @@ const validateForm = async (paymentMethod) => {
 const send = async () => {
   handlerValidate.value.$reset()
   const _validate = await handlerValidate.value.$validate()
-  console.log('validate', _validate)
   if (!_validate) return
 
   validateForm.value = _validate

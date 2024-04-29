@@ -2,6 +2,7 @@
 import PaymentMethods from '@/stores/paymentMethods'
 import useNotificationsStore from '@/composables/useNotifications';
 import { ref } from 'vue'
+import { showNotification } from '@/composables/useNotification';
 
 const paymentMethods = PaymentMethods()
 const emit = defineEmits(['nextStep', 'validate'])
@@ -163,7 +164,7 @@ interval.value = setInterval(() => {
               emit('nextStep')
             }
           } catch (error) {
-            console.error(error)
+            showNotification('Algo ha ido mal', 'error')
           }
         },
       })

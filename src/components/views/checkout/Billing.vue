@@ -346,7 +346,7 @@ const validateForm = async (paymentMethod) => {
         <li v-for="(item, index) in cartStore.cart" :key="index" class="mb-4 flex justify-between border-b pb-2">
           <span class="" v-text="`${item.name} x ${item.quantity}`"></span>
           <p class="font-bold" >
-            ${{item.priceDiscount || item.price}}
+            ${{item.priceDiscount || item.price }}
           </p>
         </li>
         <li class="mb-4 flex justify-between border-b pb-2">
@@ -355,14 +355,14 @@ const validateForm = async (paymentMethod) => {
         <li class="mb-4 flex justify-between border-b pb-2">
           <span class="text-lg font-bold">Total</span>
           <p class="text-lg font-bold">
-            ${{cartStore.total}}
+            ${{cartStore.total.toFixed(2)}}
 
           </p>
         </li>
         <li class="mb-4 flex justify-between border-b pb-2" v-if="countryStore.country == 'Venezuela'">
           <span class="text-lg font-bold">Total en Bolivares</span>
           <p class="text-lg font-bold">
-           Bs.{{ (productStore.price * cartStore.total).toLocaleString()}}
+           Bs.{{ (productStore.price * cartStore.total).toFixed(2).toLocaleString()}}
 
           </p>
         </li>
