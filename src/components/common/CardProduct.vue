@@ -1,14 +1,13 @@
 <script setup lang="ts">
 import Btn from '@/components/common/Btn.vue'
-import _storeProduct from '@/stores/product'
+import useNotificationsStore from '@/composables/useNotifications'
 import FavoriteStore from '@/stores/favorite'
+import _storeProduct from '@/stores/product'
 import { EyeIcon, HeartIcon, PhotoIcon } from '@heroicons/vue/24/outline'
-import { HeartIcon as SolidHearIcon} from '@heroicons/vue/24/solid'
-import { ref } from 'vue'
+import { HeartIcon as SolidHearIcon } from '@heroicons/vue/24/solid'
+import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
-import useNotificationsStore from '@/composables/useNotifications'
-import { computed } from 'vue'
 
 const { pushNotification } = useNotificationsStore()
 const favoriteLoading = ref(false)
@@ -70,7 +69,7 @@ const goToProduct = (slug: any) => router.push({ name: 'singleProduct', params: 
     </div>
     <section class="flex w-full items-center justify-between text-base">
       <div class="w-full">
-        <p v-text="locale === 'en_US' ? props.data.nameEnglish : props.data.name" />
+        <p class="truncate-wrap truncate-wrap__lines truncate-wrap__lines_2 mb-1" v-text="locale === 'en_US' ? props.data.nameEnglish : props.data.name" />
         <p class="text-xl font-bold flex items-center" >
           <p v-if="props.data.priceDiscount" class="line-through text-sm mr-2">${{ props.data.price }}</p>
           <p>${{ props.data.priceDiscount ? props.data.priceDiscount : props.data.price }}</p>

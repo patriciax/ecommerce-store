@@ -4,10 +4,10 @@ import InputPhoneNumber from '@/components/common/InputPhoneNumber.vue'
 import SelectField from '@/components/common/SelectField.vue'
 import TextFields from '@/components/common/TextFields.vue'
 import Banesco from '@/components/paymentMethods/Banesco.vue'
-import MobilePayment from '@/components/paymentMethods/mobilePayment.vue'
 import Card from '@/components/paymentMethods/Card.vue'
 import GiftCard from '@/components/paymentMethods/GiftCard.vue'
 import Paypal from '@/components/paymentMethods/Paypal.vue'
+import MobilePayment from '@/components/paymentMethods/mobilePayment.vue'
 import useNotifications from '@/composables/useNotifications'
 import CartStore from '@/stores/cart/cart'
 import _storeProduct from '@/stores/product'
@@ -385,22 +385,11 @@ const validateForm = async (paymentMethod) => {
             />
           </accordion>
 
-          <accordion hidden :title="''" v-if="countryStore.country == 'Venezuela'">
-            <template #img> Pago móvil</template>
-            <MobilePayment
-              :validate-form="validateFormData"
-              @validate="validateForm"
-              @nextStep="$emit('nextStep')"
-              :cart="cartStore.cart"
-              :name="dataForm.name"
-              :email="dataForm.email"
-              :phone="dataForm.phone"
-              :carrier="carrierObject"
-            />
-          </accordion>
+     
 
           <accordion hidden :title="''">
-            <template #img>Zelle</template>
+            <template #img> <img class="w-20" src="@/assets/images/zelle.png" /></template>
+
             <MobilePayment
               paymentMethod="zelle"
               :validate-form="validateFormData"
@@ -424,6 +413,18 @@ const validateForm = async (paymentMethod) => {
               :email="dataForm.email"
               :phone="dataForm.phone"
               @nextStep="$emit('nextStep')"
+              :carrier="carrierObject"
+            />
+          </accordion>
+          <accordion hidden  v-if="countryStore.country == 'Venezuela'" :title="'Pago móvil'">
+            <MobilePayment
+              :validate-form="validateFormData"
+              @validate="validateForm"
+              @nextStep="$emit('nextStep')"
+              :cart="cartStore.cart"
+              :name="dataForm.name"
+              :email="dataForm.email"
+              :phone="dataForm.phone"
               :carrier="carrierObject"
             />
           </accordion>
