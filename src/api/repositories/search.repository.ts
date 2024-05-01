@@ -11,11 +11,11 @@ export const _getSearch = (data: any, _priceMax?: number, _priceMin?: number) =>
     let endpoint = `/v1/products/product-search`;
 
     if (_priceMax && _priceMin) {
-        endpoint += `?price[gte]=${_priceMax}&price[lte]=${_priceMin}`;
+        endpoint += `?price[gte]=${_priceMin}&price[lte]=${_priceMax}`;
     } else if (_priceMax) {
-        endpoint += `?price[gte]=${_priceMax}`;
+        endpoint += `?price[lte]=${_priceMax}`;
     } else if (_priceMin) {
-        endpoint += `?price[lte]=${_priceMin}`;
+        endpoint += `?price[gte]=${_priceMin}`;
     }
 
     return axiosPost(endpoint, data);

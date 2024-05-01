@@ -120,7 +120,7 @@ watch(
             <span class="mx-2" v-text="'-'" />
             <TextFields label=" " type="number" placeholder="$500" v-model="priceMax" />
           </section>
-          <button class="mt-4 w-full rounded-md bg-gray-400 px-3 py-1.5 text-white" @click="searchPrice">Buscar por precio</button>
+          <button class="mt-4 w-full rounded-md bg-gray-400 px-3 py-1.5 text-white" @click="searchPrice">Buscar</button>
         </section>
       </section>
 
