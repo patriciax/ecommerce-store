@@ -121,8 +121,7 @@ watch(
 
     <div v-else class="flex h-[599px] min-h-full flex-col justify-center rounded-xl bg-white px-6 py-6 md:py-12 lg:px-16">
       <div class="text-center sm:mx-auto sm:w-full sm:max-w-sm">
-        <p v-text="' LOGO'" class="hidden md:block" />
-        <!-- <img class="mx-auto h-10 w-auto" src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600" alt="Your Company" /> -->
+        <img class="mx-auto h-10 w-auto mb-6" src="@/assets/images/logo.png" alt="Logo roca" />
         <h2 class="mb-4 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900" v-text="'Inicia Sesion'"></h2>
       </div>
 

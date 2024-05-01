@@ -6,26 +6,20 @@ import Login from '@/components/views/home/auth/Login.vue'
 import Register from '@/components/views/home/auth/Register.vue'
 import router from '@/router'
 import CartStore from '@/stores/cart/cart'
-import CountryStore from '@/stores/country'
-import _storePagoMovil from '@/stores/pagoMovil'
-import _storeProduct from '@/stores/product'
 import RestorePassword from '@/stores/resetPassword.js'
 import _stroreSearch from '@/stores/search'
 import _storeUser from '@/stores/user'
-import _storeZelle from '@/stores/zelle'
 import { Bars3BottomLeftIcon, ChevronDownIcon, HeartIcon, ShoppingCartIcon, UserIcon, XMarkIcon } from '@heroicons/vue/24/outline'
 import { onMounted, ref, watch } from 'vue'
 import Dropdown from './Dropdown.vue'
 import LanguageSelector from './LanguageSelector.vue'
 
 const restorePassStore = RestorePassword()
-const productStore = _storeProduct()
-const countryStore = CountryStore()
+
 const storeSearch = _stroreSearch()
 const cartStore = CartStore()
 const storeUser = _storeUser()
-const pagoMovilStore = _storePagoMovil()
-const zelleStore = _storeZelle()
+
 
 const filter = ref('')
 const mainCategories = ref([])
@@ -65,12 +59,7 @@ onMounted(async () => {
     finalCategories.value = response.data?.finalCategories
   }
 
-  if (countryStore.country === 'Venezuela') {
-    await productStore.getPrice()
-    await pagoMovilStore.getPagoMovil()
-  }
 
-  await zelleStore.getZelle()
 
 })
 
@@ -89,7 +78,7 @@ watch(
 
         <div class="ml-14 w-1/6 xl:ml-12">
           <RouterLink to="/">
-            <h3 class="text-2xl font-bold">LOGO</h3>
+            <img src="@/assets/images/logo.png" class="w-28" alt="">
           </RouterLink>
         </div>
 

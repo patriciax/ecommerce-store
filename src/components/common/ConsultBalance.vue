@@ -67,7 +67,7 @@ const sendForm = async () => {
   <Modal size="w-[500px]" @close="$emit('close')">
     <div class="flex h-[599px] min-h-full flex-col justify-center rounded-xl bg-white px-6 py-6 md:py-12 lg:px-16">
       <div class="text-center sm:mx-auto sm:w-full sm:max-w-sm">
-        <p v-text="' LOGO'" class="hidden md:block" />
+        <img class="mx-auto h-10 w-auto mb-5" src="@/assets/images/logo.png" alt="Logo roca" />
         <h2 class="mb-4 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900" v-text="'Consultar saldo'"></h2>
       </div>
 

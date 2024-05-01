@@ -51,7 +51,7 @@
         </div>
         <div class="w-full grid-cols-3 px-4 lg:grid-cols-1">
           <div class="mb-10 w-full">
-            <h4 class="text-dark mb-4 text-lg font-semibold dark:text-white">ACERCA DE eROCA</h4>
+            <h4 class="text-dark mb-4 text-lg font-semibold dark:text-white">ACERCA DE ROCA</h4>
             <ul class="space-y-3">
               <li>
                 <a

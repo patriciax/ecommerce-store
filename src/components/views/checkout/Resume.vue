@@ -1,15 +1,21 @@
 <script setup>
 import router from '@/router'
 import CartStore from '@/stores/cart/cart'
+import CountryStore from '@/stores/country'
 import StorePaymentMethods from '@/stores/paymentMethods'
+import _storeProduct from '@/stores/product'
+import { decimalNumberFormat } from '@/utils/numberFormat'
+import { taxCalculations } from '@/utils/taxCalculations'
 import { computed, onMounted } from 'vue'
-const storePaymentMethods = StorePaymentMethods()
 
+const storePaymentMethods = StorePaymentMethods()
+const productStore = _storeProduct()
+const countryStore = CountryStore()
 const cartStore = CartStore()
 const total = computed(() => {
   let total = 0
   storePaymentMethods?._data?.cart?.forEach((item) => {
-    total += item.price * item.quantity
+    total += item.priceDiscount || item.price  * item.quantity
   })
   return total.toFixed(2)
 })
@@ -85,7 +91,7 @@ let dateFormatted = `${day} de ${meses[month - 1]} de ${year}`
         <section>
           <div class="mb-4">
             <p class="text-lg font-bold" v-text="'Método de pago:'" />
-            <p class="capitalize text-lg" v-text="storePaymentMethods?.paymentMethod" />
+            <p class="text-lg capitalize" v-text="storePaymentMethods?.paymentMethod" />
           </div>
 
           <div>
@@ -96,16 +102,44 @@ let dateFormatted = `${day} de ${meses[month - 1]} de ${year}`
         <div>
           <div class="mb-2 flex justify-between">
             <p class="text-lg" v-text="'Productos:'" />
-            <p class="capitalize text-lg" v-text="'$' + total" />
+            <p class="text-lg capitalize" v-text="'$' + total" />
           </div>
           <div class="mb-6 flex justify-between">
             <p class="text-lg" v-text="'IVA:'" />
-            <p class="capitalize text-lg" v-text="'16%'" />
+            <p
+              class="text-lg capitalize"
+              v-text="decimalNumberFormat(taxCalculations(total, countryStore.country === 'Venezuela' ? 'national' : 'international'))"
+            />
           </div>
           <div class="mb-4 flex justify-between font-bold">
             <p class="text-lg font-bold" v-text="'Total (I.V.A. Incluido):'" />
-            <p class="font-bold text-lg capitalize" v-text="'$' + total" />
+            <p class="text-lg font-bold capitalize" v-text="'$' + decimalNumberFormat(taxCalculations(total, countryStore.country === 'Venezuela' ? 'national' : 'international'))" />
           </div>
+
+          <div class="mb-4 flex justify-between font-bold" v-if="countryStore.country == 'Venezuela'">
+            <p class="text-lg font-bold" v-text="'Total en Bolivares:'" />
+            <p class="text-lg font-bold capitalize">Bs.{{ decimalNumberFormat(productStore.price * total) }}</p>
+          </div>
+
+          <!-- <div class="mb-4 flex justify-between border-b pb-2">
+            <span class="text-lg font-bold">Total en Bolivares</span>
+            <div>
+              <p v-if="productStore.price" class="mb-2 text-right text-lg font-bold">
+                Bs.{{ decimalNumberFormat(productStore.price * cartStore.total) }}
+              </p>
+              <div class="text-md flex items-center justify-center text-right">
+                <p class="mr-2 font-bold">+IVA</p>
+                Bs.{{
+                  decimalNumberFormat(
+                    taxCalculations(
+                      productStore.price * cartStore.total,
+                      countryStore.country === 'Venezuela' ? 'national' : 'international'
+                    )
+                  )
+                }}
+              </div>
+            </div>
+          </div> -->
         </div>
       </section>
     </section>

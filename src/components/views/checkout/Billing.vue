@@ -16,11 +16,12 @@ import StorePaymentMethods from '@/stores/paymentMethods'
 import _storeProduct from '@/stores/product'
 import _storeUser from '@/stores/user'
 import _ZoomStore from '@/stores/zoom'
+import { decimalNumberFormat } from '@/utils/numberFormat'
+import { taxCalculations } from '@/utils/taxCalculations'
 import useVuelidate from '@vuelidate/core'
 import { email, required, requiredIf } from '@vuelidate/validators'
 import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-
 const emit = defineEmits(['nextStep'])
 
 const { t } = useI18n()
@@ -184,6 +185,8 @@ const handlePay = (paymentMethod) => {
   storePaymentMethods.setPaymentMethod(paymentMethod)
   emit('nextStep')
 }
+
+const formatTotal=computed(()=> cartStore.total ? decimalNumberFormat(cartStore.total):0)
 </script>
 <template>
   <section class="grid gap-12 px-10 md:grid-cols-2 lg:px-0">
@@ -352,11 +355,18 @@ const handlePay = (paymentMethod) => {
         </li>
         <li class="mb-4 flex justify-between border-b pb-2">
           <span class="text-lg font-bold">Total</span>
-          <p class="text-lg font-bold">${{ cartStore.total.toFixed(2) }}</p>
+        <div>
+          <p class="text-lg font-bold mb-2 text-right">${{ formatTotal}}</p>
+          <div class="text-md text-right flex items-center justify-center"><p class=" font-bold mr-2">+IVA </p> ${{  decimalNumberFormat(taxCalculations(cartStore.total, countryStore.country === 'Venezuela' ? 'national' : 'international')) }}</div>
+        </div>
         </li>
+   
         <li class="mb-4 flex justify-between border-b pb-2" v-if="countryStore.country == 'Venezuela'">
           <span class="text-lg font-bold">Total en Bolivares</span>
-          <p class="text-lg font-bold">Bs.{{ (productStore.price * cartStore.total).toFixed(2).toLocaleString() }}</p>
+          <div>
+            <p v-if="productStore.price" class="text-lg font-bold text-right mb-2">Bs.{{  decimalNumberFormat((productStore.price * cartStore.total)) }}</p>
+            <div class="text-md text-right flex items-center justify-center"><p class=" font-bold mr-2">+IVA </p> Bs.{{  decimalNumberFormat(taxCalculations(productStore.price * cartStore.total, countryStore.country === 'Venezuela' ? 'national' : 'international')) }}</div>
+          </div>
         </li>
       </ul>
 
@@ -377,22 +387,6 @@ const handlePay = (paymentMethod) => {
             />
           </accordion>
 
-          <accordion hidden :title="''">
-            <template #img> <img class="w-20" src="@/assets/images/zelle.png" /></template>
-
-            <MobilePayment
-              paymentMethod="zelle"
-              :validate-form="validateFormData"
-              @validate="validateForm"
-              @nextStep="handlePay('zelle')"
-              :cart="cartStore.cart"
-              :name="dataForm.name"
-              :email="dataForm.email"
-              :phone="dataForm.phone"
-              :carrier="carrierObject"
-            />
-          </accordion>
-
           <accordion :title="''">
             <template #img> <img class="w-32" src="@/assets/images/paypal.png" /></template>
             <Paypal
@@ -403,6 +397,22 @@ const handlePay = (paymentMethod) => {
               :email="dataForm.email"
               :phone="dataForm.phone"
               @nextStep="handlePay('paypal')"
+              :carrier="carrierObject"
+            />
+          </accordion>
+
+          <accordion hidden :title="''">
+            <template #img> <img class="w-16" src="@/assets/images/zelle.png" /></template>
+
+            <MobilePayment
+              paymentMethod="zelle"
+              :validate-form="validateFormData"
+              @validate="validateForm"
+              @nextStep="handlePay('zelle')"
+              :cart="cartStore.cart"
+              :name="dataForm.name"
+              :email="dataForm.email"
+              :phone="dataForm.phone"
               :carrier="carrierObject"
             />
           </accordion>
@@ -430,7 +440,8 @@ const handlePay = (paymentMethod) => {
               :carrier="carrierObject"
             />
           </accordion>
-          <accordion :title="'Tarjeta Eroca'">
+          <accordion :title="''">
+            <template #img> <p class="text-lg font-semibold" v-text="'Tarjeta '"/><img class="w-14 ml-2 object-contain" src="@/assets/images/logo.png" /></template>
             <GiftCard
               @validate="validateForm"
               :validate-form="validateFormData"

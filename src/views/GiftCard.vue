@@ -273,41 +273,8 @@ onMounted(async () => {
                   }"
                 />
               </Accordion>
-              <Accordion :title="'Tarjeta de crédito'">
-                <Card
-                  @validate="validateForm"
-                  :validate-form="validateFormData"
-                  @nextStep="successPayment = true"
-                  endpoint="gift-cards/purchase"
-                  :isCard="true"
-                  :card="{
-                    total: dataForm.priceGift,
-                    emailTo: dataForm.emailTo,
-                    name: dataForm.name,
-                    message: dataForm.message,
-                    date: dataForm.date,
-                  }"
-                />
-              </Accordion>
-              <accordion hidden :title="''" v-if="countryStore.country == 'Venezuela'">
-                <template #img> Pago móvil</template>
-                <MobilePayment
-                  :validate-form="validateFormData"
-                  @validate="validateForm"
-                  endpoint="gift-cards/purchase"
-                  @nextStep="successPayment = true"
-                  isCard
-                  :card="{
-                    total: dataForm.priceGift,
-                    emailTo: dataForm.emailTo,
-                    name: dataForm.name,
-                    message: dataForm.message,
-                    date: dataForm.date,
-                  }"
-                />
-              </accordion>
               <accordion hidden :title="''">
-                <template #img> Zelle</template>
+                <template #img> <img class="w-16" src="@/assets/images/zelle.png" /></template>
                 <MobilePayment
                   :validate-form="validateFormData"
                   @validate="validateForm"
@@ -324,6 +291,39 @@ onMounted(async () => {
                   }"
                 />
               </accordion>
+              <Accordion :title="'Tarjeta de crédito'">
+                <Card
+                  @validate="validateForm"
+                  :validate-form="validateFormData"
+                  @nextStep="successPayment = true"
+                  endpoint="gift-cards/purchase"
+                  :isCard="true"
+                  :card="{
+                    total: dataForm.priceGift,
+                    emailTo: dataForm.emailTo,
+                    name: dataForm.name,
+                    message: dataForm.message,
+                    date: dataForm.date,
+                  }"
+                />
+              </Accordion>
+              <accordion hidden :title="'Pago móvil'" v-if="countryStore.country == 'Venezuela'">
+                <MobilePayment
+                  :validate-form="validateFormData"
+                  @validate="validateForm"
+                  endpoint="gift-cards/purchase"
+                  @nextStep="successPayment = true"
+                  isCard
+                  :card="{
+                    total: dataForm.priceGift,
+                    emailTo: dataForm.emailTo,
+                    name: dataForm.name,
+                    message: dataForm.message,
+                    date: dataForm.date,
+                  }"
+                />
+              </accordion>
+             
             </div>
           </section>
         </section>
