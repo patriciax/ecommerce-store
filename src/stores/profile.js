@@ -35,7 +35,7 @@ export default defineStore({
       try {
         const response = await  _getInvoices( page, limit)
         if (response) {
-          this._invoice = response.data.products
+          this._invoice = response.data.invoices
           this._paginate = {
             results: response.results,
             totalPages: response.totalPages,

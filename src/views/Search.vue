@@ -2,6 +2,7 @@
 import { getAllCategoriesMenu } from '@/api/repositories/category.repository'
 import CardProduct from '@/components/common/CardProduct.vue'
 import InputSearch from '@/components/common/InputSearch.vue'
+import TextFields from '@/components/common/TextFields.vue'
 import SkeletonCard from '@/components/skeleton/Card.vue'
 import _stroreSearch from '@/stores/search'
 import { onMounted, ref, watch } from 'vue'
@@ -12,6 +13,9 @@ const storeSearch = _stroreSearch()
 const finalCategories = ref([])
 const filter = ref(null)
 const selectedCategories = ref([])
+const priceMax = ref(null)
+const priceMin = ref(null)
+
 onMounted(async () => {
   await storeSearch.getSearch({ textSearch: router.currentRoute.value.params.search })
 
@@ -20,9 +24,7 @@ onMounted(async () => {
     finalCategories.value = response.data?.finalCategories
   }
 })
-const search = async () => {
-  await storeSearch.getSearch({ textSearch: router.currentRoute.value.params.search })
-}
+const search = async () => router.push({ name: 'search', params: { search: filter.value } })
 
 const selectCategory = (category) => {
   if (!selectedCategories.value.some((c) => c._id === category._id)) {
@@ -30,11 +32,19 @@ const selectCategory = (category) => {
   }
 }
 
+const removeCategory = (category) => {
+  selectedCategories.value = selectedCategories.value.filter((c) => c._id !== category._id)
+}
+
 const searchCategory = async () => {
   const selectedCategoryIds = selectedCategories.value.map((category) => category._id)
 
   await storeSearch.getSearch({ textSearch: router.currentRoute.value.params.search, categories: selectedCategoryIds })
 }
+
+const searchPrice = async () => {
+  await storeSearch.getSearch({ textSearch: router.currentRoute.value.params.search}, priceMax.value, priceMin.value)
+} 
 watch(
   () => router.currentRoute.value.params.search,
   async () => {
@@ -46,6 +56,18 @@ watch(
   <section class="mx-auto min-h-[60vh] max-w-7xl">
     <section v-if="!storeSearch.search?.length">
       <p v-text="'No hay resultados.'" class="text-2xl font-bold text-gray-900" />
+      <p class="mt-4">Volver a intentar</p>
+      <section class="max-w-lg">
+        <InputSearch
+          @search="search"
+          class="mb-6 rounded-md border"
+          id="search"
+          v-model="filter"
+          name="Search"
+          :placeholder="'Buscar productos...'"
+          @clear="filter = ''"
+        />
+      </section>
     </section>
     <section v-else class="flex gap-9">
       <section class="w-96">
@@ -83,10 +105,22 @@ watch(
               class="flex justify-between truncate rounded-lg bg-gray-200 p-1.5 text-sm"
             >
               {{ category.name }}
-              <span>x</span>
+              <span @click="removeCategory(category)">x</span>
             </button>
           </div>
-          <button class="mt-4 rounded-md bg-gray-900 px-3 py-1.5 text-white" @click="searchCategory">Buscar por categoria</button>
+          <button v-if="selectedCategories.length" class="mt-4 rounded-md bg-gray-900 px-3 py-1.5 text-white" @click="searchCategory">
+            Buscar por categoria
+          </button>
+        </section>
+
+        <section class="mt-6">
+          <p v-text="'Precio'" class="text-gray-900' text-md mb-4 border-b pb-2 font-bold" />
+          <section class="flex items-center justify-center">
+            <TextFields label=" " type="number" placeholder="$10" v-model="priceMin" />
+            <span class="mx-2" v-text="'-'" />
+            <TextFields label=" " type="number" placeholder="$500" v-model="priceMax" />
+          </section>
+          <button class="mt-4 w-full rounded-md bg-gray-400 px-3 py-1.5 text-white" @click="searchPrice">Buscar por precio</button>
         </section>
       </section>
 

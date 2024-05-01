@@ -47,7 +47,6 @@ const goToFavorite = () => {
 }
 
 const search = () => {
-  console.log(filter.value)
   router.push({ name: 'search', params: { search: filter.value } })
 }
 
