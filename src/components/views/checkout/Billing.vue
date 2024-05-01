@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { getAllCountries } from '@/api/repositories/country.repository'
 import Accordion from '@/components/common/Accordion.vue'
 import InputPhoneNumber from '@/components/common/InputPhoneNumber.vue'
 import SelectField from '@/components/common/SelectField.vue'
@@ -10,6 +11,8 @@ import Paypal from '@/components/paymentMethods/Paypal.vue'
 import MobilePayment from '@/components/paymentMethods/mobilePayment.vue'
 import useNotifications from '@/composables/useNotifications'
 import CartStore from '@/stores/cart/cart'
+import CountryStore from '@/stores/country'
+import StorePaymentMethods from '@/stores/paymentMethods'
 import _storeProduct from '@/stores/product'
 import _storeUser from '@/stores/user'
 import _ZoomStore from '@/stores/zoom'
@@ -18,12 +21,12 @@ import { email, required, requiredIf } from '@vuelidate/validators'
 import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
-import { getAllCountries } from '@/api/repositories/country.repository'
-import CountryStore from '@/stores/country'
+const emit = defineEmits(['nextStep'])
 
 const { t } = useI18n()
 const productStore = _storeProduct()
 const countryStore = CountryStore()
+const storePaymentMethods = StorePaymentMethods()
 
 const countries = ref([])
 const page = ref(1)
@@ -49,7 +52,7 @@ const getCountries = async () => {
   countries.value = response.data?.countries
 }
 
-const dataForm:any = ref({
+const dataForm: any = ref({
   name: '',
   lastname: '',
   email: '',
@@ -59,7 +62,7 @@ const dataForm:any = ref({
   zoomOffice: '',
   foreignCountry: '',
   foreignState: '',
-  foreignAddress: ''
+  foreignAddress: '',
 })
 
 const rules = computed(() => {
@@ -78,28 +81,24 @@ const rules = computed(() => {
       required,
     },
     zoomState: {
-      required: requiredIf(() => countryStore.country == 'Venezuela')
+      required: requiredIf(() => countryStore.country == 'Venezuela'),
     },
     zoomOffice: {
-      required: requiredIf(() => countryStore.country == 'Venezuela')
+      required: requiredIf(() => countryStore.country == 'Venezuela'),
     },
     foreignCountry: {
-      required: requiredIf(() => countryStore.country != 'Venezuela')
+      required: requiredIf(() => countryStore.country != 'Venezuela'),
     },
     foreignState: {
-      required: requiredIf(() => countryStore.country != 'Venezuela')
+      required: requiredIf(() => countryStore.country != 'Venezuela'),
     },
     foreignAddress: {
-      required: requiredIf(() => countryStore.country != 'Venezuela')
+      required: requiredIf(() => countryStore.country != 'Venezuela'),
     },
   }
 })
 
-const handlerValidate = useVuelidate(
-  rules,
-  dataForm,
-  { $scope: false }
-)
+const handlerValidate = useVuelidate(rules, dataForm, { $scope: false })
 
 const handleInputStates = async (_value) => {
   await zoomStore.getOffices(_value)
@@ -138,7 +137,6 @@ const fetchDataForm = () => {
 }
 
 const carrierObject = computed(() => {
-
   const zoomObject = {
     carrierName: 'ZOOM',
     state: statesFormated.value?.find((state) => state?.value == dataForm.value?.zoomState)?.text,
@@ -149,22 +147,22 @@ const carrierObject = computed(() => {
   const upsObject = {
     carrierName: 'UPS',
     country: countries.value.find((country) => country?._id == dataForm.value?.foreignCountry)?.name,
-    state: countries.value.find((country) => country?._id == dataForm.value?.foreignCountry)?.states?.find((state, index) => index + 1 == dataForm.value?.foreignState),
+    state: countries.value
+      .find((country) => country?._id == dataForm.value?.foreignCountry)
+      ?.states?.find((state, index) => index + 1 == dataForm.value?.foreignState),
     address: dataForm.value?.foreignAddress,
   }
 
   return countryStore.country == 'Venezuela' ? zoomObject : upsObject
-
 })
 
 onMounted(async () => {
-
-  if(countryStore.country == 'Venezuela'){
+  if (countryStore.country == 'Venezuela') {
     await zoomStore.getState()
-  }else{
+  } else {
     await getCountries()
   }
-  
+
   if (storeUser.currentUser) {
     fetchDataForm()
     cartStore.productInfo()
@@ -175,7 +173,6 @@ onMounted(async () => {
 })
 
 const validateForm = async (paymentMethod) => {
-
   validateFormData.value = false
   handlerValidate.value.$reset()
   const result = await handlerValidate.value.$validate()
@@ -183,11 +180,10 @@ const validateForm = async (paymentMethod) => {
   validateFormData.value = result
 }
 
-// watch(() => storeUser.currentUser, () => {
-//   fetchDataForm()
-//   cartStore.productInfo()
-
-// })
+const handlePay = (paymentMethod) => {
+  storePaymentMethods.setPaymentMethod(paymentMethod)
+  emit('nextStep')
+}
 </script>
 <template>
   <section class="grid gap-12 px-10 md:grid-cols-2 lg:px-0">
@@ -317,7 +313,11 @@ const validateForm = async (paymentMethod) => {
             isRequired
             :is-disabled="!dataForm.foreignCountry"
             :label="$t('PAYMENTS.STATE')"
-            :options="countries?.find((country) => country._id == dataForm.foreignCountry)?.states?.map((state, index) => ({ value: index + 1, text: state }))"
+            :options="
+              countries
+                ?.find((country) => country._id == dataForm.foreignCountry)
+                ?.states?.map((state, index) => ({ value: index + 1, text: state }))
+            "
             @update:modelValue="(_value) => (dataForm.foreignState = _value)"
           />
           <TextFields
@@ -345,26 +345,18 @@ const validateForm = async (paymentMethod) => {
         <li class="mb-4 flex justify-between border-b pb-2"><span class="font-bold">Product</span> <span class="font-bold">Total</span></li>
         <li v-for="(item, index) in cartStore.cart" :key="index" class="mb-4 flex justify-between border-b pb-2">
           <span class="" v-text="`${item.name} x ${item.quantity}`"></span>
-          <p class="font-bold" >
-            ${{item.priceDiscount || item.price}}
-          </p>
+          <p class="font-bold">${{ item.priceDiscount || item.price }}</p>
         </li>
         <li class="mb-4 flex justify-between border-b pb-2">
           <span class="font-bold">Envío </span> <span class="font-bold text-blue-900">ZOOM</span>
         </li>
         <li class="mb-4 flex justify-between border-b pb-2">
           <span class="text-lg font-bold">Total</span>
-          <p class="text-lg font-bold">
-            ${{cartStore.total}}
-
-          </p>
+          <p class="text-lg font-bold">${{ cartStore.total.toFixed(2) }}</p>
         </li>
         <li class="mb-4 flex justify-between border-b pb-2" v-if="countryStore.country == 'Venezuela'">
           <span class="text-lg font-bold">Total en Bolivares</span>
-          <p class="text-lg font-bold">
-           Bs.{{ (productStore.price * cartStore.total).toLocaleString()}}
-
-          </p>
+          <p class="text-lg font-bold">Bs.{{ (productStore.price * cartStore.total).toFixed(2).toLocaleString() }}</p>
         </li>
       </ul>
 
@@ -376,7 +368,7 @@ const validateForm = async (paymentMethod) => {
             <Banesco
               :validate-form="validateFormData"
               @validate="validateForm"
-              @nextStep="$emit('nextStep')"
+              @nextStep="handlePay('Banesco')"
               :cart="cartStore.cart"
               :name="dataForm.name"
               :email="dataForm.email"
@@ -385,8 +377,6 @@ const validateForm = async (paymentMethod) => {
             />
           </accordion>
 
-     
-
           <accordion hidden :title="''">
             <template #img> <img class="w-20" src="@/assets/images/zelle.png" /></template>
 
@@ -394,7 +384,7 @@ const validateForm = async (paymentMethod) => {
               paymentMethod="zelle"
               :validate-form="validateFormData"
               @validate="validateForm"
-              @nextStep="$emit('nextStep')"
+              @nextStep="handlePay('zelle')"
               :cart="cartStore.cart"
               :name="dataForm.name"
               :email="dataForm.email"
@@ -412,15 +402,15 @@ const validateForm = async (paymentMethod) => {
               :name="dataForm.name"
               :email="dataForm.email"
               :phone="dataForm.phone"
-              @nextStep="$emit('nextStep')"
+              @nextStep="handlePay('paypal')"
               :carrier="carrierObject"
             />
           </accordion>
-          <accordion hidden  v-if="countryStore.country == 'Venezuela'" :title="'Pago móvil'">
+          <accordion hidden v-if="countryStore.country == 'Venezuela'" :title="'Pago móvil'">
             <MobilePayment
               :validate-form="validateFormData"
               @validate="validateForm"
-              @nextStep="$emit('nextStep')"
+              @nextStep="handlePay('Pago movil')"
               :cart="cartStore.cart"
               :name="dataForm.name"
               :email="dataForm.email"
@@ -436,24 +426,32 @@ const validateForm = async (paymentMethod) => {
               :name="dataForm.name"
               :email="dataForm.email"
               :phone="dataForm.phone"
-              @nextStep="$emit('nextStep')"
+              @nextStep="handlePay('Tarjeta de crédito')"
               :carrier="carrierObject"
             />
           </accordion>
           <accordion :title="'Tarjeta Eroca'">
-            <GiftCard 
+            <GiftCard
               @validate="validateForm"
               :validate-form="validateFormData"
               :cart="cartStore.cart"
               :name="dataForm.name"
               :email="dataForm.email"
               :phone="dataForm.phone"
-              @nextStep="$emit('nextStep')"
+              @nextStep="handlePay('Tarjeta Eroca')"
               :carrier="carrierObject"
             />
           </accordion>
         </div>
       </section>
     </div>
+
+    <button
+      class="group flex col-span-2 mx-auto items-center justify-center gap-1 rounded-xl bg-gray-800 p-8 py-3 text-sm font-bold leading-6 text-white shadow-sm hover:bg-opacity-90"
+      type="submit"
+      @click="$emit('prevStep')"
+    >
+      Volver
+    </button>
   </section>
 </template>

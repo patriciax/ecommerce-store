@@ -49,7 +49,7 @@ const minDate = computed(() => {
       v-model="date"
       month-picker
       @update:model-value="handleDate"
-      :min-date="`${new Date().getFullYear()}-${new Date().getMonth() + 1}-01`"
+      :min-date="`${new Date().getFullYear()}-${new Date().getMonth() + 2}-01`"
       auto-apply
     />
     <div>

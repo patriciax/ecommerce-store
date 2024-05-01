@@ -71,7 +71,7 @@ onMounted(async () => {
       </div>
 
       <div v-if="page == 2">
-        <Billing @nextStep="changePages" />
+        <Billing @nextStep="changePages" @prevStep="page = 1" />
       </div>
 
       <div v-if="page == 3">

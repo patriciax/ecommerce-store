@@ -6,6 +6,7 @@ import TextFields from '@/components/common/TextFields.vue'
 import Banesco from '@/components/paymentMethods/Banesco.vue'
 import Card from '@/components/paymentMethods/Card.vue'
 import Paypal from '@/components/paymentMethods/Paypal.vue'
+import MobilePayment from '@/components/paymentMethods/mobilePayment.vue'
 import Login from '@/components/views/home/auth/Login.vue'
 import Register from '@/components/views/home/auth/Register.vue'
 import CountryStore from '@/stores/country'
@@ -15,7 +16,6 @@ import useVuelidate from '@vuelidate/core'
 import { email, required } from '@vuelidate/validators'
 import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import MobilePayment from '@/components/paymentMethods/mobilePayment.vue'
 
 const countryStore = CountryStore()
 const giftCardStore = GiftCardStore()
@@ -32,7 +32,7 @@ const dataForm = ref({
   emailTo: '',
   name: '',
   message: '',
-  priceGift: prices.value[0],
+  priceGift: null,
 })
 
 const updateDate = (value) => {
@@ -69,8 +69,8 @@ const setEmailErrors = computed(() => {
 })
 
 const validateForm = async (paymentMethod) => {
+  validateFormData.value = null
   handlerValidate.value.$reset()
-  handlerValidate.value.$touch()
   const result = await handlerValidate.value.$validate()
 
   validateFormData.value = result
@@ -79,14 +79,18 @@ const validateForm = async (paymentMethod) => {
 const send = async () => {
   handlerValidate.value.$reset()
   const _validate = await handlerValidate.value.$validate()
-  console.log('validate', _validate)
   if (!_validate) return
 
   validateForm.value = _validate
 }
+
+const handleBack = () => {
+  successPayment.value = false
+}
 onMounted(async () => {
   const response = await getPrice()
   if (response?.status === 'success') prices.value = response.data.giftCards
+  dataForm.value.priceGift = prices.value[0].amount
 })
 </script>
 <template>
@@ -96,7 +100,8 @@ onMounted(async () => {
         <p class="text-4xl font-bold uppercase text-white" v-text="'El regalo perfecto'" />
         <p class="text-lg font-light text-white" v-text="'una tarjeta de regalo de eroca es la opción perfecta.'"></p>
         <button @click="isOpenModal = true" class="mt-4 flex items-center rounded-lg bg-white px-4 py-2 text-gray-800">
-          Consultar saldo
+          Consultar saldo  
+
           <ChevronRightIcon class="w-5" />
         </button>
       </div>
@@ -110,6 +115,13 @@ onMounted(async () => {
         <CheckCircleIcon class="mx-auto w-16 text-green-500" />
         <p class="mb-1 text-xl font-bold text-gray-900" v-text="'Gracias por su compra'" />
         <p v-text="'Se ha enviado un correo electronico a al remitente de su tarjeta de regalo.'" />
+   
+        <section class="text-center">
+          <button @click="handleBack" class="mt-4 text-center w-fit m-auto flex items-center rounded-lg bg-gray-800 px-4 py-2 text-white">
+          Volver
+          </button>
+        </section>
+
       </section>
       <template v-else>
         <section class="mx-auto w-full px-6 text-start">

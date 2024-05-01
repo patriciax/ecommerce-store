@@ -3,6 +3,7 @@ import Btn from '@/components/common/Btn.vue'
 import useNotificationsStore from '@/composables/useNotifications'
 import FavoriteStore from '@/stores/favorite'
 import _storeProduct from '@/stores/product'
+import _storeUser from '@/stores/user'
 import { EyeIcon, HeartIcon, PhotoIcon } from '@heroicons/vue/24/outline'
 import { HeartIcon as SolidHearIcon } from '@heroicons/vue/24/solid'
 import { computed, ref } from 'vue'
@@ -12,6 +13,7 @@ import { useRouter } from 'vue-router'
 const { pushNotification } = useNotificationsStore()
 const favoriteLoading = ref(false)
 const productStore = _storeProduct()
+const authStore = _storeUser()
 
 const props = defineProps({
   data: {
@@ -58,7 +60,7 @@ const goToProduct = (slug: any) => router.push({ name: 'singleProduct', params: 
         class="h-full w-full rounded-lg bg-center object-cover"
         @error="imageError = true"
       />
-      <div class="absolute right-2 top-2 hidden group-hover/card:block">
+      <div class="absolute right-2 top-2 hidden group-hover/card:block" v-if="authStore.currentUser">
         <Btn :isLoading="favoriteLoading" :isDisabled="favoriteLoading" @click="addFavorite" color="secondary" with-icon isFull>
           <template #icon>
             <HeartIcon class="w-5" v-if="!isFavorite" />

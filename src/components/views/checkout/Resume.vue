@@ -1,11 +1,9 @@
 <script setup>
-import Btn from '@/components/common/Btn.vue'
-import StorePaymentMethods from '@/stores/paymentMethods'
-import { ref, computed } from 'vue'
-const storePaymentMethods = StorePaymentMethods()
 import router from '@/router'
-import { onMounted } from 'vue';
 import CartStore from '@/stores/cart/cart'
+import StorePaymentMethods from '@/stores/paymentMethods'
+import { computed, onMounted } from 'vue'
+const storePaymentMethods = StorePaymentMethods()
 
 const cartStore = CartStore()
 const total = computed(() => {
@@ -21,62 +19,94 @@ const goToHome = () => {
 }
 
 onMounted(() => {
-
   sessionStorage.setItem('cart', [])
   cartStore.reset()
 })
 
+let date = new Date(storePaymentMethods?._data?.invoice?.created)
+let day = date.getDate()
+let month = date.getMonth() + 1
+let year = date.getFullYear()
+const meses = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre']
+let dateFormatted = `${day} de ${meses[month - 1]} de ${year}`
 </script>
 <template>
   <section>
-    <p class="text-2xl font-bold" v-text="'Resumen del pedido'" />
-    <div class="text-md mb-6 flex items-center gap-1 border-b pb-2 text-sm font-bold text-gray-500">
-      Orden:
-      <p class="mt-0.5 lowercase">{{ storePaymentMethods?._data?.invoice?.transactionOrder }}</p>
+    <p
+      class="mb-10 text-center text-2xl font-bold"
+      v-text="'Detalles finales del pedido #' + storePaymentMethods?._data?.invoice?.transactionOrder"
+    />
+    <div class="text-md mb-6 items-center gap-1 border-b border-gray-900 pb-6 text-base font-bold text-gray-900">
+      <p><strong>Pedido realizado:</strong> {{ dateFormatted }}</p>
+      <p><strong>Pedido roca número:</strong> {{ storePaymentMethods?._data?.invoice?.transactionOrder }}</p>
+      <p><strong>Total del pedido:</strong> ${{ total }}</p>
     </div>
-    <section class="grid grid-cols-2 gap-x-6">
-      <section class="">
-        <div v-for="(item, index) in storePaymentMethods?._data?.cart" :key="index">
-          <li class="mb-6 flex items-center gap-4 rounded-2xl border bg-white px-0 py-0 text-lg">
-            <img :src="item.mainImage || item.product?.mainImage" alt="" class="h-24 w-24 rounded-bl-xl rounded-br-xl object-cover" />
-            <section>
-              <h3 class="max-w-72 text-lg text-gray-900">
-                {{ locale === 'en_US' ? item.nameEnglish || item.product?.nameEnglish : item.name }}
-              </h3>
 
-              <div class="grid grid-cols-2 gap-0.5 gap-y-0">
-                <p class="flex text-sm text-gray-700">{{ $t('COLOR') }}: {{ item?.color?.name }}</p>
-                <p class="flex text-sm text-gray-700">{{ $t('SIZE') }}: {{ item?.size?.name }}</p>
-                <p class="flex text-sm text-gray-700">{{ $t('COMMON.QUANTITY') }}: {{ item.quantity }}</p>
-              </div>
-            </section>
-            <div class="mt-5 flex flex-1 items-center justify-end">
-              <p class="inline pr-4 font-bold">${{ item.priceDiscount || item.price }}</p>
+    <section>
+      <div class="mb-6 flex justify-between">
+        <p class="text-lg font-bold" v-text="'Productos comprados: '" />
+        <p class="text-lg font-bold" v-text="'Precio'" />
+      </div>
+
+      <div v-for="(item, index) in storePaymentMethods?._data?.cart" :key="index">
+        <li
+          class="mb-6 flex gap-4 bg-white px-0 py-0 text-lg"
+          :class="{ 'border-b pb-6': index < storePaymentMethods?._data?.cart?.length - 1 }"
+        >
+          <img :src="item.mainImage || item.product?.mainImage" alt="" class="h-24 w-24 rounded-xl rounded-br-xl object-cover" />
+          <section>
+            <h3 class="max-w-[500px] text-lg text-gray-900">
+              {{ locale === 'en_US' ? item.nameEnglish || item.product?.nameEnglish : item.name }}
+            </h3>
+
+            <div class="mt-2 grid grid-cols-3 gap-0.5 gap-y-0">
+              <p v-if="item?.color?.name" class="flex text-base text-gray-800">
+                <strong>{{ $t('COLOR') }}:</strong> {{ item?.color?.name }}
+              </p>
+              <p v-if="item?.size?.name" class="flex text-base text-gray-800">
+                <strong>{{ $t('SIZE') }}:</strong> {{ item?.size?.name }}
+              </p>
+              <p v-if="item.quantity" class="flex text-base text-gray-800">
+                <strong>{{ $t('COMMON.QUANTITY') }}: </strong>{{ item.quantity }}
+              </p>
             </div>
-          </li>
-        </div>
-      </section>
-      <section class="grid gap-x-4 gap-y-1">
-        <section class="grid gap-3 border-b pb-2">
-          <div class="flex flex-col text-lg font-bold">
-            Dirección de facturación
-            <p class="lowercase text-gray-500">{{ storePaymentMethods?._data?.invoice?.carrier?.address }}</p>
+          </section>
+          <div class="flex flex-1 justify-end">
+            <p class="inline font-bold">${{ item.priceDiscount || item.price }}</p>
           </div>
-          <div class="flex flex-col text-lg font-bold">
-            Fecha del pedido
-            <p class="lowercase text-gray-500">{{ storePaymentMethods?._data?.invoice?.created }}</p>
+        </li>
+      </div>
+    </section>
+
+    <section class="border-t border-gray-900 pb-6">
+      <p class="mb-10 mt-6 text-center text-2xl font-bold" v-text="'Información de pago'" />
+
+      <section class="grid grid-cols-2 gap-32">
+        <section>
+          <div class="mb-4">
+            <p class="text-lg font-bold" v-text="'Método de pago:'" />
+            <p class="capitalize text-lg" v-text="storePaymentMethods?.paymentMethod" />
           </div>
 
-          <div class="flex flex-col text-lg font-bold">
-            Número de pedido
-            <p class="lowercase text-gray-500">{{ storePaymentMethods?._data?.invoice?.transactionOrder }}</p>
+          <div>
+            <p class="text-lg font-bold" v-text="'Dirección de facturación:'" />
+            <p class="capitalize" v-text="storePaymentMethods?._data?.invoice?.carrier?.address" />
           </div>
         </section>
-        <div class="mb-6 flex flex-col text-lg font-bold">
-          Total
-          <p class="mt-0.rcase text-gray-500">{{ total }}</p>
+        <div>
+          <div class="mb-2 flex justify-between">
+            <p class="text-lg" v-text="'Productos:'" />
+            <p class="capitalize text-lg" v-text="'$' + total" />
+          </div>
+          <div class="mb-6 flex justify-between">
+            <p class="text-lg" v-text="'IVA:'" />
+            <p class="capitalize text-lg" v-text="'16%'" />
+          </div>
+          <div class="mb-4 flex justify-between font-bold">
+            <p class="text-lg font-bold" v-text="'Total (I.V.A. Incluido):'" />
+            <p class="font-bold text-lg capitalize" v-text="'$' + total" />
+          </div>
         </div>
-        <Btn isFull color="primary" :text="'Seguir comprando'" @click="goToHome()" />
       </section>
     </section>
   </section>

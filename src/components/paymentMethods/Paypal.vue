@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { showNotification } from '@/composables/useNotification';
 import useNotifications from '@/composables/useNotifications';
 import PaymentMethods from '@/stores/paymentMethods';
 import { ref } from 'vue';
@@ -169,7 +170,7 @@ interval.value = setInterval(() => {
               emit('nextStep')
             }
           } catch (error) {
-            console.error(error)
+            showNotification('Algo ha ido mal', 'error')
           }
         },
       })
