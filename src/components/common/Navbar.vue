@@ -7,11 +7,11 @@ import Register from '@/components/views/home/auth/Register.vue'
 import router from '@/router'
 import CartStore from '@/stores/cart/cart'
 import CountryStore from '@/stores/country'
+import _storePagoMovil from '@/stores/pagoMovil'
 import _storeProduct from '@/stores/product'
 import RestorePassword from '@/stores/resetPassword.js'
 import _stroreSearch from '@/stores/search'
 import _storeUser from '@/stores/user'
-import _storePagoMovil from '@/stores/pagoMovil'
 import _storeZelle from '@/stores/zelle'
 import { Bars3BottomLeftIcon, ChevronDownIcon, HeartIcon, ShoppingCartIcon, UserIcon, XMarkIcon } from '@heroicons/vue/24/outline'
 import { onMounted, ref, watch } from 'vue'
@@ -43,7 +43,11 @@ const logout = (_closeDropdown: () => void) => {
 const goToCart = () => {
   router.push({ name: 'checkout' })
 }
+const profile = (_closeDropdown: () => void) => {
+  router.push({ name: 'profile' })
+  _closeDropdown()
 
+}
 const goToFavorite = () => {
   router.push({ name: 'favorites' })
 }
@@ -174,6 +178,9 @@ watch(
                 </button>
               </template>
               <template v-slot:content="{ closeDropdown }">
+                <button @click="profile(closeDropdown)" class="w-28 py-2 hover:bg-gray-200">
+                  <p>Mi perfil</p>
+                </button>
                 <button @click="logout(closeDropdown)" class="w-28 py-2 hover:bg-gray-200">
                   <p>Cerrar sesion</p>
                 </button>

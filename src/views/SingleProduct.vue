@@ -5,13 +5,13 @@ import RadioCheck from '@/components/common/RadioCheck.vue'
 import NewProducts from '@/components/views/home/NewProducts.vue'
 import useNotifications from '@/composables/useNotifications'
 import CartStore from '@/stores/cart/cart'
+import FavoriteStore from '@/stores/favorite'
 import _storeProduct from '@/stores/product'
 import { ChevronLeftIcon, ChevronRightIcon, HeartIcon, ShoppingCartIcon } from '@heroicons/vue/24/outline'
 import { HeartIcon as SolidHeartIcon } from '@heroicons/vue/24/solid'
 import { computed, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
-import FavoriteStore from '@/stores/favorite'
 
 const favoriteStore = FavoriteStore()
 const isLoading = ref(false)
@@ -164,10 +164,12 @@ onMounted(async () => {
   maxAmount.value = variations.value?.find((item) => item.color[0]._id == color.value && item.size[0]._id == size.value)?.stock ?? 0
 })
 
+
+
 watch(
   () => router.currentRoute.value.params.slug,
   async () => {
-    router.push({ name: 'singleProduct', params: { slug: router.currentRoute.value.params.slug } })
+    await productStore.getSingleProduct(router.currentRoute.value.params.slug)
   }
 )
 

@@ -1,8 +1,8 @@
 <script setup>
-import 'vue3-carousel/dist/carousel.css'
-import { Carousel, Slide, Pagination, Navigation } from 'vue3-carousel'
-import { onMounted, ref } from 'vue'
 import BannerStore from '@/stores/banner'
+import { onMounted, ref } from 'vue'
+import { Carousel, Navigation, Pagination, Slide } from 'vue3-carousel'
+import 'vue3-carousel/dist/carousel.css'
 
 const bannerStore = BannerStore()
 const imagesWithTexts = ref([])
@@ -25,7 +25,7 @@ onMounted(async () => {
 </script>
 <template>
   <section v-if="bannerStore.currentBanner?.type === 'image'">
-    <carousel :items-to-show="1" class="w-full">
+    <carousel :items-to-show="1" class="w-full" autoplay="2500" :wrap-around="true">
       <slide v-for="({ img, mainText, secondaryText }, slide) in imagesWithTexts" :key="slide" class="relative">
         <div class="absolute z-50 h-[590px] w-full rounded-[48px] bg-gray-950 bg-opacity-30" />
         <div

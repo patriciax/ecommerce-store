@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import CardProduct from '@/components/common/CardProduct.vue'
-import { ref } from 'vue'
-import 'vue3-carousel/dist/carousel.css'
-import { Carousel, Slide, Pagination, Navigation } from 'vue3-carousel'
+import CardProduct from '@/components/common/CardProduct.vue';
+import { ref } from 'vue';
+import { Carousel, Navigation, Slide } from 'vue3-carousel';
+import 'vue3-carousel/dist/carousel.css';
 
 const props = defineProps({
   products: {
@@ -31,7 +31,7 @@ const breakpoints = ref({
 })
 </script>
 <template>
-  <section class="rounded-lg bg-gray-100  p-8 shadow-sm popular">
+  <section class="rounded-lg bg-gray-100 mt-6 p-8 shadow-sm popular">
     <p class="title_products" v-text="$t('COMMON.POPULAR_NOW')" />
     <carousel :v-bind="settings" :breakpoints="breakpoints" class="c-carouselProduct">
       <slide v-for="(product, index) in props.products" :key="index" class="relative">

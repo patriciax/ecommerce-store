@@ -11,9 +11,9 @@ import ResetPassword from '../components/views/resetPassword/ResetPassword.vue'
 import Checkout from '../views/Checkout.vue'
 import Favorites from '../views/Favorites.vue'
 import HomeView from '../views/HomeView.vue'
+import Profile from '../views/Profile.vue'
 import Search from '../views/Search.vue'
 import Product from '../views/SingleProduct.vue'
-
 const router = createRouter({
   history: createWebHistory((import.meta as any).env.BASE_URL),
   routes: [
@@ -21,7 +21,7 @@ const router = createRouter({
       path: '/',
       name: 'home',
       component: HomeView,
-    
+
     },
     {
       path: '/product/:slug',
@@ -68,11 +68,21 @@ const router = createRouter({
       component: ResetPassword,
     },
     {
+      path: '/profile',
+      name: 'profile',
+      component: Profile,
+    },
+    {
       path: '/offers',
       name: 'offers',
       component: Offers
     },
-  ]
+  ],
+  scrollBehavior() {
+    return new Promise((resolve) => {
+      resolve(document.getElementById('app').scrollIntoView({ behavior: 'smooth' }))
+    })
+  },
 })
 
 router.beforeEach(async (to, from) => {
@@ -80,11 +90,11 @@ router.beforeEach(async (to, from) => {
   const countryStore = CountryStore()
   const favoriteStore = _storeFavorite()
 
-  if(!countryStore.country){
+  if (!countryStore.country) {
     await countryStore.getCountry()
   }
 
-  const storeUser=_storeUser()
+  const storeUser = _storeUser()
   const storeCart = _storeCart()
 
   if (!storeUser.currentUser && localStorage.getItem((import.meta as any).env.VITE_BEARER_TOKEN_KEY)) {
@@ -95,13 +105,13 @@ router.beforeEach(async (to, from) => {
 
   }
 
-  else{
+  else {
 
-    if(!storeCart.firstLoadedCart){
-      storeCart.productInfoGuest({cartProducts: sessionStorage.getItem('cart') ? JSON.parse(sessionStorage.getItem('cart')) : []})
+    if (!storeCart.firstLoadedCart) {
+      storeCart.productInfoGuest({ cartProducts: sessionStorage.getItem('cart') ? JSON.parse(sessionStorage.getItem('cart')) : [] })
       storeCart.setFirstLoadedCart()
     }
-    
+
   }
 
 

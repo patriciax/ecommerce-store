@@ -110,3 +110,19 @@ option.selected {
   white-space: nowrap;
   text-overflow: ellipsis;
 }
+
+.truncate-wrap {
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  &__lines {
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    display: -webkit-box;
+    text-overflow: ellipsis;
+    -webkit-line-clamp: 8;
+  }
+  &__lines_2 {
+    -webkit-line-clamp: 2;
+  }
+}
