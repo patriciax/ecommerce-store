@@ -3,7 +3,9 @@ import PaymentMethods from '@/stores/paymentMethods'
 import useNotificationsStore from '@/composables/useNotifications';
 import { ref } from 'vue'
 import { showNotification } from '@/composables/useNotification';
+import CountryStore from '@/stores/country'
 
+const countryStore = CountryStore()
 const paymentMethods = PaymentMethods()
 const emit = defineEmits(['nextStep', 'validate'])
 const { pushNotification } = useNotificationsStore()
@@ -70,10 +72,12 @@ interval.value = setInterval(() => {
           try {
             const object = props.isCard ? {
               paymentMethod: 'paypal-create-order',
-              card: props.card
+              card: props.card,
+              ivaType: countryStore.country == 'Venezuela' ? 'national' : 'international',
             } : {
               paymentMethod: 'paypal-create-order',
-              carts: props.cart
+              carts: props.cart,
+              ivaType: countryStore.country == 'Venezuela' ? 'national' : 'international',
             } 
             
             const token = localStorage.getItem((import.meta as any).env.VITE_BEARER_TOKEN_KEY)
