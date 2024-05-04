@@ -198,6 +198,7 @@ const carrierObject = computed(() => {
 })
 
 onMounted(async () => {
+  cartStore.setShippingCost(0)
   if (countryStore.country == 'Venezuela') {
     await zoomStore.getState()
   } else {
@@ -215,6 +216,7 @@ onMounted(async () => {
 
 const setChoosenRate = (rate) => {
   choosenRate.value = rate
+  cartStore.setShippingCost(rate.amount)
 }
 
 const validateForm = async (paymentMethod) => {
@@ -230,7 +232,7 @@ const handlePay = (paymentMethod) => {
   emit('nextStep')
 }
 
-const formatTotal=computed(()=> cartStore.total ? decimalNumberFormat(cartStore.total + (choosenRate.value?.amount ?? 0 ) * 1):0)
+const formatTotal=computed(()=> cartStore.total ? decimalNumberFormat(cartStore.total) : 0)
 </script>
 <template>
   <section class="grid gap-12 px-10 md:grid-cols-2 lg:px-0">
@@ -401,7 +403,7 @@ const formatTotal=computed(()=> cartStore.total ? decimalNumberFormat(cartStore.
                 : undefined
             "
             name="foreignZipCode"
-            placeholder="1000000"
+            placeholder="10000"
             :label="t('PAYMENTS.ZIP_CODE')"
           />
           <button type="button" @click="getRates()" class="mt-2">{{ t('PAYMENTS.GET_RATES') }}</button>
@@ -433,13 +435,13 @@ const formatTotal=computed(()=> cartStore.total ? decimalNumberFormat(cartStore.
           <span class="font-bold">Envío </span> <span class="font-bold text-blue-900">ZOOM</span>
         </li>
         <li class="mb-4 flex justify-between border-b pb-2" v-else>
-          <span class="font-bold">Envío </span> <span class="font-bold text-blue-900">$ {{ choosenRate?.amount ?? 0 }}</span>
+          <span class="font-bold">Envío </span> <span class="font-bold text-blue-900">$ {{ decimalNumberFormat(cartStore.shippingCost) }}</span>
         </li>
         <li class="mb-4 flex justify-between border-b pb-2">
           <span class="text-lg font-bold">Total</span>
         <div>
           <p class="text-lg font-bold mb-2 text-right">${{ formatTotal}}</p>
-          <div class="text-md text-right flex items-center justify-center"><p class=" font-bold mr-2">+IVA </p> ${{  decimalNumberFormat(taxCalculations(cartStore.total  + (choosenRate?.amount ?? 0 ) * 1, countryStore.country === 'Venezuela' ? 'national' : 'international')) }}</div>
+          <div class="text-md text-right flex items-center justify-center"><p class=" font-bold mr-2">+IVA </p> ${{  decimalNumberFormat(taxCalculations(cartStore.total, countryStore.country === 'Venezuela' ? 'national' : 'international')) }}</div>
         </div>
         </li>
    
@@ -447,12 +449,12 @@ const formatTotal=computed(()=> cartStore.total ? decimalNumberFormat(cartStore.
           <span class="text-lg font-bold">Total en Bolivares</span>
           <div>
             <p v-if="productStore.price" class="text-lg font-bold text-right mb-2">Bs.{{  decimalNumberFormat((productStore.price * cartStore.total)) }}</p>
-            <div class="text-md text-right flex items-center justify-center"><p class=" font-bold mr-2">+IVA </p> Bs.{{  decimalNumberFormat(taxCalculations(productStore.price * cartStore.total +   (choosenRate?.amount ?? 0 ) * 1, countryStore.country === 'Venezuela' ? 'national' : 'international')) }}</div>
+            <div class="text-md text-right flex items-center justify-center"><p class=" font-bold mr-2">+IVA </p> Bs.{{  decimalNumberFormat(taxCalculations(productStore.price * cartStore.total, countryStore.country === 'Venezuela' ? 'national' : 'international')) }}</div>
           </div>
         </li>
       </ul>
 
-      <section v-if="countryStore.country != 'Venezuela' && choosenRate">
+      <section v-if="(countryStore.country != 'Venezuela' && choosenRate) || (countryStore.country == 'Venezuela')">
         <p class="mb-6 text-lg font-bold" v-text="'Método de pago'" />
         <div>
           <accordion hidden :title="''" v-if="countryStore.country == 'Venezuela'">
@@ -480,6 +482,7 @@ const formatTotal=computed(()=> cartStore.total ? decimalNumberFormat(cartStore.
               :phone="dataForm.phone"
               @nextStep="handlePay('paypal')"
               :carrier="carrierObject"
+              :carrierRate="choosenRate"
             />
           </accordion>
 
@@ -496,6 +499,7 @@ const formatTotal=computed(()=> cartStore.total ? decimalNumberFormat(cartStore.
               :email="dataForm.email"
               :phone="dataForm.phone"
               :carrier="carrierObject"
+              :carrierRate="choosenRate"
             />
           </accordion>
           <accordion hidden v-if="countryStore.country == 'Venezuela'" :title="'Pago móvil'">
@@ -520,6 +524,7 @@ const formatTotal=computed(()=> cartStore.total ? decimalNumberFormat(cartStore.
               :phone="dataForm.phone"
               @nextStep="handlePay('Tarjeta de crédito')"
               :carrier="carrierObject"
+              :carrierRate="choosenRate"
             />
           </accordion>
           <accordion :title="''">
@@ -533,6 +538,7 @@ const formatTotal=computed(()=> cartStore.total ? decimalNumberFormat(cartStore.
               :phone="dataForm.phone"
               @nextStep="handlePay('Tarjeta Eroca')"
               :carrier="carrierObject"
+              :carrierRate="choosenRate"
             />
           </accordion>
         </div>
