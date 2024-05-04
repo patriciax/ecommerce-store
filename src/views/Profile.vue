@@ -11,6 +11,19 @@ const personalInfo = ref(false)
 onMounted(async () => {
   await storeInvoices.getInvoices()
 })
+
+const formatDateTime = (dateString) => {
+  if (dateString) {
+    const date = new Date(dateString)
+    let day = date.getDate()
+    let month = date.getMonth() + 1
+    let year = date.getFullYear()
+    const meses = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre']
+    return `${day} de ${meses[month - 1]} de ${year}`
+  } else {
+    return ''
+  }
+}
 </script>
 <template>
   <section class="min-h-[80vh]">
@@ -43,71 +56,18 @@ onMounted(async () => {
                   <td class="whitespace-nowrap py-4 text-center">Date</td>
                   <td class="whitespace-nowrap py-4 text-center">Status</td>
                   <td class="whitespace-nowrap py-4 text-center">Amount</td>
-                  <td class="whitespace-nowrap py-4 text-center">Action</td>
+                  <!-- <td class="whitespace-nowrap py-4 text-center">Action</td> -->
                 </tr>
-                <tr class="border-b bg-white hover:bg-gray-50">
-                  <td class="py-4 text-center"><span class="text-qgray text-lg font-medium">#354</span></td>
-                  <td class="px-2 py-4 text-center"><span class="text-qgray whitespace-nowrap text-base">Fub 05,2021</span></td>
-                  <td class="px-2 py-4 text-center"><span class="rounded bg-green-100 p-2 text-sm text-green-500">Complated</span></td>
-                  <td class="px-2 py-4 text-center"><span class="text-qblack whitespace-nowrap px-2 text-base">$757</span></td>
-                  <td class="py-4 text-center">
+                <tr class="border-b bg-white hover:bg-gray-50" v-for="(item , index) in storeInvoices.invoice" :key="index">
+                  <td class="py-4 text-center"><p class="text-qgray text-lg font-medium">#{{ item.transactionOrder }}</p></td>
+                  <td class="px-2 py-4 text-center"><span class="text-qgray whitespace-nowrap text-base">{{ formatDateTime(item.created) }}</span></td>
+                  <td class="px-2 py-4 text-center"><span class="rounded bg-green-100 p-2 text-sm text-green-500">{{ item.payment.status }}</span></td>
+                  <td class="px-2 py-4 text-center"><p class="text-qblack whitespace-nowrap px-2 text-base">${{ item.payment.total }}</p></td>
+                  <!-- <td class="py-4 text-center">
                     <button type="button" class="bg-qyellow text-qblack h-[46px] w-[116px] font-bold">View Details</button>
-                  </td>
+                  </td> -->
                 </tr>
-                <tr class="border-b bg-white hover:bg-gray-50">
-                  <td class="py-4 text-center"><span class="text-qgray text-lg font-medium">#354</span></td>
-                  <td class="px-2 py-4 text-center"><span class="text-qgray whitespace-nowrap text-base">Fub 05,2021</span></td>
-                  <td class="px-2 py-4 text-center"><span class="rounded bg-green-100 p-2 text-sm text-green-500">Complated</span></td>
-                  <td class="px-2 py-4 text-center"><span class="text-qblack whitespace-nowrap px-2 text-base">$757</span></td>
-                  <td class="py-4 text-center">
-                    <button type="button" class="bg-qyellow text-qblack h-[46px] w-[116px] font-bold">View Details</button>
-                  </td>
-                </tr>
-                <tr class="border-b bg-white hover:bg-gray-50">
-                  <td class="py-4 text-center"><span class="text-qgray text-lg font-medium">#354</span></td>
-                  <td class="px-2 py-4 text-center"><span class="text-qgray whitespace-nowrap text-base">Fub 05,2021</span></td>
-                  <td class="px-2 py-4 text-center"><span class="rounded bg-green-100 p-2 text-sm text-green-500">Complated</span></td>
-                  <td class="px-2 py-4 text-center"><span class="text-qblack whitespace-nowrap px-2 text-base">$757</span></td>
-                  <td class="py-4 text-center">
-                    <button type="button" class="bg-qyellow text-qblack h-[46px] w-[116px] font-bold">View Details</button>
-                  </td>
-                </tr>
-                <tr class="border-b bg-white hover:bg-gray-50">
-                  <td class="py-4 text-center"><span class="text-qgray text-lg font-medium">#354</span></td>
-                  <td class="px-2 py-4 text-center"><span class="text-qgray whitespace-nowrap text-base">Fub 05,2021</span></td>
-                  <td class="px-2 py-4 text-center"><span class="rounded bg-green-100 p-2 text-sm text-green-500">Complated</span></td>
-                  <td class="px-2 py-4 text-center"><span class="text-qblack whitespace-nowrap px-2 text-base">$757</span></td>
-                  <td class="py-4 text-center">
-                    <button type="button" class="bg-qyellow text-qblack h-[46px] w-[116px] font-bold">View Details</button>
-                  </td>
-                </tr>
-                <tr class="border-b bg-white hover:bg-gray-50">
-                  <td class="py-4 text-center"><span class="text-qgray text-lg font-medium">#354</span></td>
-                  <td class="px-2 py-4 text-center"><span class="text-qgray whitespace-nowrap text-base">Fub 05,2021</span></td>
-                  <td class="px-2 py-4 text-center"><span class="rounded bg-green-100 p-2 text-sm text-green-500">Complated</span></td>
-                  <td class="px-2 py-4 text-center"><span class="text-qblack whitespace-nowrap px-2 text-base">$757</span></td>
-                  <td class="py-4 text-center">
-                    <button type="button" class="bg-qyellow text-qblack h-[46px] w-[116px] font-bold">View Details</button>
-                  </td>
-                </tr>
-                <tr class="border-b bg-white hover:bg-gray-50">
-                  <td class="py-4 text-center"><span class="text-qgray text-lg font-medium">#354</span></td>
-                  <td class="px-2 py-4 text-center"><span class="text-qgray whitespace-nowrap text-base">Fub 05,2021</span></td>
-                  <td class="px-2 py-4 text-center"><span class="rounded bg-green-100 p-2 text-sm text-green-500">Complated</span></td>
-                  <td class="px-2 py-4 text-center"><span class="text-qblack whitespace-nowrap px-2 text-base">$757</span></td>
-                  <td class="py-4 text-center">
-                    <button type="button" class="bg-qyellow text-qblack h-[46px] w-[116px] font-bold">View Details</button>
-                  </td>
-                </tr>
-                <tr class="border-b bg-white hover:bg-gray-50">
-                  <td class="py-4 text-center"><span class="text-qgray text-lg font-medium">#354</span></td>
-                  <td class="px-2 py-4 text-center"><span class="text-qgray whitespace-nowrap text-base">Fub 05,2021</span></td>
-                  <td class="px-2 py-4 text-center"><span class="rounded bg-green-100 p-2 text-sm text-green-500">Complated</span></td>
-                  <td class="px-2 py-4 text-center"><span class="text-qblack whitespace-nowrap px-2 text-base">$757</span></td>
-                  <td class="py-4 text-center">
-                    <button type="button" class="bg-qyellow text-qblack h-[46px] w-[116px] font-bold">View Details</button>
-                  </td>
-                </tr>
+       
               </tbody>
             </table>
           </div>

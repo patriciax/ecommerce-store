@@ -16,10 +16,10 @@ export default defineStore({
     search: (state) => state._search,
   },
   actions: {
-    async getSearch(body) {
+    async getSearch(body,_priceMax, _priceMin) {
       this.changeStatus('loading')
       try {
-        const response = await _getSearch(body)
+        const response = await _getSearch(body,_priceMax, _priceMin)
         if (response) {
           this._search = response.data.data.products
           this.changeStatus('ready')
