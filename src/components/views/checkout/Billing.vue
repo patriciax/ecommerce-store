@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { getAllCountries } from '@/api/repositories/country.repository'
+import { _getRates } from '@/api/repositories/shipment.repository'
 import Accordion from '@/components/common/Accordion.vue'
 import InputPhoneNumber from '@/components/common/InputPhoneNumber.vue'
 import SelectField from '@/components/common/SelectField.vue'
@@ -22,7 +23,8 @@ import useVuelidate from '@vuelidate/core'
 import { email, required, requiredIf } from '@vuelidate/validators'
 import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-const emit = defineEmits(['nextStep'])
+import Btn from '@/components/common/Btn.vue'
+const emit = defineEmits(['nextStep', 'prevStep'])
 
 const { t } = useI18n()
 const productStore = _storeProduct()
@@ -40,6 +42,8 @@ const emailHasError = ref(null)
 const selectPaymentMethod = ref(null)
 const validateFormData = ref(false)
 
+const rates = ref([])
+const choosenRate = ref(null)
 const total = computed(() => {
   let total = 0
   cartStore.cart.forEach((item) => {
@@ -53,6 +57,34 @@ const getCountries = async () => {
   countries.value = response.data?.countries
 }
 
+const getRates = async() => {
+
+  handlerValidate.value.$reset()
+  const result = await handlerValidate.value.$validate()
+
+  if(!result) return
+
+  const country = countries.value.find((country) => country._id == dataForm.value.foreignCountry)
+  const state = country.statesValues[dataForm.value.foreignState * 1 - 1]
+
+  const data = {
+    "name": `${dataForm.value.name} ${dataForm.value.lastname}`, 
+    "street1": dataForm.value.foreignAddress,
+    "city": dataForm.value.foreignCity,
+    "state": state,
+    "zip": dataForm.value.foreignZipCode,
+    "country": country.value,
+    "parcel": cartStore.cart
+  }
+
+  const response = await _getRates(data)
+
+  if(response.data.status == 'success'){
+    rates.value = response.data.data
+  }
+
+}
+
 const dataForm: any = ref({
   name: '',
   lastname: '',
@@ -64,6 +96,8 @@ const dataForm: any = ref({
   foreignCountry: '',
   foreignState: '',
   foreignAddress: '',
+  foreignCity: '',
+  foreignZipCode:''
 })
 
 const rules = computed(() => {
@@ -94,6 +128,12 @@ const rules = computed(() => {
       required: requiredIf(() => countryStore.country != 'Venezuela'),
     },
     foreignAddress: {
+      required: requiredIf(() => countryStore.country != 'Venezuela'),
+    },
+    foreignCity: {
+      required: requiredIf(() => countryStore.country != 'Venezuela'),
+    },
+    foreignZipCode: {
       required: requiredIf(() => countryStore.country != 'Venezuela'),
     },
   }
@@ -173,6 +213,10 @@ onMounted(async () => {
   cartStore.productInfoGuest({ cartProducts: cartStore.cart })
 })
 
+const setChoosenRate = (rate) => {
+  choosenRate.value = rate
+}
+
 const validateForm = async (paymentMethod) => {
   validateFormData.value = false
   handlerValidate.value.$reset()
@@ -186,7 +230,7 @@ const handlePay = (paymentMethod) => {
   emit('nextStep')
 }
 
-const formatTotal=computed(()=> cartStore.total ? decimalNumberFormat(cartStore.total):0)
+const formatTotal=computed(()=> cartStore.total ? decimalNumberFormat(cartStore.total + (choosenRate.value?.amount ?? 0 ) * 1):0)
 </script>
 <template>
   <section class="grid gap-12 px-10 md:grid-cols-2 lg:px-0">
@@ -324,6 +368,18 @@ const formatTotal=computed(()=> cartStore.total ? decimalNumberFormat(cartStore.
             @update:modelValue="(_value) => (dataForm.foreignState = _value)"
           />
           <TextFields
+            v-model="dataForm.foreignCity"
+            :is-disabled="!dataForm.foreignCountry || !dataForm.foreignState"
+            :errorMessage="
+              handlerValidate?.['foreignCity']?.$errors?.length > 0
+                ? $t('VALIDATIONS.' + handlerValidate?.['foreignCity']?.$errors?.[0]?.$validator?.toUpperCase())
+                : undefined
+            "
+            name="foreignCity"
+            placeholder="San Francisco"
+            :label="t('PAYMENTS.CITY')"
+          />
+          <TextFields
             id="foreignAddress"
             v-model="dataForm.foreignAddress"
             :is-disabled="!dataForm.foreignCountry || !dataForm.foreignState"
@@ -336,6 +392,29 @@ const formatTotal=computed(()=> cartStore.total ? decimalNumberFormat(cartStore.
             placeholder="212 New york"
             :label="t('PAYMENTS.ADDRESS')"
           />
+          <TextFields
+            v-model="dataForm.foreignZipCode"
+            :is-disabled="!dataForm.foreignCountry || !dataForm.foreignState"
+            :errorMessage="
+              handlerValidate?.['foreignZipCode']?.$errors?.length > 0
+                ? $t('VALIDATIONS.' + handlerValidate?.['foreignZipCode']?.$errors?.[0]?.$validator?.toUpperCase())
+                : undefined
+            "
+            name="foreignZipCode"
+            placeholder="1000000"
+            :label="t('PAYMENTS.ZIP_CODE')"
+          />
+          <button type="button" @click="getRates()" class="mt-2">{{ t('PAYMENTS.GET_RATES') }}</button>
+
+          <div class="mt-2 w-full">
+
+            <div class="p-4 border" v-for="rate in rates" :key="rate.objectId" @click="setChoosenRate(rate)">
+              <p>$ {{ rate.amount }}</p>
+              <p>Días estimados: {{ rate.estimatedDays }}</p>
+            </div>
+
+          </div>
+
         </section>
       </form>
     </div>
@@ -350,14 +429,17 @@ const formatTotal=computed(()=> cartStore.total ? decimalNumberFormat(cartStore.
           <span class="" v-text="`${item.name} x ${item.quantity}`"></span>
           <p class="font-bold">${{ item.priceDiscount || item.price }}</p>
         </li>
-        <li class="mb-4 flex justify-between border-b pb-2">
+        <li class="mb-4 flex justify-between border-b pb-2" v-if="countryStore.country == 'Venezuela'">
           <span class="font-bold">Envío </span> <span class="font-bold text-blue-900">ZOOM</span>
+        </li>
+        <li class="mb-4 flex justify-between border-b pb-2" v-else>
+          <span class="font-bold">Envío </span> <span class="font-bold text-blue-900">$ {{ choosenRate?.amount ?? 0 }}</span>
         </li>
         <li class="mb-4 flex justify-between border-b pb-2">
           <span class="text-lg font-bold">Total</span>
         <div>
           <p class="text-lg font-bold mb-2 text-right">${{ formatTotal}}</p>
-          <div class="text-md text-right flex items-center justify-center"><p class=" font-bold mr-2">+IVA </p> ${{  decimalNumberFormat(taxCalculations(cartStore.total, countryStore.country === 'Venezuela' ? 'national' : 'international')) }}</div>
+          <div class="text-md text-right flex items-center justify-center"><p class=" font-bold mr-2">+IVA </p> ${{  decimalNumberFormat(taxCalculations(cartStore.total  + (choosenRate?.amount ?? 0 ) * 1, countryStore.country === 'Venezuela' ? 'national' : 'international')) }}</div>
         </div>
         </li>
    
@@ -365,12 +447,12 @@ const formatTotal=computed(()=> cartStore.total ? decimalNumberFormat(cartStore.
           <span class="text-lg font-bold">Total en Bolivares</span>
           <div>
             <p v-if="productStore.price" class="text-lg font-bold text-right mb-2">Bs.{{  decimalNumberFormat((productStore.price * cartStore.total)) }}</p>
-            <div class="text-md text-right flex items-center justify-center"><p class=" font-bold mr-2">+IVA </p> Bs.{{  decimalNumberFormat(taxCalculations(productStore.price * cartStore.total, countryStore.country === 'Venezuela' ? 'national' : 'international')) }}</div>
+            <div class="text-md text-right flex items-center justify-center"><p class=" font-bold mr-2">+IVA </p> Bs.{{  decimalNumberFormat(taxCalculations(productStore.price * cartStore.total +   (choosenRate?.amount ?? 0 ) * 1, countryStore.country === 'Venezuela' ? 'national' : 'international')) }}</div>
           </div>
         </li>
       </ul>
 
-      <section>
+      <section v-if="countryStore.country != 'Venezuela' && choosenRate">
         <p class="mb-6 text-lg font-bold" v-text="'Método de pago'" />
         <div>
           <accordion hidden :title="''" v-if="countryStore.country == 'Venezuela'">
@@ -453,6 +535,12 @@ const formatTotal=computed(()=> cartStore.total ? decimalNumberFormat(cartStore.
               :carrier="carrierObject"
             />
           </accordion>
+        </div>
+      </section>
+      <section v-else>
+        <p class="mb-6 text-lg font-bold" v-text="'Método de pago'" />
+        <div>
+          Debe completar sus datos de envío y seleccionar una tarifa
         </div>
       </section>
     </div>
