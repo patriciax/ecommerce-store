@@ -24,6 +24,7 @@ onMounted(async () => {
     finalCategories.value = response.data?.finalCategories
   }
 })
+
 const search = async () => router.push({ name: 'search', params: { search: filter.value } })
 
 const selectCategory = (category) => {
@@ -36,15 +37,16 @@ const removeCategory = (category) => {
   selectedCategories.value = selectedCategories.value.filter((c) => c._id !== category._id)
 }
 
-const searchCategory = async () => {
-  const selectedCategoryIds = selectedCategories.value.map((category) => category._id)
+// const searchCategory = async () => {
+//   const selectedCategoryIds = selectedCategories.value.map((category) => category._id)
 
-  await storeSearch.getSearch({ textSearch: router.currentRoute.value.params.search, categories: selectedCategoryIds })
-}
+//   await storeSearch.getSearch({ textSearch: router.currentRoute.value.params.search, categories: selectedCategoryIds })
+// }
 
 const searchPrice = async () => {
-  await storeSearch.getSearch({ textSearch: router.currentRoute.value.params.search}, priceMax.value, priceMin.value)
-} 
+  const selectedCategoryIds = selectedCategories.value.map((category) => category._id)
+  await storeSearch.getSearch({ textSearch: router.currentRoute.value.params.search,categories: selectedCategoryIds }, priceMax.value, priceMin.value)
+}
 watch(
   () => router.currentRoute.value.params.search,
   async () => {
@@ -54,22 +56,7 @@ watch(
 </script>
 <template>
   <section class="mx-auto min-h-[60vh] max-w-7xl">
-    <section v-if="!storeSearch.search?.length">
-      <p v-text="'No hay resultados.'" class="text-2xl font-bold text-gray-900" />
-      <p class="mt-4">Volver a intentar</p>
-      <section class="max-w-lg">
-        <InputSearch
-          @search="search"
-          class="mb-6 rounded-md border"
-          id="search"
-          v-model="filter"
-          name="Search"
-          :placeholder="'Buscar productos...'"
-          @clear="filter = ''"
-        />
-      </section>
-    </section>
-    <section v-else class="flex gap-9">
+    <section class="flex gap-9">
       <section class="w-96">
         <p class="mb-4 mr-8 max-w-4xl text-xl font-bold text-gray-900">
           Resultados para:
@@ -108,9 +95,9 @@ watch(
               <span @click="removeCategory(category)">x</span>
             </button>
           </div>
-          <button v-if="selectedCategories.length" class="mt-4 rounded-md bg-gray-900 px-3 py-1.5 text-white" @click="searchCategory">
+          <!-- <button v-if="selectedCategories.length" class="mt-4 rounded-md bg-gray-900 px-3 py-1.5 text-white" @click="searchCategory">
             Buscar por categoria
-          </button>
+          </button> -->
         </section>
 
         <section class="mt-6">
@@ -120,7 +107,7 @@ watch(
             <span class="mx-2" v-text="'-'" />
             <TextFields label=" " type="number" placeholder="$500" v-model="priceMax" />
           </section>
-          <button class="mt-4 w-full rounded-md bg-gray-400 px-3 py-1.5 text-white" @click="searchPrice">Buscar</button>
+          <button class="mt-6 w-full rounded-md bg-gray-800 px-3 py-1.5 text-white" @click="searchPrice">Buscar</button>
         </section>
       </section>
 
@@ -128,6 +115,12 @@ watch(
         <template v-if="storeSearch.isLoading">
           <SkeletonCard v-for="index in 4" :key="index" />
         </template>
+
+        <section v-else-if="!storeSearch.search?.length" class="col-span-full flex flex-col items-center justify-center rounded-lg bg-gray-100">
+          <p v-text="'No se encuentran resultados para:'" class="text-2xl font-bold text-gray-900" />
+          <p class="text-2xl">"{{ router.currentRoute.value.params.search }}"</p>
+        </section>
+
         <template v-else>
           <CardProduct v-for="(product, index) in storeSearch.search" :key="index" :data="product" />
         </template>
