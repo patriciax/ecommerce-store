@@ -16,5 +16,5 @@ export const decimalNumberFormat = (number: number) => {
     
     } 
 
-    return `${integerPart}.${decimalPartNumber < 10 ? `0${decimalPartNumber}` : '00'}`
+    return `${integerPart}.${decimalPartNumber < 10 ? `0${decimalPartNumber}` : decimalPartNumber}`
 }
