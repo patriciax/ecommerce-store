@@ -1,8 +1,6 @@
 import { defineStore } from 'pinia'
 import { _addToMassiveCart, _delete, _productInfoGuest, _productInfo, _addToUserCart, _update } from '@/api/repositories/cart.repository'
-import useNotifications from '@/composables/useNotifications'
 import _storeUser from '@/stores/user'
-import { useI18n } from 'vue-i18n'
 
 export default defineStore({
   id: 'cart',
@@ -13,6 +11,7 @@ export default defineStore({
     _cart: sessionStorage.getItem('cart') ? JSON.parse(sessionStorage.getItem('cart')) : [],
     _isNew: false,
     _isCart: null,
+    _shippingCost: 0
   }),
   getters: {
     isLoading: (state) => state._status === 'loading',
@@ -24,10 +23,11 @@ export default defineStore({
     quantityInCar: (state) => state._cart.reduce((acc, item) => acc + item.quantity, 0),
     total: (state) => {
       const total = state._cart.reduce((acc, item) => acc + (item.priceDiscount || item.price) * item.quantity, 0)
-      return total
+      return total + state._shippingCost
     },
     isCart: (state) => state._isCart,
     firstLoadedCart: (state) => state._firstLoadedCart,
+    shippingCost: (state) => state._shippingCost
   },
   actions: {
     setFirstLoadedCart() {
@@ -101,7 +101,9 @@ export default defineStore({
         this.changeStatus('error', error)
       }
     },
-
+    setShippingCost(cost) {
+      this._shippingCost = cost * 1
+    },
     async addToUserCart(body) {
       this.changeStatus('loading')
       try {

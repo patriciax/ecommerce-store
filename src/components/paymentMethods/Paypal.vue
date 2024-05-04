@@ -40,6 +40,9 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  carrierRate:{
+    type: Object
+  }
 })
 
 const paymentMethods = PaymentMethods()
@@ -82,6 +85,7 @@ interval.value = setInterval(() => {
               paymentMethod: 'paypal-create-order',
               carts: props.cart,
               ivaType: countryStore.country == 'Venezuela' ? 'national' : 'international',
+              carrierRate: props.carrierRate
             } 
             
             const token = localStorage.getItem((import.meta as any).env.VITE_BEARER_TOKEN_KEY)
@@ -122,7 +126,7 @@ interval.value = setInterval(() => {
                 name: props.name,
                 email: props.email,
                 phone: props.phone,
-                carrier: props.carrier,
+                carrier: props.carrier
               } : {
                 paymentMethod: 'paypal-approve-order',
                 orderId: data.orderID,
@@ -131,6 +135,7 @@ interval.value = setInterval(() => {
                 email: props.email,
                 phone: props.phone,
                 carrier: props.carrier,
+                carrierRate: props.carrierRate
               }
 
             const token = localStorage.getItem((import.meta as any).env.VITE_BEARER_TOKEN_KEY)
