@@ -1,12 +1,19 @@
 <script setup lang="ts">
-import { ref } from 'vue'
 import Btn from '@/components/common/Btn.vue'
-import { HeartIcon, ShoppingCartIcon, PhotoIcon, EyeIcon } from '@heroicons/vue/24/outline'
-import { useRouter } from 'vue-router'
-import CartStore from '@/stores/cart/cart'
-import { useI18n } from 'vue-i18n'
+import useNotificationsStore from '@/composables/useNotifications'
+import FavoriteStore from '@/stores/favorite'
+import _storeProduct from '@/stores/product'
 import _storeUser from '@/stores/user'
-import useNotifications from '@/composables/useNotifications'
+import { EyeIcon, HeartIcon, PhotoIcon } from '@heroicons/vue/24/outline'
+import { HeartIcon as SolidHearIcon } from '@heroicons/vue/24/solid'
+import { computed, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { useRouter } from 'vue-router'
+
+const { pushNotification } = useNotificationsStore()
+const favoriteLoading = ref(false)
+const productStore = _storeProduct()
+const authStore = _storeUser()
 
 const props = defineProps({
   data: {
@@ -16,43 +23,35 @@ const props = defineProps({
   disabled: {
     type: Boolean,
   },
+  
 })
 
+const addFavorite = async () => {
+  favoriteLoading.value = true
+  const response = await favoriteStore.addFavorite(props.data._id)
+  if (response) {
+    pushNotification({
+        id: '',
+        title: response.message,
+        type: response.status == 'success' ? 'success' : 'error',
+      })
+  } 
+  favoriteLoading.value = false
+}
+
+const isFavorite = computed(() => favoriteStore.favorites.find((item) => item.product._id == props.data._id))
+
 const { locale } = useI18n()
-const cartStore = CartStore()
 const router = useRouter()
 const imageError = ref(false)
-const storeUser = _storeUser()
-const { pushNotification } = useNotifications()
-
-const addToCart = (_id: any) => {
-  if (storeUser.currentUser) {
-    cartStore.addToUserCart({
-      productId: _id,
-      quantity: cartStore.cart.find((item) => item.productId === _id)?.quantity || 1,
-    })
-  } else {
-    cartStore.addToCart({
-      productId: _id,
-    })
-  }
-
-  pushNotification({
-    id: '',
-    title: 'Añadido al carrito. ',
-    type: 'success',
-    isLink: '/checkout',
-    description: 'Ver carrito ',
-  })
-}
+const favoriteStore = FavoriteStore()
 
 const goToProduct = (slug: any) => router.push({ name: 'singleProduct', params: { slug: slug } })
 </script>
 <template>
   <section class="relative w-full text-start">
-    <div class="group/card mb-2 flex h-[350px] w-full overflow-hidden rounded-lg bg-gray-100">
+    <div class="group/card mb-2 flex h-[300px] w-full overflow-hidden rounded-lg bg-gray-100">
       <PhotoIcon v-if="imageError" class="mx-auto w-7 text-gray-500" />
-
       <img
         v-else
         @click="goToProduct(props.data.slug)"
@@ -61,18 +60,23 @@ const goToProduct = (slug: any) => router.push({ name: 'singleProduct', params: 
         class="h-full w-full rounded-lg bg-center object-cover"
         @error="imageError = true"
       />
-      <div class="absolute right-2 top-2 hidden group-hover/card:block">
-        <Btn @click="$emit('addFavorite', props.data._id)" color="secondary" with-icon isFull>
+      <div class="absolute right-2 top-2 hidden group-hover/card:block" v-if="authStore.currentUser">
+        <Btn :isLoading="favoriteLoading" :isDisabled="favoriteLoading" @click="addFavorite" color="secondary" with-icon isFull>
           <template #icon>
-            <HeartIcon class="w-5" />
+            <HeartIcon class="w-5" v-if="!isFavorite" />
+            <SolidHearIcon class="w-5" v-else />
           </template>
         </Btn>
       </div>
     </div>
     <section class="flex w-full items-center justify-between text-base">
       <div class="w-full">
-        <p v-text="locale === 'en_US' ? props.data.nameEnglish : props.data.name" />
-        <p class="text-xl font-bold" v-text="`$` + props.data.price" />
+        <p class="truncate-wrap truncate-wrap__lines truncate-wrap__lines_2 mb-1" v-text="locale === 'en_US' ? props.data.nameEnglish : props.data.name" />
+        <p class="text-xl font-bold flex items-center" >
+          <p v-if="props.data.priceDiscount" class="line-through text-sm mr-2">${{ props.data.price }}</p>
+          <p>${{ props.data.priceDiscount ? props.data.priceDiscount : props.data.price }}</p>
+          <span v-if="productStore.price" class="font-sans text-sm text-gray-500 ml-2 "> Bs.{{ (productStore.price * (props.data.priceDiscount ? props.data.priceDiscount : props.data.price)).toLocaleString() }}</span>
+        </p>
       </div>
       <Btn color="cart"  with-icon @click="goToProduct(props.data.slug)">
         <template #icon>

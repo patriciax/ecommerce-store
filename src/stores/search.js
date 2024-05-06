@@ -1,27 +1,27 @@
-import { _changeDolar } from '@/api/repositories/search.repository'
+import { _getSearch } from '@/api/repositories/search.repository'
 import { defineStore } from 'pinia'
 
 export default defineStore({
-  id: 'User',
+  id: 'search',
   state: () => ({
     _status: null,
     _error: null,
-    _price: null,
+    _search: null,
   }),
   getters: {
     isLoading: (state) => state._status === 'loading',
     isReady: (state) => state._status === 'ready',
     isError: (state) => state._status === 'error',
     error: (state) => state._error,
-    price: (state) => state._price,
+    search: (state) => state._search,
   },
   actions: {
-    async changeDolar(body) {
+    async getSearch(body,_priceMax, _priceMin) {
       this.changeStatus('loading')
       try {
-        const response = await _changeDolar(body)
+        const response = await _getSearch(body,_priceMax, _priceMin)
         if (response) {
-          this._price = response.data
+          this._search = response.data.data.products
           this.changeStatus('ready')
         }
       } catch (error) {

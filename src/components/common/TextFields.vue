@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
-import { EyeIcon, EyeSlashIcon } from '@heroicons/vue/24/outline'
+import { EyeIcon, EyeSlashIcon } from '@heroicons/vue/24/outline';
+import { computed, ref } from 'vue';
 
 const props = defineProps({
   id: {
@@ -82,7 +82,6 @@ const validateKeyPress = (event) => {
     <label v-show="props.label">
       <span :class="{ 'text-red-500': props.errorMessage }" class="text-sm font-bold" v-text="props.label" />
       <span v-if="isRequired" class="text-red-500">*</span>
-      <p v-if="props.msg" class="text-xs font-light" v-text="props.msg"/>
 
       <input
         :id="props.id"
@@ -100,6 +99,8 @@ const validateKeyPress = (event) => {
         @input="handleInput"
         @keypress="props.noSpecialCharacters ? validateKeyPress($event) : ''"
       />
+      <p v-if="props.msg" class="text-xs font-light mt-1" v-text="props.msg"/>
+
       <button
         v-if="props.type === 'password'"
         class="absolute right-4 top-9"

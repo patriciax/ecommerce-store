@@ -1,20 +1,25 @@
 <script setup lang="ts">
-import { XMarkIcon, ShoppingCartIcon, HeartIcon, UserIcon, Bars3BottomLeftIcon } from '@heroicons/vue/24/outline'
-import { ChevronDownIcon } from '@heroicons/vue/24/outline'
-import { onMounted, ref } from 'vue'
-import Btn from '@/components/common/Btn.vue'
 import { getAllCategoriesMenu } from '@/api/repositories/category.repository'
+import Btn from '@/components/common/Btn.vue'
 import InputSearch from '@/components/common/InputSearch.vue'
-import LanguageSelector from './LanguageSelector.vue'
-import CartStore from '@/stores/cart/cart'
-import Register from '@/components/views/home/auth/Register.vue'
 import Login from '@/components/views/home/auth/Login.vue'
-import _storeUser from '@/stores/user'
-import Dropdown from './Dropdown.vue'
+import Register from '@/components/views/home/auth/Register.vue'
 import router from '@/router'
+import CartStore from '@/stores/cart/cart'
+import RestorePassword from '@/stores/resetPassword.js'
+import _stroreSearch from '@/stores/search'
+import _storeUser from '@/stores/user'
+import { Bars3BottomLeftIcon, ChevronDownIcon, HeartIcon, ShoppingCartIcon, UserIcon, XMarkIcon } from '@heroicons/vue/24/outline'
+import { onMounted, ref, watch } from 'vue'
+import Dropdown from './Dropdown.vue'
+import LanguageSelector from './LanguageSelector.vue'
 
+const restorePassStore = RestorePassword()
+
+const storeSearch = _stroreSearch()
 const cartStore = CartStore()
 const storeUser = _storeUser()
+
 
 const filter = ref('')
 const mainCategories = ref([])
@@ -32,6 +37,18 @@ const logout = (_closeDropdown: () => void) => {
 const goToCart = () => {
   router.push({ name: 'checkout' })
 }
+const profile = (_closeDropdown: () => void) => {
+  router.push({ name: 'profile' })
+  _closeDropdown()
+
+}
+const goToFavorite = () => {
+  router.push({ name: 'favorites' })
+}
+
+const search = () => {
+  router.push({ name: 'search', params: { search: filter.value } })
+}
 
 onMounted(async () => {
   const response = await getAllCategoriesMenu()
@@ -40,7 +57,17 @@ onMounted(async () => {
     subCategories.value = response.data?.subCategories
     finalCategories.value = response.data?.finalCategories
   }
+
+
+
 })
+
+watch(
+  () => restorePassStore.login,
+  () => {
+    if (restorePassStore.login) login.value = true
+  }
+)
 </script>
 <template>
   <header>
@@ -49,9 +76,9 @@ onMounted(async () => {
         <label for="check" class="open-menu"><Bars3BottomLeftIcon class="w-6 text-gray-800" /></label>
 
         <div class="ml-14 w-1/6 xl:ml-12">
-          <a class="logo" href="/">
-            <h3 class="text-2xl font-bold">LOGO</h3>
-          </a>
+          <RouterLink to="/">
+            <img src="@/assets/images/logo.png" class="w-28" alt="">
+          </RouterLink>
         </div>
 
         <section class="flex justify-between xl:w-4/5">
@@ -80,11 +107,18 @@ onMounted(async () => {
                     </li>
                     <li class="flex flex-col gap-2 text-sm">
                       <!---ITEMS DE SUBCATEGORIA------>
-                      <a
+                      <router-link
                         v-for="finalCategory in finalCategories.filter((category) => category.parent_id == subCategory._id)"
-                        href="#"
+                        :to="{
+                          name: 'category',
+                          params: { slug: finalCategory?.slug },
+                          query: {
+                            id: finalCategory?._id,
+                            name: $i18n.locale.toLowerCase() == 'es_es' ? finalCategory?.name : finalCategory?.englishName,
+                          },
+                        }"
                         class="hover:underline"
-                        >{{ $i18n.locale.toLowerCase() == 'es_es' ? finalCategory?.name : finalCategory?.englishName }}</a
+                        >{{ $i18n.locale.toLowerCase() == 'es_es' ? finalCategory?.name : finalCategory?.englishName }}</router-link
                       >
                     </li>
                   </ul>
@@ -93,13 +127,13 @@ onMounted(async () => {
             </li>
 
             <li>
-              <a href="#"
+              <router-link to="/offers"
                 ><h4 class="h-full border-b-4 border-transparent p-3 text-base uppercase hover:border-b-4 hover:border-gray-900">
                   Ofertas del dia
-                </h4></a
+                </h4></router-link
               >
             </li>
-            <li>
+            <li v-if="storeUser.currentUser">
               <RouterLink to="/gift-card"
                 ><h4 class="h-full border-b-4 border-transparent p-3 text-base uppercase hover:border-b-4 hover:border-gray-900">
                   {{ $t('COMMON.GIFT_CART') }}
@@ -111,6 +145,7 @@ onMounted(async () => {
 
           <div class="mr-5 flex items-center gap-2 lg:mr-10">
             <InputSearch
+              @search="search"
               class="mr-4 hidden xl:block"
               id="search"
               v-model="filter"
@@ -131,6 +166,9 @@ onMounted(async () => {
                 </button>
               </template>
               <template v-slot:content="{ closeDropdown }">
+                <button @click="profile(closeDropdown)" class="w-28 py-2 hover:bg-gray-200">
+                  <p>Mi perfil</p>
+                </button>
                 <button @click="logout(closeDropdown)" class="w-28 py-2 hover:bg-gray-200">
                   <p>Cerrar sesion</p>
                 </button>
@@ -142,7 +180,16 @@ onMounted(async () => {
                 <UserIcon class="w-5" />
               </template>
             </Btn>
-            <Btn color="secondary" class="hidden lg:block" is-tooltip with-icon :text="$t('COMMON.FAVORITE')" isFull>
+            <Btn
+              @click="goToFavorite"
+              color="secondary"
+              class="hidden lg:block"
+              is-tooltip
+              with-icon
+              :text="$t('COMMON.FAVORITE')"
+              isFull
+              v-if="storeUser.currentUser"
+            >
               <template #icon>
                 <HeartIcon class="w-5" />
               </template>
@@ -162,6 +209,11 @@ onMounted(async () => {
     </nav>
   </header>
 
-  <Register v-if="register" @close="register = false" @closeRegister="login = true; register = false" @login="(login = true), (register = false)" />
+  <Register
+    v-if="register"
+    @close="register = false"
+    @closeRegister="(login = true), (register = false)"
+    @login="(login = true), (register = false)"
+  />
   <Login v-if="login" @close="login = false" @register="(login = false), (register = true)" />
 </template>

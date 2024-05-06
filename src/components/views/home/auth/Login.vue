@@ -1,7 +1,8 @@
 <script setup>
+import Btn from '@/components/common/Btn.vue'
 import Modal from '@/components/common/Modal.vue'
-import VerificationCode from '@/components/views/home/auth/Verification.vue'
 import TextFields from '@/components/common/TextFields.vue'
+import VerificationCode from '@/components/views/home/auth/Verification.vue'
 import useNotifications from '@/composables/useNotifications'
 import _storeAuth from '@/stores/auth'
 import _storeUser from '@/stores/user'
@@ -9,7 +10,6 @@ import useVuelidate from '@vuelidate/core'
 import { email, required } from '@vuelidate/validators'
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import Btn from '@/components/common/Btn.vue'
 
 const emit = defineEmits(['close'])
 
@@ -80,6 +80,7 @@ const sendForm = async () => {
     })
     await storeUser.getUser()
     emit('close')
+    window.location.reload()
   }
 
   if (storeAuth.isEmailVerifyNeeded) {
@@ -120,8 +121,7 @@ watch(
 
     <div v-else class="flex h-[599px] min-h-full flex-col justify-center rounded-xl bg-white px-6 py-6 md:py-12 lg:px-16">
       <div class="text-center sm:mx-auto sm:w-full sm:max-w-sm">
-        <p v-text="' LOGO'" class="hidden md:block" />
-        <!-- <img class="mx-auto h-10 w-auto" src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600" alt="Your Company" /> -->
+        <img class="mx-auto h-10 w-auto mb-6" src="@/assets/images/logo.png" alt="Logo roca" />
         <h2 class="mb-4 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900" v-text="'Inicia Sesion'"></h2>
       </div>
 
@@ -148,12 +148,16 @@ watch(
           placeholder="********"
           :label="t('FORM.PASSWORD')"
         />
+        <router-link to="/reset-password" @click="$emit('close')"  class="block text-end text-sm font-semibold leading-6 text-indigo-600 hover:text-indigo-500  " >
+        ¿Has olvidado tu contraseña?
+      </router-link>
 
         <div class="col-span-2 mt-6">
           <Btn :isLoading="storeAuth.isLoading" :isDisabled="storeAuth.isLoading" text="Iniciar Sesion" isFull />
         </div>
       </form>
 
+  
       <p class="mt-6 text-center text-sm text-gray-500 md:mt-10" @click="$emit('register')">
         Aun no tienes cuenta?<a href="#" class="font-semibold leading-6 text-indigo-600 hover:text-indigo-500"> Registrate</a>
       </p>

@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { ref, onMounted, watch } from 'vue'
+import CartList from '@/components/common/CartList.vue'
+import useNotifications from '@/composables/useNotifications'
 import CartStore from '@/stores/cart/cart'
 import _storeUser from '@/stores/user'
-import useNotifications from '@/composables/useNotifications'
+import { onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import CartList from '@/components/common/CartList.vue'
 
 const { t } = useI18n()
 
@@ -44,8 +44,16 @@ const lessItem = (index) => {
     if (storeUser.currentUser) {
       cartStore.update({
         productId: cart[index].productId,
-        size: cart[index].size._id,
-        color: cart[index].color._id,
+        size: 
+          {
+            _id: cart[index].size._id
+          }
+        ,
+        color: 
+          {
+            _id: cart[index].color._id
+          }
+        ,
         quantity: cart[index].quantity,
       })
     }

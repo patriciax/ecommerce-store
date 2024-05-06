@@ -1,22 +1,17 @@
 <script setup lang="ts">
 import Banner from '@/components/views/home/Banner.vue'
 import NewProducts from '@/components/views/home/NewProducts.vue'
-import Products from '@/components/views/home/Products.vue'
 import Popular from '@/components/views/home/Popular.vue'
+import Products from '@/components/views/home/Products.vue'
 import _storeProduct from '@/stores/product'
 import { onMounted } from 'vue'
-import CountryStore from '@/stores/country'
 
 const productStore = _storeProduct()
-const countryStore = CountryStore()
 
 onMounted(async () => {
   await productStore.getAllProducts()
   localStorage.setItem('step', '1')
 
-  if (countryStore.country == 'Venezuela') {
-    await productStore.getPrice()
-  }
 })
 </script>
 

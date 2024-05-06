@@ -1,8 +1,11 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import useNotifications from '@/composables/useNotifications'
-import PaymentMethods from '@/stores/paymentMethods'
+import { showNotification } from '@/composables/useNotification';
+import useNotifications from '@/composables/useNotifications';
+import PaymentMethods from '@/stores/paymentMethods';
+import CountryStore from '@/stores/country'
+import { ref } from 'vue';
 
+const countryStore = CountryStore()
 const emit = defineEmits(['nextStep', 'validate'])
 const { pushNotification } = useNotifications()
 
@@ -26,6 +29,20 @@ const props = defineProps({
   validateForm: {
     type: Boolean,
   },
+  endpoint: {
+    type: String,
+    default: 'checkout',
+  },
+  card: {
+    type: Object,
+  },
+  isCard: {
+    type: Boolean,
+    default: false,
+  },
+  carrierRate:{
+    type: Object
+  }
 })
 
 const paymentMethods = PaymentMethods()
@@ -59,17 +76,28 @@ interval.value = setInterval(() => {
         async createOrder() {
 
           try {
-            const response = await fetch(`${(import.meta as any).env.VITE_API_URL}/v1/checkout`, {
+
+            const object = props.isCard ? {
+              paymentMethod: 'paypal-create-order',
+              card: props.card,
+              ivaType: countryStore.country == 'Venezuela' ? 'national' : 'international',
+            } : {
+              paymentMethod: 'paypal-create-order',
+              carts: props.cart,
+              ivaType: countryStore.country == 'Venezuela' ? 'national' : 'international',
+              carrierRate: props.carrierRate
+            } 
+            
+            const token = localStorage.getItem((import.meta as any).env.VITE_BEARER_TOKEN_KEY)
+            const response = await fetch(`${(import.meta as any).env.VITE_API_URL}/v1/${props.endpoint}`, {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
+                Authorization: token ? `Bearer ${token}` : null,
               },
               // use the "body" param to optionally pass additional order information
               // like product ids and quantities
-              body: JSON.stringify({
-                paymentMethod: 'paypal-create-order',
-                carts: props.cart,
-              }),
+              body: JSON.stringify(object),
             })
 
             const orderData = await response.json()
@@ -91,14 +119,15 @@ interval.value = setInterval(() => {
         async onApprove(data, actions) {
           try {
 
-            const token = localStorage.getItem((import.meta as any).env.VITE_BEARER_TOKEN_KEY)
-            const response = await fetch(`${(import.meta as any).env.VITE_API_URL}/v1/checkout`, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${token}`,
-              },
-              body: JSON.stringify({
+            const object = props.isCard ? {
+                paymentMethod: 'paypal-approve-order',
+                orderId: data.orderID,
+                card: props.card,
+                name: props.name,
+                email: props.email,
+                phone: props.phone,
+                carrier: props.carrier
+              } : {
                 paymentMethod: 'paypal-approve-order',
                 orderId: data.orderID,
                 carts: props.cart,
@@ -106,7 +135,17 @@ interval.value = setInterval(() => {
                 email: props.email,
                 phone: props.phone,
                 carrier: props.carrier,
-              }),
+                carrierRate: props.carrierRate
+              }
+
+            const token = localStorage.getItem((import.meta as any).env.VITE_BEARER_TOKEN_KEY)
+            const response = await fetch(`${(import.meta as any).env.VITE_API_URL}/v1/${props.endpoint}`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: token ? `Bearer ${token}` : null,
+              },
+              body: JSON.stringify(object),
             })
 
             const orderData = await response.json()
@@ -140,7 +179,7 @@ interval.value = setInterval(() => {
               emit('nextStep')
             }
           } catch (error) {
-            console.error(error)
+            showNotification('Algo ha ido mal', 'error')
           }
         },
       })

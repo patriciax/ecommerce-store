@@ -1,19 +1,19 @@
 <script setup lang="ts">
-import CartStore from '@/stores/cart/cart'
-import { computed, ref } from 'vue'
-import { useRouter } from 'vue-router'
-import _storeProduct from '@/stores/product'
-import { onMounted } from 'vue'
-import Gallery from '@/components/common/Gallery.vue'
-import Products from '@/components/views/home/Products.vue'
-import { useI18n } from 'vue-i18n'
-import RadioCheck from '@/components/common/RadioCheck.vue'
-import { HeartIcon, ChevronLeftIcon, ChevronRightIcon, ShoppingCartIcon } from '@heroicons/vue/24/outline'
 import Btn from '@/components/common/Btn.vue'
+import Gallery from '@/components/common/Gallery.vue'
+import RadioCheck from '@/components/common/RadioCheck.vue'
 import NewProducts from '@/components/views/home/NewProducts.vue'
 import useNotifications from '@/composables/useNotifications'
-import { watch } from 'vue'
+import CartStore from '@/stores/cart/cart'
+import FavoriteStore from '@/stores/favorite'
+import _storeProduct from '@/stores/product'
+import { ChevronLeftIcon, ChevronRightIcon, HeartIcon, ShoppingCartIcon } from '@heroicons/vue/24/outline'
+import { HeartIcon as SolidHeartIcon } from '@heroicons/vue/24/solid'
+import { computed, onMounted, ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { useRouter } from 'vue-router'
 
+const favoriteStore = FavoriteStore()
 const isLoading = ref(false)
 const productStore = _storeProduct()
 const cartStore = CartStore()
@@ -28,6 +28,7 @@ const maxAmount = ref(0)
 const color = ref(null)
 const size = ref(null)
 const favorite = ref(null)
+const favoriteLoading = ref(false)
 const productsImg = computed(() => {
   return productStore.product?.images
 })
@@ -35,8 +36,17 @@ const productsImg = computed(() => {
 const quantity = ref(1);
 const goToRoute = () => router.push({ name: 'home' })
 // const goToOrder = () => router.push({ name: 'cart' })
-const addFavorite = () => {
-  favorite.value = true
+const addFavorite = async() => {
+  favoriteLoading.value = true
+  const response = await favoriteStore.addFavorite(productStore.product?._id)
+  if (response) {
+    pushNotification({
+        id: '',
+        title: response.message,
+        type: response.status == 'success' ? 'success' : 'error',
+      })
+  } 
+  favoriteLoading.value = false
 }
 
 const add = () => {
@@ -114,6 +124,8 @@ const addProduct = async() => {
 
 }
 
+const isFavorite = computed(() => favoriteStore.favorites.find((item) => item.product._id == productStore.product?._id))
+
 const sizesToShow = computed(() => {
 
   const sizes = []
@@ -152,13 +164,12 @@ onMounted(async () => {
   maxAmount.value = variations.value?.find((item) => item.color[0]._id == color.value && item.size[0]._id == size.value)?.stock ?? 0
 })
 
-// const goToProduct = (slug: any) => router.push({ name: 'singleProduct', params: { slug: slug } })
 
 
 watch(
   () => router.currentRoute.value.params.slug,
   async () => {
-    router.push({ name: 'singleProduct', params: { slug: router.currentRoute.value.params.slug } })
+    await productStore.getSingleProduct(router.currentRoute.value.params.slug)
   }
 )
 
@@ -203,7 +214,8 @@ watch(
         <!-- Product info -->
         <div class="relative max-w-2xl px-4 pb-16 pt-10 sm:px-6 lg:max-w-7xl lg:gap-x-8 lg:px-8 lg:pb-24 lg:pt-0">
           <button @click="addFavorite" class="group absolute right-4 top-0 rounded-full bg-gray-100 p-3">
-            <HeartIcon class="w-6 group-hover:text-red-600" :class="{ 'text-red-600': favorite }" />
+            <HeartIcon class="w-6 group-hover:text-red-600" :class="{ 'text-red-600': favorite }" v-if="!isFavorite"/>
+            <SolidHeartIcon class="w-6" v-else/>
           </button>
           <div class="lg:col-span-1">
             <p
@@ -211,7 +223,10 @@ watch(
               class="mb-4 mr-8 max-w-4xl text-3xl font-bold text-gray-900"
             />
 
-            <p class="text-2xl tracking-tight text-gray-900">${{ productStore.product?.price }}</p>
+            <p class="text-2xl tracking-tight text-gray-900">${{ productStore.product?.priceDiscount ? productStore.product?.priceDiscount : productStore.product?.price}}
+              <span v-if="productStore.price" class="font-sans text-sm text-gray-500 ml-2 "> Bs.{{ (productStore.price * (productStore.product?.priceDiscount ? productStore.product?.priceDiscount : productStore.product?.price)).toLocaleString() }}</span>
+</p>
+            
           </div>
 
           <div class="pb-10 lg:col-span-2 lg:col-start-1 lg:pb-16 lg:pt-6">
