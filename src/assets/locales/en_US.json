@@ -21,7 +21,12 @@
     "POPULAR_NOW": "Popular right now",
     "SELECT": "Select",
     "NOT_AVAILABLE": "Not available",
-    "QUANTITY": "Quantity"
+    "QUANTITY": "Quantity",
+    "OFFERS": "Offers of the day",
+    "FAVORITE": "Favorites",
+    "SEARCH": "Seach",
+    "PROFILE": "My profile"
+
   },
   "CART":{
     "ERROR": "Error while adding to cart",
@@ -91,6 +96,7 @@
     "COUNTRY": "Country",
     "STATE": "State",
     "ADDRESS": "Address",
-    "REFERENCE": "Reference"
+    "REFERENCE": "Reference",
+    "GET_RATES": "Get rates"
   }
 }

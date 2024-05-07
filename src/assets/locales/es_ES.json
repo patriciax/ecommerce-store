@@ -21,14 +21,17 @@
     "POPULAR_NOW": "Populares ahora mismo",
     "COLOR": "Color",
     "SIZE": "Tamaño",
-    "QUANTITY":"Cantidad",
+    "QUANTITY": "Cantidad",
     "DESCRIPTION": "Descripción",
     "SELECT": "Seleccionar",
     "NOT_AVAILABLE": "No disponible",
-    "PAGINATE": "Mostrando {from} {to} de {total} registros"
-
+    "PAGINATE": "Mostrando {from} {to} de {total} registros",
+    "OFFERS": "Ofertas del día",
+    "FAVORITE": "Favoritos",
+    "SEARCH": "Buscar",
+    "PROFILE": "Mi perfil"
   },
-  "CART":{
+  "CART": {
     "ERROR": "Error al añadir al carrito",
     "SUCCESS": "Añadido al carrito",
     "SHOW": "Ver carrito"
@@ -96,14 +99,23 @@
   },
   "ACTIONS": {},
   "PAYMENTS": {
-    "CARD_HOLDER":"Nombre del titular de la tarjeta",
-    "CARD_HOLDER_ID":"Cédula del titular de la tarjeta",
-    "CARD_NUMBER":"Número de tarjeta",
+    "CARD_HOLDER": "Nombre del titular de la tarjeta",
+    "CARD_HOLDER_ID": "Cédula del titular de la tarjeta",
+    "CARD_NUMBER": "Número de tarjeta",
     "CVC": "CVC",
     "EXPIRATION_DATE": "Fecha de expiración",
     "COUNTRY": "País",
     "STATE": "Estado",
     "ADDRESS": "Dirección",
-    "REFERENCE": "Referencia"
+    "REFERENCE": "Referencia",
+    "GET_RATES": "Obtener tarifas"
+  },
+  "FOOTER": {
+    "CUSTOMER_SERVICE": "Servicio al cliente",
+    "CONTACT": "Contacto",
+    "ABOUT_US": "Nosotros",
+    "NEWS": "Novedades",
+    "RECOMMENDED": "Productos recomendados",
+    "POPULAR_NOW": "Populares ahora mismo"
   }
 }
