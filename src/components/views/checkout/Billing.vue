@@ -19,11 +19,13 @@ import _storeUser from '@/stores/user'
 import _ZoomStore from '@/stores/zoom'
 import { decimalNumberFormat } from '@/utils/numberFormat'
 import { taxCalculations } from '@/utils/taxCalculations'
+import { ArrowLeftIcon } from '@heroicons/vue/24/outline'
 import useVuelidate from '@vuelidate/core'
 import { email, required, requiredIf } from '@vuelidate/validators'
 import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import Btn from '@/components/common/Btn.vue'
+
+
 const emit = defineEmits(['nextStep', 'prevStep'])
 
 const { t } = useI18n()
@@ -41,7 +43,7 @@ const isDisabledStock = ref(false)
 const emailHasError = ref(null)
 const selectPaymentMethod = ref(null)
 const validateFormData = ref(false)
-
+const selectedRateId = ref(null)
 const rates = ref([])
 const choosenRate = ref(null)
 const total = computed(() => {
@@ -57,32 +59,30 @@ const getCountries = async () => {
   countries.value = response.data?.countries
 }
 
-const getRates = async() => {
-
+const getRates = async () => {
   handlerValidate.value.$reset()
   const result = await handlerValidate.value.$validate()
 
-  if(!result) return
+  if (!result) return
 
   const country = countries.value.find((country) => country._id == dataForm.value.foreignCountry)
   const state = country.statesValues[dataForm.value.foreignState * 1 - 1]
 
   const data = {
-    "name": `${dataForm.value.name} ${dataForm.value.lastname}`, 
-    "street1": dataForm.value.foreignAddress,
-    "city": dataForm.value.foreignCity,
-    "state": state,
-    "zip": dataForm.value.foreignZipCode,
-    "country": country.value,
-    "parcel": cartStore.cart
+    name: `${dataForm.value.name} ${dataForm.value.lastname}`,
+    street1: dataForm.value.foreignAddress,
+    city: dataForm.value.foreignCity,
+    state: state,
+    zip: dataForm.value.foreignZipCode,
+    country: country.value,
+    parcel: cartStore.cart,
   }
 
   const response = await _getRates(data)
 
-  if(response.data.status == 'success'){
+  if (response.data.status == 'success') {
     rates.value = response.data.data
   }
-
 }
 
 const dataForm: any = ref({
@@ -97,7 +97,7 @@ const dataForm: any = ref({
   foreignState: '',
   foreignAddress: '',
   foreignCity: '',
-  foreignZipCode:''
+  foreignZipCode: '',
 })
 
 const rules = computed(() => {
@@ -217,6 +217,7 @@ onMounted(async () => {
 const setChoosenRate = (rate) => {
   choosenRate.value = rate
   cartStore.setShippingCost(rate.amount)
+  selectedRateId.value = rate.objectId
 }
 
 const validateForm = async (paymentMethod) => {
@@ -232,12 +233,23 @@ const handlePay = (paymentMethod) => {
   emit('nextStep')
 }
 
-const formatTotal=computed(()=> cartStore.total ? decimalNumberFormat(cartStore.total) : 0)
+const formatTotal = computed(() => (cartStore.total ? decimalNumberFormat(cartStore.total) : 0))
 </script>
 <template>
   <section class="grid gap-12 px-10 md:grid-cols-2 lg:px-0">
     <div>
-      <p class="mt-6 text-xl font-bold" v-text="'Datos de facturación'" />
+      <div class="">
+        <button
+          class="group mb-4 flex items-center text-sm  text-gray-800 shadow-sm hover:bg-opacity-90"
+          type="submit"
+          @click="$emit('prevStep')"
+        >
+        <ArrowLeftIcon class="w-3 mr-2  mx-auto text-gray-700" />
+
+          Volver
+        </button>
+        <p class=" text-xl font-bold" v-text="'Datos de facturación'" />
+      </div>
       <p class="mb-4 font-light" v-text="`Tienes ${cartStore.cart.length} productos en el carrito`" />
 
       <form class="flex flex-col gap-2">
@@ -334,42 +346,46 @@ const formatTotal=computed(()=> cartStore.total ? decimalNumberFormat(cartStore.
         </section>
 
         <section class="mt-4 border-t py-4" v-else>
-          <p class="mb-3 text-lg font-bold" v-text="'Dirección de envío'" />
+          <div class="mb-3 flex justify-between">
+            <p class="text-lg font-bold" v-text="'Dirección de envío'" />
 
-          <div class="mb-4">
-            <img class="w-32" src="@/assets/images/zoom.png" />
+            <img class="w-20" src="@/assets/images/ups.png" />
           </div>
-          <SelectField
-            v-model="dataForm.foreignCountry"
-            :errorMessage="
-              handlerValidate?.['foreignCountry']?.$errors?.length > 0
-                ? $t('VALIDATIONS.' + handlerValidate?.['foreignCountry']?.$errors?.[0]?.$validator?.toUpperCase())
-                : undefined
-            "
-            isRequired
-            class="mb-2 w-full"
-            :label="$t('PAYMENTS.COUNTRY')"
-            :options="countries?.map((country) => ({ value: country._id, text: country.name }))"
-            @update:modelValue="(_value) => (dataForm.foreignCountry = _value)"
-          />
-          <SelectField
-            v-model="dataForm.foreignState"
-            :errorMessage="
-              handlerValidate?.['foreignState']?.$errors?.length > 0
-                ? $t('VALIDATIONS.' + handlerValidate?.['foreignState']?.$errors?.[0]?.$validator?.toUpperCase())
-                : undefined
-            "
-            isRequired
-            :is-disabled="!dataForm.foreignCountry"
-            :label="$t('PAYMENTS.STATE')"
-            :options="
-              countries
-                ?.find((country) => country._id == dataForm.foreignCountry)
-                ?.states?.map((state, index) => ({ value: index + 1, text: state }))
-            "
-            @update:modelValue="(_value) => (dataForm.foreignState = _value)"
-          />
+
+          <section class="grid grid-cols-2 gap-4">
+            <SelectField
+              v-model="dataForm.foreignCountry"
+              :errorMessage="
+                handlerValidate?.['foreignCountry']?.$errors?.length > 0
+                  ? $t('VALIDATIONS.' + handlerValidate?.['foreignCountry']?.$errors?.[0]?.$validator?.toUpperCase())
+                  : undefined
+              "
+              isRequired
+              class="mb-2 w-full"
+              :label="$t('PAYMENTS.COUNTRY')"
+              :options="countries?.map((country) => ({ value: country._id, text: country.name }))"
+              @update:modelValue="(_value) => (dataForm.foreignCountry = _value)"
+            />
+            <SelectField
+              v-model="dataForm.foreignState"
+              :errorMessage="
+                handlerValidate?.['foreignState']?.$errors?.length > 0
+                  ? $t('VALIDATIONS.' + handlerValidate?.['foreignState']?.$errors?.[0]?.$validator?.toUpperCase())
+                  : undefined
+              "
+              isRequired
+              :is-disabled="!dataForm.foreignCountry"
+              :label="$t('PAYMENTS.STATE')"
+              :options="
+                countries
+                  ?.find((country) => country._id == dataForm.foreignCountry)
+                  ?.states?.map((state, index) => ({ value: index + 1, text: state }))
+              "
+              @update:modelValue="(_value) => (dataForm.foreignState = _value)"
+            />
+          </section>
           <TextFields
+            class="mb-2"
             v-model="dataForm.foreignCity"
             :is-disabled="!dataForm.foreignCountry || !dataForm.foreignState"
             :errorMessage="
@@ -382,6 +398,7 @@ const formatTotal=computed(()=> cartStore.total ? decimalNumberFormat(cartStore.
             :label="t('PAYMENTS.CITY')"
           />
           <TextFields
+            class="mb-2"
             id="foreignAddress"
             v-model="dataForm.foreignAddress"
             :is-disabled="!dataForm.foreignCountry || !dataForm.foreignState"
@@ -395,6 +412,7 @@ const formatTotal=computed(()=> cartStore.total ? decimalNumberFormat(cartStore.
             :label="t('PAYMENTS.ADDRESS')"
           />
           <TextFields
+            class="mb-2"
             v-model="dataForm.foreignZipCode"
             :is-disabled="!dataForm.foreignCountry || !dataForm.foreignState"
             :errorMessage="
@@ -406,22 +424,31 @@ const formatTotal=computed(()=> cartStore.total ? decimalNumberFormat(cartStore.
             placeholder="10000"
             :label="t('PAYMENTS.ZIP_CODE')"
           />
-          <button type="button" @click="getRates()" class="mt-2">{{ t('PAYMENTS.GET_RATES') }}</button>
+          <button
+            type="button"
+            class="group col-span-2 mx-auto my-6 flex w-full items-center justify-center gap-1 rounded-xl bg-gray-800 p-8 py-3 text-sm font-bold leading-6 text-white shadow-sm hover:bg-opacity-90"
+            @click="getRates()"
+          >
+            {{ t('PAYMENTS.GET_RATES') }}
+          </button>
 
-          <div class="mt-2 w-full">
-
-            <div class="p-4 border" v-for="rate in rates" :key="rate.objectId" @click="setChoosenRate(rate)">
-              <p>$ {{ rate.amount }}</p>
-              <p>Días estimados: {{ rate.estimatedDays }}</p>
+          <div class="mt-2 grid w-full grid-cols-2 gap-2">
+            <div
+              class="cursor-pointer rounded-lg border p-4 hover:bg-gray-300"
+              v-for="rate in rates"
+              :key="rate.objectId"
+              @click="setChoosenRate(rate)"
+              :class="{ 'bg-gray-300': rate.objectId === selectedRateId }"
+            >
+              <p><strong>Amount: </strong> ${{ rate.amount }}</p>
+              <p><strong>Días estimados: </strong> {{ rate.estimatedDays }}</p>
             </div>
-
           </div>
-
         </section>
       </form>
     </div>
 
-    <div class="rounded-lg bg-gray-100 p-6">
+    <div class="h-fit rounded-lg bg-gray-100 p-6">
       <p class="text-xl font-bold" v-text="'Tu pedido'" />
       <p class="mb-6 font-light" v-text="'Detalles'" />
 
@@ -435,26 +462,41 @@ const formatTotal=computed(()=> cartStore.total ? decimalNumberFormat(cartStore.
           <span class="font-bold">Envío </span> <span class="font-bold text-blue-900">ZOOM</span>
         </li>
         <li class="mb-4 flex justify-between border-b pb-2" v-else>
-          <span class="font-bold">Envío </span> <span class="font-bold text-blue-900">$ {{ decimalNumberFormat(cartStore.shippingCost) }}</span>
+          <span class="font-bold">Envío </span>
+          <span class="font-bold text-blue-900">$ {{ decimalNumberFormat(cartStore.shippingCost) }}</span>
         </li>
         <li class="mb-4 flex justify-between border-b pb-2">
           <span class="text-lg font-bold">Total</span>
-        <div>
-          <p class="text-lg font-bold mb-2 text-right">${{ formatTotal}}</p>
-          <div class="text-md text-right flex items-center justify-center"><p class=" font-bold mr-2">+IVA </p> ${{  decimalNumberFormat(taxCalculations(cartStore.total, countryStore.country === 'Venezuela' ? 'national' : 'international')) }}</div>
-        </div>
+          <div>
+            <p class="mb-2 text-right text-lg font-bold">${{ formatTotal }}</p>
+            <div class="text-md flex items-center justify-center text-right">
+              <p class="mr-2 font-bold">+IVA</p>
+              ${{
+                decimalNumberFormat(taxCalculations(cartStore.total, countryStore.country === 'Venezuela' ? 'national' : 'international'))
+              }}
+            </div>
+          </div>
         </li>
-   
+
         <li class="mb-4 flex justify-between border-b pb-2" v-if="countryStore.country == 'Venezuela'">
           <span class="text-lg font-bold">Total en Bolivares</span>
           <div>
-            <p v-if="productStore.price" class="text-lg font-bold text-right mb-2">Bs.{{  decimalNumberFormat((productStore.price * cartStore.total)) }}</p>
-            <div class="text-md text-right flex items-center justify-center"><p class=" font-bold mr-2">+IVA </p> Bs.{{  decimalNumberFormat(taxCalculations(productStore.price * cartStore.total, countryStore.country === 'Venezuela' ? 'national' : 'international')) }}</div>
+            <p v-if="productStore.price" class="mb-2 text-right text-lg font-bold">
+              Bs.{{ decimalNumberFormat(productStore.price * cartStore.total) }}
+            </p>
+            <div class="text-md flex items-center justify-center text-right">
+              <p class="mr-2 font-bold">+IVA</p>
+              Bs.{{
+                decimalNumberFormat(
+                  taxCalculations(productStore.price * cartStore.total, countryStore.country === 'Venezuela' ? 'national' : 'international')
+                )
+              }}
+            </div>
           </div>
         </li>
       </ul>
 
-      <section v-if="(countryStore.country != 'Venezuela' && choosenRate) || (countryStore.country == 'Venezuela')">
+      <section v-if="(countryStore.country != 'Venezuela' && choosenRate) || countryStore.country == 'Venezuela'">
         <p class="mb-6 text-lg font-bold" v-text="'Método de pago'" />
         <div>
           <accordion hidden :title="''" v-if="countryStore.country == 'Venezuela'">
@@ -528,7 +570,10 @@ const formatTotal=computed(()=> cartStore.total ? decimalNumberFormat(cartStore.
             />
           </accordion>
           <accordion :title="''">
-            <template #img> <p class="text-lg font-semibold" v-text="'Tarjeta '"/><img class="w-14 ml-2 object-contain" src="@/assets/images/logo.png" /></template>
+            <template #img>
+              <p class="text-lg font-semibold" v-text="'Tarjeta '" />
+              <img class="ml-2 w-14 object-contain" src="@/assets/images/logo.png"
+            /></template>
             <GiftCard
               @validate="validateForm"
               :validate-form="validateFormData"
@@ -545,18 +590,8 @@ const formatTotal=computed(()=> cartStore.total ? decimalNumberFormat(cartStore.
       </section>
       <section v-else>
         <p class="mb-6 text-lg font-bold" v-text="'Método de pago'" />
-        <div>
-          Debe completar sus datos de envío y seleccionar una tarifa
-        </div>
+        <div>Debe completar sus datos de envío y seleccionar una tarifa</div>
       </section>
     </div>
-
-    <button
-      class="group flex col-span-2 mx-auto items-center justify-center gap-1 rounded-xl bg-gray-800 p-8 py-3 text-sm font-bold leading-6 text-white shadow-sm hover:bg-opacity-90"
-      type="submit"
-      @click="$emit('prevStep')"
-    >
-      Volver
-    </button>
   </section>
 </template>

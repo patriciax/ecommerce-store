@@ -1,12 +1,5 @@
 import { axiosGet, axiosPost } from "../client";
 
-// export const _getSearch = async (data: any) => await axiosPost('/v1/products/product-search ', data)
-
-
-
-
-
-
 export const _getSearch = (data: any, _priceMax?: number, _priceMin?: number) => {
     let endpoint = `/v1/products/product-search`;
 

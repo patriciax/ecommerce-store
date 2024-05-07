@@ -22,7 +22,7 @@ const { notifications, removeNotification } = useNotifications()
     />
   </div>
   <Navbar />
-  <section class="mt-24">
+  <section class="mt-24 min-h-[60vh]">
     <RouterView />
   </section>
   <Footer />
