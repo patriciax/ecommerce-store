@@ -52,6 +52,9 @@ const props = defineProps({
   validateForm: {
     type: Boolean,
   },
+  carrierRate: {
+    type: Object
+  }
 })
 
 const { pushNotification } = useNotifications()
@@ -96,6 +99,7 @@ const completePay = async() => {
           email: props.email,
           phone: props.phone,
           carrier: props.carrier,
+          carrierRate: props.carrierRate
         }
       }
 
