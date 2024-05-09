@@ -129,7 +129,7 @@ watch(
             <li>
               <router-link to="/offers"
                 ><h4 class="h-full border-b-4 border-transparent p-3 text-base uppercase hover:border-b-4 hover:border-gray-900">
-                  Ofertas del dia
+                  {{ $t('COMMON.OFFERS') }}
                 </h4></router-link
               >
             </li>
@@ -150,7 +150,7 @@ watch(
               id="search"
               v-model="filter"
               name="Search"
-              :placeholder="'Search'"
+              :placeholder="$t('COMMON.SEARCH')"
               @clear="filter = ''"
             />
 
@@ -167,7 +167,7 @@ watch(
               </template>
               <template v-slot:content="{ closeDropdown }">
                 <button @click="profile(closeDropdown)" class="w-28 py-2 hover:bg-gray-200">
-                  <p>Mi perfil</p>
+                  <p>{{ $t('COMMON.PROFILE') }}</p>
                 </button>
                 <button @click="logout(closeDropdown)" class="w-28 py-2 hover:bg-gray-200">
                   <p>Cerrar sesion</p>

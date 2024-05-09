@@ -5,6 +5,7 @@ import Popular from '@/components/views/home/Popular.vue'
 import Products from '@/components/views/home/Products.vue'
 import _storeProduct from '@/stores/product'
 import { onMounted } from 'vue'
+import ApplePay from '@/components/paymentMethods/ApplePay.vue'
 
 const productStore = _storeProduct()
 
@@ -22,6 +23,7 @@ onMounted(async () => {
       <NewProducts v-if="productStore.allProduct?.section1.length" :products="productStore.allProduct?.section1" class="mb-8" />
       <Products v-if="productStore.allProduct?.section2.length" :products="productStore.allProduct?.section2" />
       <Popular v-if="productStore.allProduct?.section3.length" :products="productStore.allProduct?.section3" />
+      <ApplePay :cart="[]" />
     </section>
   </main>
 </template>

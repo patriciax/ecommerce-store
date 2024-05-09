@@ -78,10 +78,12 @@ const router = createRouter({
       component: Offers
     },
   ],
-  scrollBehavior() {
-    return new Promise((resolve) => {
-      resolve(document.getElementById('app').scrollIntoView({ behavior: 'smooth' }))
-    })
+  scrollBehavior(to, from, savedPosition) {
+    if (savedPosition) {
+      return savedPosition
+    } else {
+      return { top: 0 }
+    }
   },
 })
 
