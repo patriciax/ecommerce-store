@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script setup>
 import PaymentMethods from '@/stores/paymentMethods'
 import useNotificationsStore from '@/composables/useNotifications';
 import { onMounted, ref } from 'vue'
@@ -67,9 +67,11 @@ const check_applepay = async () => {
   return new Promise((resolve, reject) => {
       let error_message = "";
       if (!window.ApplePaySession) {
+        alert("This device does not support Apple Pay");
         error_message = "This device does not support Apple Pay";
       } else
       if (!ApplePaySession.canMakePayments()) {
+        alert("This device, although an Apple device, is not capable of making Apple Pay payments");
         error_message = "This device, although an Apple device, is not capable of making Apple Pay payments";
       }
       if (error_message !== "") {
@@ -80,89 +82,94 @@ const check_applepay = async () => {
     });
 };
 
-// let ap_payment_authed = (event) => {
-//   applepay_payment_event = event.payment;
-//   fetch("/create_order", {
-//       method: "post", headers: { "Content-Type": "application/json; charset=utf-8" },
-//       body: JSON.stringify({ "intent": intent })
-//   })
-//   .then((response) => response.json())
-//   .then((pp_data) => {
-//     pp_order_id = pp_data.id;
-//     apple_pay_email = applepay_payment_event.shippingContact.emailAddress;
-//     applepay.confirmOrder({
-//     orderId: pp_order_id,
-//     token: applepay_payment_event.token,
-//     billingContact: applepay_payment_event.billingContact
-//   })
-//   .then(confirmResult => {
-//     fetch("/complete_order", {
-//       method: "post", headers: { "Content-Type": "application/json; charset=utf-8" },
-//       body: JSON.stringify({
-//           "intent": intent,
-//           "order_id": pp_order_id,
-//           "email": apple_pay_email
-//       })
-//   })
-//   .then((response) => response.json())
-//   .then((order_details) => {
-//     let intent_object = "captures";
-//     if (order_details.purchase_units[0].payments[intent_object][0].status === "COMPLETED") {
-//       current_ap_session.completePayment(ApplePaySession.STATUS_SUCCESS);
-//       display_success_message({"order_details": order_details, "paypal_buttons": paypal_buttons});
-//     } else {
-//       current_ap_session.completePayment(ApplePaySession.STATUS_FAILURE);
-//       console.log(order_details);
-//       throw error("payment was not completed, please view console for more information");
-//     }
-//     })
-//     .catch((error) => {
-//       console.log(error);
-//       display_error_alert();
-//     });
-//   })
-//   .catch(confirmError => {
-//     if (confirmError) {
-//       console.error('Error confirming order with applepay token');
-//       console.error(confirmError);
-//       current_ap_session.completePayment(ApplePaySession.STATUS_FAILURE);
-//       display_error_alert();
-//     }
-//   });
-// });
-// };
-// let ap_validate = (event) => {
-// applepay.validateMerchant({
-//   validationUrl: event.validationURL,
-//   displayName: "My Demo Company"
-// })
-// .then(validateResult => {
-//   current_ap_session.completeMerchantValidation(validateResult.merchantSession);
-// })
-// .catch(validateError => {
-//   console.error(validateError);
-//   current_ap_session.abort();
-// });
-// };
-// let handle_applepay_clicked = (event) => {
-// const payment_request = {
-//   countryCode: global_apple_pay_config.countryCode,
-//   merchantCapabilities: global_apple_pay_config.merchantCapabilities,
-//   supportedNetworks: global_apple_pay_config.supportedNetworks,
-//   currencyCode: "USD",
-//   requiredShippingContactFields: ["name", "phone", "email", "postalAddress"],
-//   requiredBillingContactFields: ["postalAddress"],
-//   total: {
-//     label: "My Demo Company",
-//     type: "final",
-//     amount: "100.0",
-//   }
-// };
-// current_ap_session = new ApplePaySession(4, payment_request);
-// current_ap_session.onvalidatemerchant = ap_validate;
-// current_ap_session.onpaymentauthorized = ap_payment_authed;
-// current_ap_session.begin()
-// };
+let ap_payment_authed = (event) => {
+  applepay_payment_event = event.payment;
+  fetch("/create_order", {
+      method: "post", headers: { "Content-Type": "application/json; charset=utf-8" },
+      body: JSON.stringify({ "intent": intent })
+  })
+  .then((response) => response.json())
+  .then((pp_data) => {
+    pp_order_id = pp_data.id;
+    apple_pay_email = applepay_payment_event.shippingContact.emailAddress;
+    applepay.confirmOrder({
+    orderId: pp_order_id,
+    token: applepay_payment_event.token,
+    billingContact: applepay_payment_event.billingContact
+  })
+  .then(confirmResult => {
+    fetch("/complete_order", {
+      method: "post", headers: { "Content-Type": "application/json; charset=utf-8" },
+      body: JSON.stringify({
+          "intent": intent,
+          "order_id": pp_order_id,
+          "email": apple_pay_email
+      })
+  })
+  .then((response) => response.json())
+  .then((order_details) => {
+    let intent_object = "captures";
+    if (order_details.purchase_units[0].payments[intent_object][0].status === "COMPLETED") {
+      current_ap_session.completePayment(ApplePaySession.STATUS_SUCCESS);
+      display_success_message({"order_details": order_details, "paypal_buttons": paypal_buttons});
+    } else {
+      current_ap_session.completePayment(ApplePaySession.STATUS_FAILURE);
+      console.log(order_details);
+      throw error("payment was not completed, please view console for more information");
+    }
+    })
+    .catch((error) => {
+      alert("ap_payment_authed")
+      alert(error)
+      console.log(error);
+      display_error_alert();
+    });
+  })
+  .catch(confirmError => {
+    if (confirmError) {
+      console.error('Error confirming order with applepay token');
+      console.error(confirmError);
+      current_ap_session.completePayment(ApplePaySession.STATUS_FAILURE);
+      display_error_alert();
+    }
+  });
+});
+};
+let ap_validate = (event) => {
+  applepay.validateMerchant({
+    validationUrl: event.validationURL,
+    displayName: "My Demo Company"
+  })
+  .then(validateResult => {
+    current_ap_session.completeMerchantValidation(validateResult.merchantSession);
+  })
+  .catch(validateError => {
+    alert("validateError");
+    alert(validateError);
+    console.error(validateError);
+    current_ap_session.abort();
+  });
+};
+let handle_applepay_clicked = (event) => {
+const payment_request = {
+  countryCode: global_apple_pay_config.countryCode,
+  merchantCapabilities: global_apple_pay_config.merchantCapabilities,
+  supportedNetworks: global_apple_pay_config.supportedNetworks,
+  currencyCode: "USD",
+  requiredShippingContactFields: ["name", "phone", "email", "postalAddress"],
+  requiredBillingContactFields: ["postalAddress"],
+  total: {
+    label: "My Demo Company",
+    type: "final",
+    amount: "100.0",
+  }
+};
+alert(payment_request.currencyCode)
+current_ap_session = new ApplePaySession(4, payment_request);
+current_ap_session.onvalidatemerchant = ap_validate;
+current_ap_session.onpaymentauthorized = ap_payment_authed;
+current_ap_session.begin()
+};
 
 onMounted(async () => {
   try {
@@ -177,14 +184,18 @@ onMounted(async () => {
           }
         })
         .catch(applepay_config_error => {
+          alert('Error while fetching Apple Pay configuration:')
           console.error('Error while fetching Apple Pay configuration:');
+          alert(applepay_config_error)
           console.error(applepay_config_error);
         });
       })
       .catch((error) => {
+        alert(error)
         console.error(error);
       });;
   } catch (error) {
+    alert(error)
     showNotification({
       message: error,
       type: 'error',
@@ -194,6 +205,16 @@ onMounted(async () => {
 
 </script>
 
+<style>
+  apple-pay-button {
+    --apple-pay-button-width: 300px;
+    --apple-pay-button-height: 50px;
+    --apple-pay-button-border-radius: 7px;
+    --apple-pay-button-margin: 0px 0px 30px 0px;
+    --apple-pay-button-box-sizing: border-box;
+  }
+</style>
+
 <template>
-  <div id="paypal-button-card"></div>
+  <div id="applepay-container">Testing card apple pay</div>
 </template>
