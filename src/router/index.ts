@@ -77,6 +77,15 @@ const router = createRouter({
       name: 'offers',
       component: Offers
     },
+    {
+      path: '/footer/:slug',
+      name: 'footerItem',
+      component: footerItem,
+      props: (route) => ({
+        id: route.query.id,
+        name: route.query.name
+      }),
+    },
   ],
   scrollBehavior(to, from, savedPosition) {
     if (savedPosition) {
