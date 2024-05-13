@@ -236,7 +236,7 @@ const handlePay = (paymentMethod) => {
 const formatTotal = computed(() => (cartStore.total ? decimalNumberFormat(cartStore.total) : 0))
 </script>
 <template>
-  <section class="grid gap-12 px-10 md:grid-cols-2 lg:px-0">
+  <section class="grid gap-12 px-6 md:grid-cols-2 lg:px-0">
     <div>
       <div class="">
         <button
@@ -246,11 +246,14 @@ const formatTotal = computed(() => (cartStore.total ? decimalNumberFormat(cartSt
         >
         <ArrowLeftIcon class="w-3 mr-2  mx-auto text-gray-700" />
 
-          Volver
+        {{$t('COMMON.BACK')}}
+
         </button>
-        <p class=" text-xl font-bold" v-text="'Datos de facturación'" />
+        <p class=" text-xl font-bold" v-text="$t('COMMON.BILLING_DATA')" />
       </div>
-      <p class="mb-4 font-light" v-text="`Tienes ${cartStore.cart.length} productos en el carrito`" />
+      <p class="mb-4 font-light" v-text="$t('PAGES.DESCRIPTION.PRODUCTS', {
+        total: cartStore.cart.length,
+      })" />
 
       <form class="flex flex-col gap-2">
         <TextFields
@@ -312,7 +315,7 @@ const formatTotal = computed(() => (cartStore.total ? decimalNumberFormat(cartSt
         />
 
         <section class="mt-4 border-t py-4" v-if="countryStore.country == 'Venezuela'">
-          <p class="mb-3 text-lg font-bold" v-text="'Dirección de envío'" />
+          <p class="mb-3 text-lg font-bold" v-text="$t('COMMON.SHIPPING_ADDRESS')" />
 
           <div class="mb-4">
             <img class="w-32" src="@/assets/images/zoom.png" />
@@ -449,8 +452,8 @@ const formatTotal = computed(() => (cartStore.total ? decimalNumberFormat(cartSt
     </div>
 
     <div class="h-fit rounded-lg bg-gray-100 p-6">
-      <p class="text-xl font-bold" v-text="'Tu pedido'" />
-      <p class="mb-6 font-light" v-text="'Detalles'" />
+      <p class="text-xl font-bold" v-text="$t('COMMON.YOUR_ORDER')" />
+      <p class="mb-6 font-light" v-text="$t('COMMON.DETAILS')" />
 
       <ul class="order-details-form mb-6">
         <li class="mb-4 flex justify-between border-b pb-2"><span class="font-bold">Product</span> <span class="font-bold">Total</span></li>
@@ -459,7 +462,7 @@ const formatTotal = computed(() => (cartStore.total ? decimalNumberFormat(cartSt
           <p class="font-bold">${{ item.priceDiscount || item.price }}</p>
         </li>
         <li class="mb-4 flex justify-between border-b pb-2" v-if="countryStore.country == 'Venezuela'">
-          <span class="font-bold">Envío </span> <span class="font-bold text-blue-900">ZOOM</span>
+          <span class="font-bold">{{ $t('COMMON.SHIPPING') }} </span> <span class="font-bold text-blue-900">ZOOM</span>
         </li>
         <li class="mb-4 flex justify-between border-b pb-2" v-else>
           <span class="font-bold">Envío </span>

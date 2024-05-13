@@ -1,17 +1,15 @@
 <script lang="ts" setup>
-import TextFields from '../common/TextFields.vue'
-import Document from '../common/Document.vue'
-import DateCard from '../common/DateCard.vue'
-import Btn from '../common/Btn.vue'
 import { _submitPay } from '@/api/repositories/banesco.repository'
-import { ref } from 'vue'
 import { showNotification } from '@/composables/useNotification'
 import useNotifications from '@/composables/useNotifications'
 import PaymentMethods from '@/stores/paymentMethods'
 import useVuelidate from '@vuelidate/core'
 import { required } from '@vuelidate/validators'
-import { watch } from 'vue'
-import { computed } from 'vue'
+import { computed, ref, watch } from 'vue'
+import Btn from '../common/Btn.vue'
+import DateCard from '../common/DateCard.vue'
+import Document from '../common/Document.vue'
+import TextFields from '../common/TextFields.vue'
 
 // let handlerValidateBanesco = null
 const emit = defineEmits(['nextStep', 'validate'])
@@ -162,8 +160,8 @@ watch(() => props.validateForm, () => {
 
 <template>
   <form @submit.prevent="submitPay">
-    <div class="grid grid-cols-2 gap-4">
-      <div>
+    <div class="grid lg:grid-cols-2 gap-4">
+      <div class="col-span-2 lg:col-span-1">
         <TextFields
           v-model="dataPayment.cardHolder"
           :errorMessage="
@@ -175,7 +173,7 @@ watch(() => props.validateForm, () => {
           :label="$t('PAYMENTS.CARD_HOLDER')"
         />
       </div>
-      <div>
+      <div  class="col-span-2 lg:col-span-1">
         <Document
           :errorMessage="
             handlerValidateBanesco?.['document']?.$errors?.length > 0
@@ -188,7 +186,7 @@ watch(() => props.validateForm, () => {
           :maxLength="8"
         />
       </div>
-      <div>
+      <div  class="col-span-2 lg:col-span-1"> 
         <Document
           :errorMessage="
             handlerValidateBanesco?.['cardNumber']?.$errors?.length > 0
@@ -201,7 +199,7 @@ watch(() => props.validateForm, () => {
           :maxLength="16"
         />
       </div>
-      <div>
+      <div  class="col-span-2 lg:col-span-1">
         <Document
           :errorMessage="
             handlerValidateBanesco?.['cvc']?.$errors?.length > 0

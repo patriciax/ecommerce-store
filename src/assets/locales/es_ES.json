@@ -29,8 +29,29 @@
     "OFFERS": "Ofertas del día",
     "FAVORITE": "Favoritos",
     "SEARCH": "Buscar",
-    "PROFILE": "Mi perfil"
+    "PROFILE": "Mi perfil",
+    "HOME": "Inicio",
+    "NEXT": "Siguiente",
+    "PREVIOUS": "Anterior",
+    "CONTINUE": "Continuar",
+    "BACK": "Volver",
+    "BACK_TO_QUERY":"Volver a consultar",
+    "CARD_NOT_FOUND":"No se encuentra la tarjeta de crédito",
+    "CONSULT_SUCCES": "Consulta enviada al correo",
+    "BILLING_DATA": "Datos de facturación",
+    "YOUR_ORDER": "Tu pedido",
+    "DETAILS": "Detalles",
+    "SHIPPING": "Envío",
+    "SHIPPING_ADDRESS": "Dirección de envío",
+    "ALREADY_HAVE_AN_ACCOUNT": "¿Ya tienes una cuenta?",
+    "LOGIN":"Inicia sesion",
+    "DONT_HAVE_AN_ACCOUNT": "¿No tienes una cuenta?",
+    "ERROR_LOGIN_INVALID": "El email o la contrasena son incorrectos",
+    "SUCCEFULLY_LOGIN": "Iniciaste sesion correctamente",
+    "VERIFY_EMAIL": "Debes verificar tu email"
+
   },
+  
   "CART": {
     "ERROR": "Error al añadir al carrito",
     "SUCCESS": "Añadido al carrito",
@@ -39,7 +60,7 @@
   "LOGIN": {
     "LOGIN": "Iniciar sesión",
     "RESET_PASSWORD": "Recuperar contraseña",
-    "FORGOT_PASS": "Olvidaste tu contraseña?",
+    "FORGOT_PASS": "¿Has olvidado tu contraseña?",
     "ENTER": "Ingresar",
     "SUCCESS": "Has iniciado sesión correctamente",
     "UNAUTHORIZED": "Usuario o contraseña incorrectos",
@@ -112,10 +133,40 @@
   },
   "FOOTER": {
     "CUSTOMER_SERVICE": "Servicio al cliente",
-    "CONTACT": "Contacto",
-    "ABOUT_US": "Nosotros",
-    "NEWS": "Novedades",
     "RECOMMENDED": "Productos recomendados",
-    "POPULAR_NOW": "Populares ahora mismo"
+    "POPULAR_NOW": "Populares ahora mismo",
+    "ORDER_STATUS": "Estado del pedido",
+    "OUR_COMPANY": "ACERCA DE ROCA",
+    "PAYMENT_METHODS": "METODOS DE PAGO" 
+  },
+  "STEP":{
+    "SHOPPING_CART":"Carro de compras",
+    "PAYMENT":"Metodo de pago",
+    "PRODUCT_AND_SHIPPING":"Productos y envío"
+  },
+  "PAGES":{
+    "TITLES":{
+      "SHOPPING_CART":"Carro de compras"
+    },
+    "DESCRIPTION":{
+      "CATEGORY":"Rehace tu look por menos. Si eres un atleta ávido o buscas un estilo urbano fresco, encontrarás el mejor equipo en las rebajas de ropa y calzado.",
+      "PRODUCTS":"Tienes {total}  productos en el carrito"
+    }
+  },
+  "RESUME":{
+  "FINAL_DETAILS_ORDER":"Detalles finales del pedido",
+  "ORDER_PLACED":"Pedido realizado",
+  "ORDER_NUMBERS_ROCK":"Pedido roca número",
+  "ORDER_TOTAL":"Total del pedido",
+  "PRODUCTS_PURCHASED":"Productos comprados",
+  "PAYMENT_INFORMATION":"Información de pago",
+  "METHOD_OF_PAYMENT":"Método de pago",
+  "BILLING_ADDRESS":"Dirección de facturación",
+  "TRANCKING_NUMBER":"Número de seguimiento",
+  "PRODUCTS":"Productos",
+  "SHIPPING":"Envío",
+  "TOTAL_INCLUDING_TAX":"Total (I.V.A. Incluido)",
+  "PRICE":"Precio",
+  "IVA":"IVA"
   }
 }

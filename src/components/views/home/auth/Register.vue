@@ -112,7 +112,7 @@ const sendForm = async () => {
 <template>
   <Modal size="max-w-2xl" @close="$emit('close')">
     <VerificationCode v-if="showVerification" @close="$emit('closeRegister'); showVerification = false"/>
-    <div v-else class="flex min-h-full flex-col justify-center rounded-2xl bg-white px-6 py-6 md:py-12 lg:px-16">
+    <div v-else class="flex min-h-full flex-col justify-center rounded-2xl  bg-white px-6 py-6 md:py-12 lg:px-16 overflow-auto max-h-[90vh]">
       <div class="text-center sm:mx-auto sm:w-full sm:max-w-sm">
         <img class="mx-auto h-10 w-auto mb-5" src="@/assets/images/logo.png" alt="Logo roca" />
         <h2 class="mb-4 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900" v-text="t('COMMON.CREATE_AN_ACCOUNT')"></h2>
@@ -213,7 +213,7 @@ const sendForm = async () => {
       </form>
 
       <p class="mt-6 text-center text-sm text-gray-500 md:mt-10" @click="$emit('login')">
-        Tienes una cuenta?<a href="#" class="font-semibold leading-6 text-indigo-600 hover:text-indigo-500"> Inicia sesion</a>
+     {{ $t('COMMON.ALREADY_HAVE_AN_ACCOUNT') }} <a href="#" class="font-semibold leading-6 text-indigo-600 hover:text-indigo-500"> {{ $t('COMMON.LOGIN') }} </a>
       </p>
     </div>
   </Modal>

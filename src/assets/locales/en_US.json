@@ -3,8 +3,11 @@
   "COLOR": "Color",
   "SIZE": "Size",
   "COMMON": {
+    "DESCRIPTION": "Description",
+    "COLOR": "Color",
+    "SIZE": "Size",
     "LOADING": "Loading...",
-    "TOGGLE_DARK_MODE": "Enable dark mode", 
+    "TOGGLE_DARK_MODE": "Enable dark mode",
     "LOGOUT": "Logout",
     "CART": "Cart",
     "GIFT_CART": "Gift card",
@@ -12,12 +15,13 @@
     "REGISTER": "Register",
     "CREATE_ACCOUNT": "Create Account",
     "CREATE_AN_ACCOUNT": "Create an account",
-    "SUCCEFULLY_REGISTER": "Register successfully", 
+    "SUCCEFULLY_REGISTER": "Register successfully",
     "ERROR": "Error",
     "ERROR_REGISTER": "Error while registering",
-    "PASSWORD_NOT_SAME": "Passwords are not the same", 
-    "NEWS":"News",
-    "RECOMMENDED": "Recommended products", 
+    "PASSWORD_NOT_SAME": "Passwords are not the same",
+    "NEWS": "News",
+    "RECOMMENDED": "Recommended products",
+    "PAGINATE": "Showing {from} to {to} of {total} results",
     "POPULAR_NOW": "Popular right now",
     "SELECT": "Select",
     "NOT_AVAILABLE": "Not available",
@@ -25,10 +29,29 @@
     "OFFERS": "Offers of the day",
     "FAVORITE": "Favorites",
     "SEARCH": "Seach",
-    "PROFILE": "My profile"
+    "PROFILE": "My profile",
+    "HOME": "Home",
+    "NEXT": "Next",
+    "PREVIOUS": "Previous",
+    "CONTINUE": "Continue",
+    "BACK": "Back",
+    "BACK_TO_QUERY":"Back to query",
+    "CARD_NOT_FOUND": "Card not found",
+    "CONSULT_SUCCES": "Query sent to the mail",
+    "BILLING_DATA": "Billing data",
+    "YOUR_ORDER":"Your order",
+    "DETAILS":"Details",
+    "SHIPPING":"Shipping",
+    "SHIPPING_ADDRESS":"Shipping address",
+    "ALREADY_HAVE_AN_ACCOUNT": "Already have an account?",
+    "LOGIN": "Login",
+    "DONT_HAVE_AN_ACCOUNT": "Don't have an account?",
+    "ERROR_LOGIN_INVALID": "The email or password is incorrect",
+    "SUCCEFULLY_LOGIN": "Login successfully",
+    "VERIFY_EMAIL": "Verify your email"
 
   },
-  "CART":{
+  "CART": {
     "ERROR": "Error while adding to cart",
     "SUCCESS": "Added to cart successfully",
     "SHOW": "Show cart"
@@ -86,11 +109,11 @@
     "DATE_HOUR": "Date",
     "PASSWORD_CONFIRM": "Confirm password"
   },
-  "ACTIONS":{},
+  "ACTIONS": {},
   "PAYMENTS": {
-    "CARD_HOLDER":"Card holder",
-    "CARD_HOLDER_ID":"Card holder ID",
-    "CARD_NUMBER":"Card number",
+    "CARD_HOLDER": "Card holder",
+    "CARD_HOLDER_ID": "Card holder ID",
+    "CARD_NUMBER": "Card number",
     "CVC": "CVC",
     "EXPIRATION_DATE": "Expiration date",
     "COUNTRY": "Country",
@@ -98,5 +121,43 @@
     "ADDRESS": "Address",
     "REFERENCE": "Reference",
     "GET_RATES": "Get rates"
-  }
+  },
+  "FOOTER": {
+    "CUSTOMER_SERVICE": "Custumer service",
+    "RECOMMENDED": "Recommended products",
+    "POPULAR_NOW": "Popular right now",
+    "ORDER_STATUS": "Order status",
+    "OUR_COMPANY": "about ROCA",
+    "PAYMENT_METHODS": "Payment methods"
+  },
+  "STEP": {
+    "SHOPPING_CART": "Shopping cart",
+    "PAYMENT": "Payment method",
+    "PRODUCT_AND_SHIPPING": "Products and shipping"
+  },
+  "PAGES": {
+    "TITLES":{
+      "SHOPPING_CART":"Shopping cart"
+    },
+    "DESCRIPTION": {
+      "CATEGORY": "Redo your look for less. Whether you're an avid athlete or looking for a cool street style, you'll find the best gear at the apparel and ",
+      "PRODUCTS":"You have {total} products in your cart"
+
+    }
+  },
+  "RESUME":{
+    "FINAL_DETAILS_ORDER":"Final details of your order",
+    "ORDER_PLACED":"Order placed",
+    "ORDER_NUMBERS_ROCK":"Order number",
+    "ORDER_TOTAL":"Total",
+    "PRODUCTS_PURCHASED":"Products purchased",
+    "PAYMENT_INFORMATION":"Payment information",
+    "METHOD_OF_PAYMENT":"Method of payment",
+    "BILLING_ADDRESS":"Billing address",
+    "TRANCKING_NUMBER":"Tracking number",
+    "PRODUCTS":"Products",
+    "SHIPPING":"Shipping",
+    "TOTAL_INCLUDING_TAX":"Total including tax",
+    "IVA":"TAX"
+    }
 }

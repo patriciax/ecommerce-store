@@ -1,6 +1,6 @@
 <script setup>
-import { ref } from 'vue'
 import { ChevronDownIcon } from '@heroicons/vue/24/outline'
+import { ref } from 'vue'
 
 const props = defineProps({
   title: {

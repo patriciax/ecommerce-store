@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { ref, onMounted, computed } from 'vue'
-import { ChevronLeftIcon, ChevronRightIcon, ArrowLeftIcon, ArrowRightIcon } from '@heroicons/vue/24/outline'
+import { ArrowLeftIcon, ArrowRightIcon } from '@heroicons/vue/24/outline';
+import { onMounted, ref } from 'vue';
 
 const props = defineProps({
   photos: {
@@ -26,8 +26,8 @@ onMounted(() => {
 })
 </script>
 <template>
-  <div class="vueGallery flex gap-2">
-    <div class="thumbnails" v-if="props.photos.length > 1">
+  <div class="vueGallery flex   gap-2">
+    <div class="thumbnails hidden lg:block" v-if="props.photos.length > 1">
       <div
         v-for="(photo, index) in props.photos"
         :src="photo"

@@ -133,9 +133,9 @@ const sendForm = async () => {
             />
           </svg>
 
-          <p class="text-xl font-bold text-red-500 mb-4">No se encuentra la tarjeta de crédito</p>
+          <p class="text-xl font-bold text-red-500 mb-4">{{ $t('COMMON.CARD_NOT_FOUND') }}</p>
           <div class="col-span-2 mt-6">
-          <Btn text="Volver a consultar" isFull @click="handleConsult"/>
+          <Btn :text="$t('COMMON.BACK_TO_QUERY')" isFull @click="handleConsult"/>
         </div>
         </div>
         <div v-if="balanceStore.isReady">
@@ -149,7 +149,7 @@ const sendForm = async () => {
           >
             <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
           </svg>
-          <p class="text-xl font-bold text-green-500">Consulta enviada al correo</p>
+          <p class="text-xl font-bold text-green-500">{{ $t('COMMON.CONSULT_SUCCESS') }}</p>
         </div>
       </section>
     </div>

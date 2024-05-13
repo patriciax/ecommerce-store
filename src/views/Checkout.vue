@@ -51,15 +51,15 @@ onMounted(async () => {
 })
 </script>
 <template>
-  <section class="mx-auto mt-32 max-w-4xl">
+  <section class="mx-auto mt-16 lg:mt-32 max-w-4xl px-6 lg:px-0">
     <div class="mb-10 after:mt-4 after:block after:h-1 after:w-full after:rounded-lg after:bg-gray-200">
-      <ol class="grid grid-cols-3 text-sm font-medium text-gray-500">
+      <ol class="grid grid-cols-3 text-xs lg:text-sm font-medium text-gray-500">
         <li class="relative flex justify-start text-gray-800">
           <span class="absolute -bottom-[1.75rem] start-0 rounded-full bg-gray-800 text-white">
             <CheckIcon class="w-5 p-1" />
           </span>
 
-          <span class="hidden sm:block"> Carro de compras </span>
+          <span class=""> {{ $t('STEP.SHOPPING_CART') }}</span>
         </li>
 
         <li class="relative flex justify-center text-gray-800">
@@ -67,7 +67,7 @@ onMounted(async () => {
             <CheckIcon class="w-5 p-1" />
           </span>
 
-          <span class="hidden sm:block"> Pago </span>
+          <span class="">  {{ $t('STEP.PAYMENT') }} </span>
         </li>
 
         <li class="relative flex justify-end">
@@ -75,7 +75,7 @@ onMounted(async () => {
             <CheckIcon class="w-5 p-1" />
           </span>
 
-          <span class="hidden sm:block"> Productos y envío </span>
+          <span class="">  {{ $t('STEP.PRODUCT_AND_SHIPPING') }}</span>
         </li>
       </ol>
     </div>
