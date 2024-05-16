@@ -24,12 +24,12 @@ import { RouterLink } from 'vue-router';
             <h4 class="text-dark mb-4 text-lg font-semibold dark:text-white">Envíos y entregas</h4>
             <ul class="space-y-3">
               <li v-for="item in footerData?.filter(data => data.section === '1')" :key="item._id">
-                <a
-                  href="javascript:void(0)"
+                <RouterLink
+                :to="`/footer/${item.slug}`"
                   class="text-body-color hover:text-primary dark:text-dark-6 inline-block text-base leading-loose"
                 >
                   {{ $i18n.locale.toLowerCase() == 'es_es' ? item?.title : item?.titleEnglish }}
-                </a>
+                </RouterLink>
               </li>
 
             </ul>
@@ -42,7 +42,7 @@ import { RouterLink } from 'vue-router';
             <ul class="space-y-3">
               <li v-for="item in footerData?.filter(data => data.section === '2')" :key="item._id">
                 <RouterLink
-                  to=""
+                  :to="`/footer/${item.slug}`"
                   class="text-body-color hover:text-primary dark:text-dark-6 inline-block text-base leading-loose"
                 >
                   {{ $i18n.locale.toLowerCase() == 'es_es' ? item?.title : item?.titleEnglish }}
@@ -58,12 +58,12 @@ import { RouterLink } from 'vue-router';
             <h4 class="text-dark mb-4 text-lg font-semibold dark:text-white">Acerca de ERoca</h4>
             <ul class="space-y-3">
               <li v-for="item in footerData?.filter(data => data.section === '3')" :key="item._id">
-                <a
-                  href="javascript:void(0)"
+                <RouterLink
+                  :to="`/footer/${item.slug}`"
                   class="text-body-color hover:text-primary dark:text-dark-6 inline-block text-base leading-loose"
                 >
                   {{ $i18n.locale.toLowerCase() == 'es_es' ? item?.title : item?.titleEnglish }}
-                </a>
+                </RouterLink>
               </li>
 
             </ul>

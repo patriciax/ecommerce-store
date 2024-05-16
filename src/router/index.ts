@@ -14,6 +14,7 @@ import HomeView from '../views/HomeView.vue'
 import Profile from '../views/Profile.vue'
 import Search from '../views/Search.vue'
 import Product from '../views/SingleProduct.vue'
+import FooterItem from '@/components/views/home/FooterItem.vue'
 const router = createRouter({
   history: createWebHistory((import.meta as any).env.BASE_URL),
   routes: [
@@ -80,7 +81,7 @@ const router = createRouter({
     {
       path: '/footer/:slug',
       name: 'footerItem',
-      component: footerItem,
+      component: FooterItem,
       props: (route) => ({
         id: route.query.id,
         name: route.query.name
