@@ -45,7 +45,7 @@ const sendForm = async () => {
   if (restorePassStore.isError) {
     pushNotification({
       id: '',
-      title: 'El email no existe',
+      title: t('RESET_PASSWORD.EMAIL_NOT_EXIST'),
       type: 'error',
     })
     return
@@ -53,7 +53,7 @@ const sendForm = async () => {
   if (restorePassStore.isReady) {
     pushNotification({
       id: '',
-      title: 'Verificacion enviada a tu correo electronico',
+      title: t('RESET_PASSWORD.VERIFICATION_SEND'),
       type: 'success',
     })
     showVerification.value = true
@@ -66,7 +66,7 @@ const sendForm = async () => {
       <div class="w-full rounded-lg bg-white p-6 shadow dark:border dark:border-gray-700 dark:bg-gray-800 sm:max-w-md sm:p-8 md:mt-0">
         <form v-if="!showVerification && !changePassword" class="mt-4 space-y-4 md:space-y-5 lg:mt-5" @submit.prevent="sendForm">
           <h2 class="mb-1 text-center text-xl font-bold leading-tight tracking-tight text-gray-900 dark:text-white md:text-2xl">
-            Cambiar contraseña
+            {{ t('RESET_PASSWORD.TITLE') }}
           </h2>
           <div>
             <TextFields
@@ -85,7 +85,8 @@ const sendForm = async () => {
             type="submit"
             class="mx-auto flex w-5/6 justify-center rounded-xl bg-gray-900 p-3 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
           >
-            Reset passwod
+          {{ t('RESET_PASSWORD.TITLE') }}
+
           </button>
         </form>
         <Verification v-if="showVerification" :email="dataForm.email" @close="(changePassword = true), (showVerification = false)"  @currentCode="passwordOtp = $event"/>

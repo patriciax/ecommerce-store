@@ -10,7 +10,6 @@ import MobilePayment from '@/components/paymentMethods/mobilePayment.vue'
 import Login from '@/components/views/home/auth/Login.vue'
 import Register from '@/components/views/home/auth/Register.vue'
 import CountryStore from '@/stores/country'
-import GiftCardStore from '@/stores/giftCard'
 import { CheckCircleIcon, ChevronRightIcon, GiftIcon } from '@heroicons/vue/24/outline'
 import useVuelidate from '@vuelidate/core'
 import { email, required } from '@vuelidate/validators'
@@ -18,7 +17,6 @@ import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 const countryStore = CountryStore()
-const giftCardStore = GiftCardStore()
 const { t } = useI18n()
 const login = ref(false)
 const register = ref(false)
@@ -35,9 +33,7 @@ const dataForm = ref({
   priceGift: null,
 })
 
-const updateDate = (value) => {
-  dataForm.value.date = value
-}
+
 
 const handlerValidate = useVuelidate(
   {
@@ -76,14 +72,6 @@ const validateForm = async (paymentMethod) => {
   validateFormData.value = result
 }
 
-const send = async () => {
-  handlerValidate.value.$reset()
-  const _validate = await handlerValidate.value.$validate()
-  if (!_validate) return
-
-  validateForm.value = _validate
-}
-
 const handleBack = () => {
   successPayment.value = false
 }
@@ -100,20 +88,19 @@ onMounted(async () => {
         <p class="text-4xl font-bold uppercase text-white" v-text="'El regalo perfecto'" />
         <p class="text-lg font-light text-white" v-text="'una tarjeta de regalo de eroca es la opción perfecta.'"></p>
         <button @click="isOpenModal = true" class="mt-4 flex items-center rounded-lg bg-white px-4 py-2 text-gray-800">
-          Consultar saldo  
-
+           {{ t('COMMON.CONSULT_BALANCE') }}
           <ChevronRightIcon class="w-5" />
         </button>
       </div>
       <img class="h-[450px] w-full bg-bottom object-cover" src="@/assets/images/bannergiftcard.webp" alt="" />
     </div>
-    <p class="mb-2 text-2xl font-bold text-gray-900" v-text="'Comprar tarjeta de regalo electronica'" />
-    <p class="mx-auto mb-10 max-w-xl" v-text="'Escribe los detalles de la tarjeta de regalo'" />
+    <p class="mb-2 text-2xl font-bold text-gray-900" v-text="$t('COMMOM.BUY_ELECTRONIC_GIFTCARD')" />
+    <p class="mx-auto mb-10 max-w-xl" v-text="$t('COMMOM.GIFTCARD_DETAILS')" />
 
     <section class="m-auto grid max-w-6xl gap-2 lg:grid-cols-2 xl:gap-10">
       <section class="col-span-2 mb-10 rounded-lg bg-gray-100 p-6 text-center" v-if="successPayment">
         <CheckCircleIcon class="mx-auto w-16 text-green-500" />
-        <p class="mb-1 text-xl font-bold text-gray-900" v-text="'Gracias por su compra'" />
+        <p class="mb-1 text-xl font-bold text-gray-900" v-text="$t('COMMOM.THANKS_FOR_PURCHASE')" />
         <p v-text="'Se ha enviado un correo electronico a al remitente de su tarjeta de regalo.'" />
    
         <section class="text-center">
@@ -129,7 +116,7 @@ onMounted(async () => {
           <span
             :class="{ 'text-red-500': handlerValidate?.['priceGift']?.$errors?.length > 0 }"
             class="mb-1 text-sm font-bold text-gray-900 dark:text-white"
-            >Importe:</span
+            >{{ $t('COMMOM.PRICE') }}:</span
           >
           <ul class="mb-4 flex w-full flex-wrap gap-4">
             <li v-for="(item, index) in prices" :key="item">
@@ -167,7 +154,7 @@ onMounted(async () => {
             name="name"
             class="mb-4"
             placeholder="example@gmail.com"
-            :label="'Para:'"
+            :label="$t('FORM.FOR')"
           />
           <TextFields
             v-model="dataForm.name"
@@ -180,8 +167,8 @@ onMounted(async () => {
             name="name"
             class="mb-4"
             placeholder="Jane Doe"
-            :label="'De:'"
-            :msg="'Ingresa tu nombre para enviar la tarjeta de regalo'"
+            :label="$t('FORM.FROM')"
+            :msg="$t('FORM.FROM_TEXT')"
           />
 
           <section class="relative mb-4">
@@ -194,7 +181,7 @@ onMounted(async () => {
               }"
               for="message"
               class="block text-sm font-bold text-gray-900 dark:text-white"
-              >Tu mensaje</label
+              >{{ $t('FORM.YOURMESSAGE') }}</label
             >
             <textarea
               :class="{
@@ -207,7 +194,7 @@ onMounted(async () => {
               id="message"
               rows="4"
               class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 outline-none focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-              placeholder="Espero que disfrutes tu compra...."
+              :placeholder="$t('FORM.YOURMESSAGE_BUY')"
             ></textarea>
             <p
               v-if="
@@ -238,7 +225,7 @@ onMounted(async () => {
 
         <section class="mb-10 rounded-lg bg-gray-100 p-6 text-start">
           <section>
-            <p class="mb-6 text-lg font-bold" v-text="'Método de pago'" />
+            <p class="mb-6 text-lg font-bold" v-text="$t('STEP.PAYMENT')" />
             <div>
               <Accordion :title="''" v-if="countryStore.country == 'Venezuela'">
                 <template #img> <img class="w-32" src="@/assets/images/banesco.png" /></template>
@@ -292,7 +279,7 @@ onMounted(async () => {
                   }"
                 />
               </accordion>
-              <Accordion :title="'Tarjeta de crédito'">
+              <Accordion :title="$t('BILLING.CREDIT_CARD')">
                 <Card
                   @validate="validateForm"
                   :validate-form="validateFormData"

@@ -1,5 +1,4 @@
 <script setup>
-import router from '@/router'
 import CartStore from '@/stores/cart/cart'
 import CountryStore from '@/stores/country'
 import StorePaymentMethods from '@/stores/paymentMethods'
@@ -20,9 +19,7 @@ const total = computed(() => {
   return total
 })
 
-const goToHome = () => {
-  router.push({ name: 'home' })
-}
+
 
 onUnmounted(() => {
   sessionStorage.setItem('cart', [])

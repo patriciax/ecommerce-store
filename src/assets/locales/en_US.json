@@ -35,21 +35,28 @@
     "PREVIOUS": "Previous",
     "CONTINUE": "Continue",
     "BACK": "Back",
-    "BACK_TO_QUERY":"Back to query",
+    "BACK_TO_QUERY": "Back to query",
     "CARD_NOT_FOUND": "Card not found",
     "CONSULT_SUCCES": "Query sent to the mail",
     "BILLING_DATA": "Billing data",
-    "YOUR_ORDER":"Your order",
-    "DETAILS":"Details",
-    "SHIPPING":"Shipping",
-    "SHIPPING_ADDRESS":"Shipping address",
+    "YOUR_ORDER": "Your order",
+    "DETAILS": "Details",
+    "SHIPPING": "Shipping",
+    "SHIPPING_ADDRESS": "Shipping address",
     "ALREADY_HAVE_AN_ACCOUNT": "Already have an account?",
     "LOGIN": "Login",
     "DONT_HAVE_AN_ACCOUNT": "Don't have an account?",
     "ERROR_LOGIN_INVALID": "The email or password is incorrect",
     "SUCCEFULLY_LOGIN": "Login successfully",
-    "VERIFY_EMAIL": "Verify your email"
-
+    "VERIFY_EMAIL": "Verify your email",
+    "STATE": "State",
+    "OFFICE": "Office",
+    "SEND": "Send",
+    "CONSULT_BALANCE": "Consult balance",
+    "BUY_ELECTRONIC_GIFTCARD": "Buy electronic gift card",
+    "GIFTCARD_DETAILS":"Gift card details",
+    "THANKS_FOR_PURCHASE": "Thanks for your purchase",
+    "PRICE": "Price"
   },
   "CART": {
     "ERROR": "Error while adding to cart",
@@ -107,7 +114,12 @@
     "SALES_TO_FINAL_CONSUMERS": "Sales to final consumers",
     "EXTERIOR_IDENTIFICATION": "Exterior identification",
     "DATE_HOUR": "Date",
-    "PASSWORD_CONFIRM": "Confirm password"
+    "PASSWORD_CONFIRM": "Confirm password",
+    "FOR": "For",
+    "FROM": "From",
+    "FROM_TEXT":"Enter your name to send the gift card",
+    "YOURMESSAGE":"Your message",
+    "YOURMESSAGE_BUY":"I hope you enjoy your purchase...."
   },
   "ACTIONS": {},
   "PAYMENTS": {
@@ -120,7 +132,10 @@
     "STATE": "State",
     "ADDRESS": "Address",
     "REFERENCE": "Reference",
-    "GET_RATES": "Get rates"
+    "GET_RATES": "Get rates",
+    "RETURNS_MEMBERSHIP": " Returns are free for eRoca members.",
+    "RETURNS_MEMBERSHIP_2": "to start a free return.",
+    "GIFT_CARD_BALANCE": "To check the status of your order or initiate a return, enter your order number and email address."
   },
   "FOOTER": {
     "CUSTOMER_SERVICE": "Custumer service",
@@ -136,28 +151,54 @@
     "PRODUCT_AND_SHIPPING": "Products and shipping"
   },
   "PAGES": {
-    "TITLES":{
-      "SHOPPING_CART":"Shopping cart"
+    "TITLES": {
+      "SHOPPING_CART": "Shopping cart"
     },
     "DESCRIPTION": {
       "CATEGORY": "Redo your look for less. Whether you're an avid athlete or looking for a cool street style, you'll find the best gear at the apparel and ",
-      "PRODUCTS":"You have {total} products in your cart"
-
+      "PRODUCTS": "You have {total} products in your cart"
     }
   },
-  "RESUME":{
-    "FINAL_DETAILS_ORDER":"Final details of your order",
-    "ORDER_PLACED":"Order placed",
-    "ORDER_NUMBERS_ROCK":"Order number",
-    "ORDER_TOTAL":"Total",
-    "PRODUCTS_PURCHASED":"Products purchased",
-    "PAYMENT_INFORMATION":"Payment information",
-    "METHOD_OF_PAYMENT":"Method of payment",
-    "BILLING_ADDRESS":"Billing address",
-    "TRANCKING_NUMBER":"Tracking number",
-    "PRODUCTS":"Products",
-    "SHIPPING":"Shipping",
-    "TOTAL_INCLUDING_TAX":"Total including tax",
-    "IVA":"TAX"
-    }
+  "RESUME": {
+    "FINAL_DETAILS_ORDER": "Final details of your order",
+    "ORDER_PLACED": "Order placed",
+    "ORDER_NUMBERS_ROCK": "Order number",
+    "ORDER_TOTAL": "Total",
+    "PRODUCTS_PURCHASED": "Products purchased",
+    "PAYMENT_INFORMATION": "Payment information",
+    "METHOD_OF_PAYMENT": "Method of payment",
+    "BILLING_ADDRESS": "Billing address",
+    "TRANCKING_NUMBER": "Tracking number",
+    "PRODUCTS": "Products",
+    "SHIPPING": "Shipping",
+    "TOTAL_INCLUDING_TAX": "Total including tax",
+    "IVA": "TAX"
+  },
+  "BILLING": {
+    "AMOUT": "Amount",
+    "DAYS": "Days ",
+    "PRODUCT": "Product",
+    "SHIPPING_INFO": "You must fill in your shipping information and select a rate.",
+    "CARD": "Card",
+    "CREDIT_CARD": "Credit card",
+    "SHIPPING_ADDRESS": "Shipping address"
+  },
+  "VERIFICATION": {
+    "TITLE": "Verification email",
+    "VERIFY_ACCOUNT": "Verify account",
+    "RESEND_CODE": "Resend code",
+    "SEND_CODE": "We have sent a code to your email ",
+    "FORWARD_CODE": "Code re-sent",
+    "VERIFICATION_SUCCESS": "Verification successful",
+    "VERIFICATION_ERROR": "Verification error",
+    "RESEND": "Resend",
+    "VERIFICATION_EMAIL": "Verification email"
+  },
+  "RESET_PASSWORD": {
+    "TITLE": "Reset password",
+    "SUCCESS": "Password changed successfully",
+    "PASSWORD_NOT_MATCH": "Passwords do not match",
+    "EMAIL_NOT_EXIST": "Email does not exist",
+    "VERIFICATION_SEND": "Verification email sent to your email address"
+  }
 }
