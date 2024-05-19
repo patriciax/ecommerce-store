@@ -35,6 +35,9 @@ const props = defineProps({
   email: {
     type: String,
   },
+  userIdentification:{
+    type: String
+  },
   phone: {
     type: String,
   },
@@ -99,7 +102,8 @@ const completePay = async() => {
           email: props.email,
           phone: props.phone,
           carrier: props.carrier,
-          carrierRate: props.carrierRate
+          carrierRate: props.carrierRate,
+          identification: props.userIdentification,
         }
       }
 

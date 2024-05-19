@@ -144,12 +144,15 @@
     "EXPIRATION_DATE": "Expiration date",
     "COUNTRY": "Country",
     "STATE": "State",
+    "CITY": "City",
     "ADDRESS": "Address",
     "REFERENCE": "Reference",
     "GET_RATES": "Get rates",
     "RETURNS_MEMBERSHIP": " Returns are free for eRoca members.",
     "RETURNS_MEMBERSHIP_2": "to start a free return.",
-    "GIFT_CARD_BALANCE": "To check the status of your order or initiate a return, enter your order number and email address."
+    "GIFT_CARD_BALANCE": "To check the status of your order or initiate a return, enter your order number and email address.",
+    "ZIP_CODE": "Zip code",
+    "EMPTY_UPS": "La dirección no pudo ser encontrada"
   },
   "FOOTER": {
     "CUSTOMER_SERVICE": "Custumer service",
@@ -186,7 +189,8 @@
     "PRODUCTS": "Products",
     "SHIPPING": "Shipping",
     "TOTAL_INCLUDING_TAX": "Total including tax",
-    "IVA": "TAX"
+    "IVA": "TAX",
+    "ORDER_NUMBER_ROCK": "Order number"
   },
   "BILLING": {
     "AMOUT": "Amount",

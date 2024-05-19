@@ -3,6 +3,7 @@ import CardProduct from '@/components/common/CardProduct.vue'
 import Pagination from '@/components/common/Pagination.vue'
 import SkeletonCard from '@/components/skeleton/Card.vue'
 import _storeProduct from '@/stores/product'
+import { watch } from 'vue'
 import { onMounted } from 'vue'
 
 import { useRoute, useRouter } from 'vue-router'
@@ -19,6 +20,13 @@ const router = useRouter()
 const route = useRoute()
 
 const handlePageChange = async (_page) => await productStore.getCategory(props.id, _page)
+
+watch(
+  () => props.id,
+  async () => {
+    await productStore.getCategory(props.id)
+  }
+)
 
 onMounted(async () => {
   await productStore.getCategory(props.id)

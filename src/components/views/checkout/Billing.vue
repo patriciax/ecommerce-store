@@ -31,6 +31,8 @@ const productStore = _storeProduct()
 const countryStore = CountryStore()
 const storePaymentMethods = StorePaymentMethods()
 
+const firstRequestUPS = ref(false)
+const loadingUPS = ref(false)
 const countries = ref([])
 const cartStore = CartStore()
 const storeUser = _storeUser()
@@ -71,8 +73,10 @@ const getRates = async () => {
     country: country.value,
     parcel: cartStore.cart,
   }
-
+  loadingUPS.value = true
+  firstRequestUPS.value = true
   const response = await _getRates(data)
+  loadingUPS.value = false
 
   if (response.data.status == 'success') {
     rates.value = response.data.data
@@ -92,6 +96,7 @@ const dataForm: any = ref({
   foreignAddress: '',
   foreignCity: '',
   foreignZipCode: '',
+  identification: ''
 })
 
 const rules = computed(() => {
@@ -130,6 +135,9 @@ const rules = computed(() => {
     foreignZipCode: {
       required: requiredIf(() => countryStore.country != 'Venezuela'),
     },
+    identification: {
+      required: requiredIf(() => countryStore.country == 'Venezuela'),
+    }
   }
 })
 
@@ -163,12 +171,20 @@ const setEmailErrors = computed(() => {
   return undefined
 })
 
+const setIdentificationErrors = computed(() => {
+  const validator = handlerValidate.value?.['identification']?.$errors?.[0]?.$validator
+  if (validator == 'required') return t('VALIDATIONS.REQUIRED')
+
+  return undefined
+})
+
 const fetchDataForm = () => {
   dataForm.value.name = storeUser.currentUser?.name
   dataForm.value.lastname = storeUser.currentUser?.lastname
   dataForm.value.address = storeUser.currentUser?.address
   dataForm.value.email = storeUser.currentUser?.email
   dataForm.value.phone = storeUser.currentUser?.phone
+  dataForm.value.identification = storeUser.currentUser?.identification
 }
 
 const carrierObject = computed(() => {
@@ -289,6 +305,18 @@ const formatTotal = computed(() => (cartStore.total ? decimalNumberFormat(cartSt
           name="name"
           placeholder="example@gmail.com"
           :label="t('FORM.EMAIL')"
+        />
+
+        <TextFields
+          v-if="countryStore.country == 'Venezuela'"
+          id="identification"
+          v-model="dataForm.identification"
+          isRequired
+          :is-disabled="storeUser.currentUser?.email"
+          :errorMessage="setIdentificationErrors"
+          name="identification"
+          placeholder="12345678"
+          :label="t('FORM.IDENTIFICATION_2')"
         />
 
         <section>
@@ -426,14 +454,18 @@ const formatTotal = computed(() => (cartStore.total ? decimalNumberFormat(cartSt
             :label="t('PAYMENTS.ZIP_CODE')"
           />
           <button
+            :disabled="loadingUPS"
             type="button"
             class="group col-span-2 mx-auto my-6 flex w-full items-center justify-center gap-1 rounded-xl bg-gray-800 p-8 py-3 text-sm font-bold leading-6 text-white shadow-sm hover:bg-opacity-90"
             @click="getRates()"
           >
-            {{ t('PAYMENTS.GET_RATES') }}
+            {{ loadingUPS ? t('COMMON.LOADING') :  t('PAYMENTS.GET_RATES') }}
           </button>
 
+          <p class="font-bold w-100" v-if="firstRequestUPS && !loadingUPS && rates.length == 0">{{ t('PAYMENTS.EMPTY_UPS') }}</p>
+
           <div class="mt-2 grid w-full grid-cols-2 gap-2">
+
             <div
               class="cursor-pointer rounded-lg border p-4 hover:bg-gray-300"
               v-for="rate in rates"
@@ -507,6 +539,7 @@ const formatTotal = computed(() => (cartStore.total ? decimalNumberFormat(cartSt
               @validate="validateForm"
               @nextStep="handlePay('Banesco')"
               :cart="cartStore.cart"
+              :userIdentification="dataForm.identification"
               :name="dataForm.name"
               :email="dataForm.email"
               :phone="dataForm.phone"
@@ -520,6 +553,7 @@ const formatTotal = computed(() => (cartStore.total ? decimalNumberFormat(cartSt
               @validate="validateForm"
               :validate-form="validateFormData"
               :cart="cartStore.cart"
+              :userIdentification="dataForm.identification"
               :name="dataForm.name"
               :email="dataForm.email"
               :phone="dataForm.phone"
@@ -538,6 +572,7 @@ const formatTotal = computed(() => (cartStore.total ? decimalNumberFormat(cartSt
               @validate="validateForm"
               @nextStep="handlePay('zelle')"
               :cart="cartStore.cart"
+              :userIdentification="dataForm.identification"
               :name="dataForm.name"
               :email="dataForm.email"
               :phone="dataForm.phone"
@@ -551,6 +586,7 @@ const formatTotal = computed(() => (cartStore.total ? decimalNumberFormat(cartSt
               @validate="validateForm"
               @nextStep="handlePay('Pago movil')"
               :cart="cartStore.cart"
+              :userIdentification="dataForm.identification"
               :name="dataForm.name"
               :email="dataForm.email"
               :phone="dataForm.phone"
@@ -562,6 +598,7 @@ const formatTotal = computed(() => (cartStore.total ? decimalNumberFormat(cartSt
               @validate="validateForm"
               :validate-form="validateFormData"
               :cart="cartStore.cart"
+              :userIdentification="dataForm.identification"
               :name="dataForm.name"
               :email="dataForm.email"
               :phone="dataForm.phone"
@@ -579,6 +616,7 @@ const formatTotal = computed(() => (cartStore.total ? decimalNumberFormat(cartSt
               @validate="validateForm"
               :validate-form="validateFormData"
               :cart="cartStore.cart"
+              :userIdentification="dataForm.identification"
               :name="dataForm.name"
               :email="dataForm.email"
               :phone="dataForm.phone"

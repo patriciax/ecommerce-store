@@ -145,13 +145,16 @@
     "CVC": "CVC",
     "EXPIRATION_DATE": "Fecha de expiración",
     "COUNTRY": "País",
+    "CITY": "Ciudad",
     "STATE": "Estado",
     "ADDRESS": "Dirección",
     "REFERENCE": "Referencia",
     "GET_RATES": "Obtener tarifas",
     "RETURNS_MEMBERSHIP": "Las devoluciones son gratuitas para los miembros de eRoca",
     "RETURNS_MEMBERSHIP_2": "para comenzar una devolución gratuita.",
-    "GIFT_CARD_BALANCE":"Para verificar el estado de tu pedido o iniciar una devolución, ingresa tu número de pedido y dirección de correo electrónico."
+    "GIFT_CARD_BALANCE":"Para verificar el estado de tu pedido o iniciar una devolución, ingresa tu número de pedido y dirección de correo electrónico.",
+    "ZIP_CODE": "Código postal",
+    "EMPTY_UPS": "La dirección no pudo ser encontrada"
   },
   "FOOTER": {
     "CUSTOMER_SERVICE": "Servicio al cliente",
@@ -189,7 +192,8 @@
     "SHIPPING": "Envío",
     "TOTAL_INCLUDING_TAX": "Total (I.V.A. Incluido)",
     "PRICE": "Precio",
-    "IVA": "IVA"
+    "IVA": "IVA",
+    "ORDER_NUMBER_ROCK": "Número de orden"
   },
   "BILLING": {
     "AMOUT": "Monto",

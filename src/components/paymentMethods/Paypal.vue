@@ -20,6 +20,9 @@ const props = defineProps({
   email: {
     type: String,
   },
+  userIdentification: {
+    type: String,
+  },
   phone: {
     type: String,
   },
@@ -53,7 +56,7 @@ function timeout(ms) {
 }
 
 interval.value = setInterval(() => {
-  const elementExists = !document.getElementById('paypal-button')
+  const elementExists = document.getElementById('paypal-button-card')
 
   if (elementExists) {
     ;(window as any).paypal
@@ -135,7 +138,8 @@ interval.value = setInterval(() => {
                 email: props.email,
                 phone: props.phone,
                 carrier: props.carrier,
-                carrierRate: props.carrierRate
+                carrierRate: props.carrierRate,
+                identification: props.userIdentification,
               }
 
             const token = localStorage.getItem((import.meta as any).env.VITE_BEARER_TOKEN_KEY)

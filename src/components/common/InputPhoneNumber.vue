@@ -25,7 +25,7 @@ function updateValue(_values) {
 </script>
 
 <template>
-  <div>
+  <div class="relative">
     <MazPhoneNumberInput
       :id="id"
       :modelValue="modelValue"
@@ -36,6 +36,6 @@ function updateValue(_values) {
       maxlength="15"
       @update="updateValue"
     />
-    <p v-if="props.errorMessage" class="absolute mt-1 text-xs font-medium text-red-500" v-text="props.errorMessage" />
+    <p v-if="props.errorMessage" class="absolute right-0 mt-0.5 text-xs font-medium text-red-500" v-text="props.errorMessage" />
   </div>
 </template>

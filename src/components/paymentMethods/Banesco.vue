@@ -19,6 +19,9 @@ const props = defineProps({
   cart: {
     type: Array,
   },
+  userIdentification: {
+    type: String,
+  },
   card: {
     type: Object,
   },
@@ -95,6 +98,7 @@ const completePay = async() => {
           name: props.name,
           email: props.email,
           phone: props.phone,
+          identification: props.userIdentification,
           carrier: props.carrier,
         }
       }
@@ -159,6 +163,7 @@ watch(() => props.validateForm, () => {
 </script>
 
 <template>
+
   <form @submit.prevent="submitPay">
     <div class="grid lg:grid-cols-2 gap-4">
       <div class="col-span-2 lg:col-span-1">

@@ -21,6 +21,9 @@ const props = defineProps({
     cart: {
         type: Array
     },
+    userIdentification:{
+        type: String
+    },
     card:{
         type: Object
     },
@@ -56,7 +59,7 @@ const { pushNotification } = useNotifications()
 const validate = ref(false)
 const cardNumber = ref('')
 const cvc = ref('')
-const email = ref('')
+const emailCard = ref('')
 
 const completePay = async() => {
     
@@ -69,7 +72,8 @@ const completePay = async() => {
                     paymentMethod: 'giftCard',
                     carts:props.cart,
                     name: props.name,
-                    email: email.value,
+                    email: props.email,
+                    emailCard: emailCard.value,
                     phone: props.phone,
                     card: props.card,
                     cardNumber: cardNumber.value,
@@ -80,12 +84,14 @@ const completePay = async() => {
                     paymentMethod: 'giftCard',
                     carts:props.cart,
                     name: props.name,
-                    email: email.value,
+                    email: props.email,
+                    emailCard: emailCard.value,
                     phone: props.phone,
                     carrier: props.carrier,
                     cardNumber: cardNumber.value,
                     cardPin: cvc.value,
-                    carrierRate: props.carrierRate
+                    carrierRate: props.carrierRate,
+                    identification: props.userIdentification,
                 }
             }
 
@@ -122,7 +128,7 @@ const submitPay = async () => {
 
 const rulesGiftCard = computed(() => {
   return {
-    email: {
+    emailCard: {
       required,
     },
     cardNumber: {
@@ -139,7 +145,7 @@ const handlerValidateGiftCard = useVuelidate(
     {
         "cardNumber": cardNumber,
         "cvc": cvc,
-        "email": email
+        "emailCard": emailCard
     },
     { $scope: false }
   )
@@ -161,7 +167,7 @@ watch(() => props.validateForm, () => {
               ? $t('VALIDATIONS.' + handlerValidateGiftCard?.['email']?.$errors?.[0]?.$validator?.toUpperCase())
               : undefined
             "
-            v-model="email" :label="$t('FORM.EMAIL')" />
+            v-model="emailCard" :label="$t('FORM.EMAIL')" />
 
             <div>
                 <Document v-model="cardNumber" :label="$t('PAYMENTS.CARD_NUMBER')" :minLength="15" :maxLength="16" :errorMessage="

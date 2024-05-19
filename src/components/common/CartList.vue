@@ -1,5 +1,6 @@
 <script setup>
 import _storeProduct from '@/stores/product'
+import { decimalNumberFormat } from '@/utils/numberFormat';
 import { ChevronLeftIcon, ChevronRightIcon, TrashIcon } from '@heroicons/vue/24/outline'
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
@@ -79,7 +80,7 @@ const moreItem = (index) => {
         <p class="inline">${{ props.item.priceDiscount || props.item.price }}</p>
 
         <span v-if="productStore.price" class="ml-2 font-sans text-sm text-gray-500">
-          Bs.{{ (productStore.price * (props.item.priceDiscount || props.item.price)).toLocaleString() }}</span
+          Bs.{{ decimalNumberFormat((productStore.price * (props.item.priceDiscount || props.item.price))) }}</span
         >
       </div>
 
