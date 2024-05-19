@@ -67,7 +67,7 @@ const sendForm = async () => {
     passwordHasError.value = true
     pushNotification({
       id: '',
-      title: 'El email o la contrasena son incorrectos',
+      title: t('COMMON.ERROR_LOGIN'),
       type: 'error',
     })
   }
@@ -75,7 +75,7 @@ const sendForm = async () => {
   if (storeAuth.isReady) {
     pushNotification({
       id: '',
-      title: 'Iniciaste Sesion correctamente',
+      title: t('COMMON.SUCCEFULLY_LOGIN'),
       type: 'success',
     })
     await storeUser.getUser()
@@ -88,7 +88,7 @@ const sendForm = async () => {
     showVerification.value = true
     pushNotification({
       id: '',
-      title: 'Debes verificar tu email',
+      title: t('COMMON.VERIFY_EMAIL'),
       type: 'error',
     })
   
@@ -119,10 +119,10 @@ watch(
 
     <VerificationCode v-if="showVerification" :isLogin="true" @close="showVerification = false"/>
 
-    <div v-else class="flex h-[599px] min-h-full flex-col justify-center rounded-xl bg-white px-6 py-6 md:py-12 lg:px-16">
+    <div v-else class="flex h-[599px] min-h-full flex-col justify-center rounded-xl bg-white px-6 py-6 ">
       <div class="text-center sm:mx-auto sm:w-full sm:max-w-sm">
         <img class="mx-auto h-10 w-auto mb-6" src="@/assets/images/logo.png" alt="Logo roca" />
-        <h2 class="mb-4 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900" v-text="'Inicia Sesion'"></h2>
+        <h2 class="mb-4 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900" v-text="$t('COMMON.LOGIN')"></h2>
       </div>
 
       <form class="px-6" @submit.prevent="sendForm">
@@ -148,8 +148,8 @@ watch(
           placeholder="********"
           :label="t('FORM.PASSWORD')"
         />
-        <router-link to="/reset-password" @click="$emit('close')"  class="block text-end text-sm font-semibold leading-6 text-indigo-600 hover:text-indigo-500  " >
-        ¿Has olvidado tu contraseña?
+        <router-link to="/reset-password" @click="$emit('close')"  class="block text-end text-sm mt-3 font-semibold leading-6 text-indigo-600 hover:text-indigo-500  " >
+         {{ $t('LOGIN.FORGOT_PASS') }}
       </router-link>
 
         <div class="col-span-2 mt-6">
@@ -159,7 +159,7 @@ watch(
 
   
       <p class="mt-6 text-center text-sm text-gray-500 md:mt-10" @click="$emit('register')">
-        Aun no tienes cuenta?<a href="#" class="font-semibold leading-6 text-indigo-600 hover:text-indigo-500"> Registrate</a>
+        {{ $t('COMMON.DONT_HAVE_AN_ACCOUNT') }} <a href="#" class="font-semibold leading-6 text-indigo-600 hover:text-indigo-500"> Registrate</a>
       </p>
     </div>
   </Modal>

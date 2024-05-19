@@ -3,6 +3,7 @@ import Btn from '@/components/common/Btn.vue'
 import Gallery from '@/components/common/Gallery.vue'
 import RadioCheck from '@/components/common/RadioCheck.vue'
 import NewProducts from '@/components/views/home/NewProducts.vue'
+import useBreakpoints from '@/composables/useBreakpoints'
 import useNotifications from '@/composables/useNotifications'
 import CartStore from '@/stores/cart/cart'
 import FavoriteStore from '@/stores/favorite'
@@ -20,6 +21,7 @@ const cartStore = CartStore()
 const router = useRouter()
 const { locale, t } = useI18n()
 const { pushNotification } = useNotifications()
+const { isDesktop, isTablet, isMobile } = useBreakpoints()
 
 const availableColors = ref([])
 
@@ -33,51 +35,50 @@ const productsImg = computed(() => {
   return productStore.product?.images
 })
 
-const quantity = ref(1);
+const quantity = ref(1)
 const goToRoute = () => router.push({ name: 'home' })
 // const goToOrder = () => router.push({ name: 'cart' })
-const addFavorite = async() => {
+const addFavorite = async () => {
   favoriteLoading.value = true
   const response = await favoriteStore.addFavorite(productStore.product?._id)
   if (response) {
     pushNotification({
-        id: '',
-        title: response.message,
-        type: response.status == 'success' ? 'success' : 'error',
-      })
-  } 
+      id: '',
+      title: response.message,
+      type: response.status == 'success' ? 'success' : 'error',
+    })
+  }
   favoriteLoading.value = false
 }
 
 const add = () => {
-
-  if(quantity.value < maxAmount.value){
+  if (quantity.value < maxAmount.value) {
     quantity.value++
   }
-
 }
 
 const remove = () => {
-
-  if(quantity.value > 1){
+  if (quantity.value > 1) {
     quantity.value--
   }
-
 }
 
-const addProduct = async() => {
-
+const addProduct = async () => {
   isLoading.value = true
 
-  if(cartStore.getAmountInCartByProduct({
-    _id: productStore.product?._id,
-    size: {
-      _id: size.value
-    },
-    color: {
-      _id: color.value
-    },
-  }) + quantity.value > maxAmount.value){
+  if (
+    cartStore.getAmountInCartByProduct({
+      _id: productStore.product?._id,
+      size: {
+        _id: size.value,
+      },
+      color: {
+        _id: color.value,
+      },
+    }) +
+      quantity.value >
+    maxAmount.value
+  ) {
     isLoading.value = false
     pushNotification({
       id: '',
@@ -92,23 +93,23 @@ const addProduct = async() => {
   const response = await cartStore.addToCart({
     productId: productStore.product?._id,
     size: {
-      _id: size.value
+      _id: size.value,
     },
     color: {
-      _id: color.value
+      _id: color.value,
     },
     quantity: quantity.value,
   })
 
   isLoading.value = false
 
-  if(response.data?.status == 'success'){
+  if (response.data?.status == 'success') {
     pushNotification({
       id: '',
       title: t('CART.SUCCESS'),
       type: 'success',
       isLink: '/checkout',
-      description: 'Ver carrito ',
+      description: t('CART.SHOW'),
     })
 
     return
@@ -121,23 +122,22 @@ const addProduct = async() => {
     isLink: '/checkout',
     description: t('CART.SHOW'),
   })
-
 }
 
 const isFavorite = computed(() => favoriteStore.favorites.find((item) => item.product._id == productStore.product?._id))
 
 const sizesToShow = computed(() => {
-
   const sizes = []
-  if(color.value){
-    variations.value?.filter(variation => variation.color[0]._id == color.value).forEach((item) => {
-
-      if(!sizes.find((size) => size?._id == item.size[0]._id)){
-        sizes.push(item.size[0])  
-      }
-    })  
+  if (color.value) {
+    variations.value
+      ?.filter((variation) => variation.color[0]._id == color.value)
+      .forEach((item) => {
+        if (!sizes.find((size) => size?._id == item.size[0]._id)) {
+          sizes.push(item.size[0])
+        }
+      })
   }
-  
+
   maxAmount.value = variations.value?.find((item) => item.color[0]._id == color.value && item.size[0]._id == size.value)?.stock ?? 0
   return sizes
 })
@@ -152,11 +152,9 @@ onMounted(async () => {
 
   variations.value = productStore.product?.productVariations
   variations.value?.forEach((item) => {
-    
-    if(!availableColors.value.find((color) => color?._id == item.color[0]._id)){
-      availableColors.value.push(item.color[0])  
+    if (!availableColors.value.find((color) => color?._id == item.color[0]._id)) {
+      availableColors.value.push(item.color[0])
     }
-    
   })
 
   color.value = availableColors.value[0]?._id ?? null
@@ -164,18 +162,15 @@ onMounted(async () => {
   maxAmount.value = variations.value?.find((item) => item.color[0]._id == color.value && item.size[0]._id == size.value)?.stock ?? 0
 })
 
-
-
 watch(
   () => router.currentRoute.value.params.slug,
   async () => {
     await productStore.getSingleProduct(router.currentRoute.value.params.slug)
   }
 )
-
 </script>
 <template>
-  <div class="mx-auto bg-white pb-20 lg:max-w-7xl">
+  <div class="mx-auto bg-white px-6 pb-20 md:px-0 lg:max-w-7xl">
     <div class="pt-2">
       <nav aria-label="Breadcrumb" class="">
         <ol role="list" class="mb-4 flex max-w-2xl items-center space-x-2 lg:max-w-7xl">
@@ -188,7 +183,7 @@ watch(
           </li>
           <li>
             <div class="flex items-center">
-              <div class="mr-2 text-sm font-medium text-gray-900">
+              <div class="mr-2 w-32 truncate text-sm font-medium text-gray-900 md:w-auto">
                 {{ locale === 'en_US' ? productStore.product?.nameEnglish : productStore.product?.name }}
               </div>
               <svg width="16" height="20" viewBox="0 0 16 20" fill="currentColor" aria-hidden="true" class="h-5 w-4 text-gray-300">
@@ -206,27 +201,39 @@ watch(
         </ol>
       </nav>
 
-      <section class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-2">
-        <section class="col-span-1">
+      <section class="reverse grid grid-cols-1 gap-8 lg:grid-cols-2">
+        <section class="col-span-1" v-if="isDesktop ">
           <Gallery v-if="productStore.product" :photos="productsImg"></Gallery>
         </section>
 
         <!-- Product info -->
-        <div class="relative max-w-2xl px-4 pb-16 pt-10 sm:px-6 lg:max-w-7xl lg:gap-x-8 lg:px-8 lg:pb-24 lg:pt-0">
-          <button @click="addFavorite" class="group absolute right-4 top-0 rounded-full bg-gray-100 p-3">
-            <HeartIcon class="w-6 group-hover:text-red-600" :class="{ 'text-red-600': favorite }" v-if="!isFavorite"/>
-            <SolidHeartIcon class="w-6" v-else/>
+        <div class="relative max-w-2xl px-4 pb-0 pt-0 sm:px-6 lg:max-w-7xl lg:gap-x-8 lg:px-8 lg:pb-24 lg:pt-0">
+          <button @click="addFavorite" class="group absolute right-4 top-0 rounded-full bg-gray-100 p-2 lg:p-3">
+            <HeartIcon class="w-4 lg:w-6 group-hover:text-red-600" :class="{ 'text-red-600': favorite }" v-if="!isFavorite" />
+            <SolidHeartIcon class="w-6" v-else />
           </button>
           <div class="lg:col-span-1">
             <p
               v-text="locale === 'en_US' ? productStore.product?.nameEnglish : productStore.product?.name"
-              class="mb-4 mr-8 max-w-4xl text-3xl font-bold text-gray-900"
+              class="mb-4 mr-8 max-w-4xl text-base lg:text-3xl font-bold text-gray-900"
             />
-
-            <p class="text-2xl tracking-tight text-gray-900">${{ productStore.product?.priceDiscount ? productStore.product?.priceDiscount : productStore.product?.price}}
-              <span v-if="productStore.price" class="font-sans text-sm text-gray-500 ml-2 "> Bs.{{ (productStore.price * (productStore.product?.priceDiscount ? productStore.product?.priceDiscount : productStore.product?.price)).toLocaleString() }}</span>
-</p>
+            <section class="col-span-1" v-if="isMobile|| isTablet">
+              <Gallery v-if="productStore.product" :photos="productsImg"></Gallery>
+            </section>
+            <p class="text-2xl tracking-tight text-gray-900">
+              ${{ productStore.product?.priceDiscount ? productStore.product?.priceDiscount : productStore.product?.price }}
             
+        
+              <span v-if="productStore.price" class="ml-2 font-sans text-sm text-gray-500">
+                Bs.{{
+                  (
+                    productStore.price *
+                    (productStore.product?.priceDiscount ? productStore.product?.priceDiscount : productStore.product?.price)
+                  ).toLocaleString()
+                }}</span
+              >
+            </p>
+    
           </div>
 
           <div class="pb-10 lg:col-span-2 lg:col-start-1 lg:pb-16 lg:pt-6">
@@ -245,7 +252,14 @@ watch(
               <section v-if="availableColors.length">
                 <div class="mb-2 flex">
                   <p class="" v-text="$t('COMMON.COLOR') + ':'" />
-                  <p class="ml-2 font-bold" v-text="locale === 'en_US' ? availableColors?.find((item) => item?._id == color)?.englishName : availableColors?.find((item) => item?._id == color).name" />
+                  <p
+                    class="ml-2 font-bold"
+                    v-text="
+                      locale === 'en_US'
+                        ? availableColors?.find((item) => item?._id == color)?.englishName
+                        : availableColors?.find((item) => item?._id == color).name
+                    "
+                  />
                 </div>
                 <!-- Reviews -->
                 <div class="mb-4 flex gap-2">
@@ -255,7 +269,8 @@ watch(
                     :color="item.hex"
                     :value="item._id"
                     v-model="color"
-                    @click="size = null; quantity = 1"
+                    @click="size = null,quantity = 1
+                    "
                     @update:modelValue="color = item._id"
                   />
                 </div>
@@ -264,7 +279,14 @@ watch(
               <section v-if="sizesToShow">
                 <div class="mb-2 flex">
                   <p class="" v-text="$t('COMMON.SIZE') + ':'" />
-                  <p class="ml-2 font-bold" v-text="locale === 'en_US' ? sizesToShow?.find((item) => item?._id == size)?.englishName : sizesToShow?.find((item) => item?._id == size)?.name" />
+                  <p
+                    class="ml-2 font-bold"
+                    v-text="
+                      locale === 'en_US'
+                        ? sizesToShow?.find((item) => item?._id == size)?.englishName
+                        : sizesToShow?.find((item) => item?._id == size)?.name
+                    "
+                  />
                 </div>
                 <div class="flex gap-2">
                   <RadioCheck
@@ -283,7 +305,7 @@ watch(
               <section class="mb-4">
                 <div class="mt-2">
                   <section class="items-center justify-between">
-                    <p class="" v-text="'Cantidad:'" />
+                    <p class="" v-text="$t('COMMON.QUANTITY')" />
                     <div class="border-burgerPrimary flex w-24 items-center justify-between rounded-md border px-3 py-1">
                       <button class="transition duration-500 hover:opacity-50" @click="remove">
                         <ChevronLeftIcon class="w-4" />
@@ -296,7 +318,16 @@ watch(
                   </section>
                 </div>
               </section>
-              <Btn class="flex justify-center h-10 items-center" with-icon is-full color="primaryProduct" :text="maxAmount <= 0 ? $t('COMMON.NOT_AVAILABLE') : $t('COMMON.ADD_TO_CART')" :isLoading="isLoading" @click="addProduct()" :is-disabled="!size || !color || maxAmount <= 0">
+              <Btn
+                class="flex h-10 items-center justify-center"
+                with-icon
+                is-full
+                color="primaryProduct"
+                :text="maxAmount <= 0 ? $t('COMMON.NOT_AVAILABLE') : $t('COMMON.ADD_TO_CART')"
+                :isLoading="isLoading"
+                @click="addProduct()"
+                :is-disabled="!size || !color || maxAmount <= 0"
+              >
                 <template #icon>
                   <ShoppingCartIcon class="mx-2 w-5" />
                 </template>

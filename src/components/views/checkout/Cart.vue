@@ -19,14 +19,14 @@ const removeItem = async (item) => {
     if (cartStore.isError) {
       pushNotification({
         id: '',
-        title: 'Error al eliminar el producto. ',
+        title: t('COMMON.ERROR_DELETE_PRODUCT'),
         type: 'error',
       })
     }
     if (cartStore.isReady) {
       pushNotification({
         id: '',
-        title: 'Producto eliminado del carrito. ',
+        title: t('COMMON.SUCCESS_DELETE_PRODUCT'),
         type: 'success',
       })
     }
@@ -44,16 +44,12 @@ const lessItem = (index) => {
     if (storeUser.currentUser) {
       cartStore.update({
         productId: cart[index].productId,
-        size: 
-          {
-            _id: cart[index].size._id
-          }
-        ,
-        color: 
-          {
-            _id: cart[index].color._id
-          }
-        ,
+        size: {
+          _id: cart[index].size._id,
+        },
+        color: {
+          _id: cart[index].color._id,
+        },
         quantity: cart[index].quantity,
       })
     }
@@ -68,16 +64,12 @@ const moreItem = (index) => {
     if (storeUser.currentUser) {
       cartStore.update({
         productId: cart[index].productId,
-        size: 
-          {
-            _id: cart[index].size._id
-          }
-        ,
-        color: 
-          {
-            _id: cart[index].color._id
-          }
-        ,
+        size: {
+          _id: cart[index].size._id,
+        },
+        color: {
+          _id: cart[index].color._id,
+        },
         quantity: cart[index].quantity,
       })
     }
@@ -98,8 +90,15 @@ onMounted(async () => {
 })
 </script>
 <template>
-  <p class="text-xl font-bold" v-text="'Carrtito de compra'" />
-  <p class="mb-6 font-light" v-text="`Tienes ${cartStore.cart.length} productos en el carrito`" />
+  <p class="text-xl font-bold" v-text="$t('PAGES.TITLES.SHOPPING_CART')" />
+  <p
+    class="mb-6 font-light"
+    v-text="
+      $t('PAGES.DESCRIPTION.PRODUCTS', {
+        total: cartStore.cart.length,
+      })
+    "
+  />
   <template v-if="cartStore.isLoading">
     <div
       v-for="(item, index) in 3"
@@ -122,16 +121,16 @@ onMounted(async () => {
     />
   </template>
 
-  <p class="rounded-lg bg-gray-100 p-3 mb-6 text-center text-xl font-bold" v-if="!cartStore.cart.length && cartStore.isReady">Empty cart</p>
+  <p class="mb-6 rounded-lg bg-gray-100 p-3 text-center text-xl font-bold" v-if="!cartStore.cart.length && cartStore.isReady">Empty cart</p>
 
   <div class="flex justify-center gap-4">
     <button
-    v-if="cartStore.cart.length"
+      v-if="cartStore.cart.length"
       class="group flex items-center justify-center gap-1 rounded-xl bg-gray-800 p-8 py-3 text-sm font-bold leading-6 text-white shadow-sm hover:bg-opacity-90"
       type="submit"
       @click="$emit('nextStep')"
     >
-      Continuar
+      {{ $t('COMMON.CONTINUE') }}
     </button>
   </div>
 </template>

@@ -29,8 +29,42 @@
     "OFFERS": "Ofertas del día",
     "FAVORITE": "Favoritos",
     "SEARCH": "Buscar",
-    "PROFILE": "Mi perfil"
+    "PROFILE": "Mi perfil",
+    "HOME": "Inicio",
+    "NEXT": "Siguiente",
+    "PREVIOUS": "Anterior",
+    "CONTINUE": "Continuar",
+    "BACK": "Volver",
+    "BACK_TO_QUERY": "Volver a consultar",
+    "CARD_NOT_FOUND": "No se encuentra la tarjeta de crédito",
+    "CONSULT_SUCCES": "Consulta enviada al correo",
+    "BILLING_DATA": "Datos de facturación",
+    "YOUR_ORDER": "Tu pedido",
+    "DETAILS": "Detalles",
+    "SHIPPING": "Envío",
+    "SHIPPING_ADDRESS": "Dirección de envío",
+    "ALREADY_HAVE_AN_ACCOUNT": "¿Ya tienes una cuenta?",
+    "LOGIN": "Inicia sesion",
+    "DONT_HAVE_AN_ACCOUNT": "¿No tienes una cuenta?",
+    "ERROR_LOGIN_INVALID": "El email o la contrasena son incorrectos",
+    "SUCCEFULLY_LOGIN": "Iniciaste sesion correctamente",
+    "VERIFY_EMAIL": "Debes verificar tu email",
+    "STATE": "Estado",
+    "OFFICE": "Oficina",
+    "SEND": "Enviar",
+    "CONSULT_BALANCE": "Consultar saldo",
+    "BUY_ELECTRONIC_GIFTCARD": "Comprar tarjeta de regalo electronica",
+    "GIFTCARD_DETAILS":"Escribe los detalles de la tarjeta de regalo",
+    "THANKS_FOR_PURCHASE": "Gracias por tu compra",
+    "PRICE": "Importe",
+    "TEXT_OFFERS":"OFERTA DE ROPA, ZAPATOS Y ACCESORIOS: HASTA UN 40 % DE DESCUENTO",
+    "TEXT_OFFERS2":"Rehace tu look por menos. Si eres un atleta ávido o buscas un estilo urbano fresco, encontrarás el mejor equipo en las rebajas de ropa y calzado",
+    "CATEGORY": "Categorias",
+    "ERROR_DELETE_PRODUCT": "Error al eliminar el producto",
+    "SUCCESS_DELETE_PRODUCT": "Eliminado correctamente"
+
   },
+
   "CART": {
     "ERROR": "Error al añadir al carrito",
     "SUCCESS": "Añadido al carrito",
@@ -39,7 +73,7 @@
   "LOGIN": {
     "LOGIN": "Iniciar sesión",
     "RESET_PASSWORD": "Recuperar contraseña",
-    "FORGOT_PASS": "Olvidaste tu contraseña?",
+    "FORGOT_PASS": "¿Has olvidado tu contraseña?",
     "ENTER": "Ingresar",
     "SUCCESS": "Has iniciado sesión correctamente",
     "UNAUTHORIZED": "Usuario o contraseña incorrectos",
@@ -95,7 +129,13 @@
     "SALES_TO_FINAL_CONSUMERS": "Venta a consumidor final",
     "EXTERIOR_IDENTIFICATION": "Identificacion del exterior",
     "DATE_HOUR": "Fecha y hora",
-    "PASSWORD_CONFIRM": "Confirmar contraseña"
+    "PASSWORD_CONFIRM": "Confirmar contraseña",
+    "FOR": "Para:",
+    "FROM": "De:",
+    "FROM_TEXT":"Ingresa tu nombre para enviar la tarjeta de regalo",
+    "YOURMESSAGE":"Tu mensaje",
+    "YOURMESSAGE_BUY":"Espero que disfrutes tu compra...."
+
   },
   "ACTIONS": {},
   "PAYMENTS": {
@@ -108,14 +148,90 @@
     "STATE": "Estado",
     "ADDRESS": "Dirección",
     "REFERENCE": "Referencia",
-    "GET_RATES": "Obtener tarifas"
+    "GET_RATES": "Obtener tarifas",
+    "RETURNS_MEMBERSHIP": "Las devoluciones son gratuitas para los miembros de eRoca",
+    "RETURNS_MEMBERSHIP_2": "para comenzar una devolución gratuita.",
+    "GIFT_CARD_BALANCE":"Para verificar el estado de tu pedido o iniciar una devolución, ingresa tu número de pedido y dirección de correo electrónico."
   },
   "FOOTER": {
     "CUSTOMER_SERVICE": "Servicio al cliente",
-    "CONTACT": "Contacto",
-    "ABOUT_US": "Nosotros",
-    "NEWS": "Novedades",
     "RECOMMENDED": "Productos recomendados",
-    "POPULAR_NOW": "Populares ahora mismo"
+    "POPULAR_NOW": "Populares ahora mismo",
+    "ORDER_STATUS": "Estado del pedido",
+    "OUR_COMPANY": "ACERCA DE ROCA",
+    "PAYMENT_METHODS": "METODOS DE PAGO"
+  },
+  "STEP": {
+    "SHOPPING_CART": "Carro de compras",
+    "PAYMENT": "Método de pago",
+    "PRODUCT_AND_SHIPPING": "Productos y envío"
+  },
+  "PAGES": {
+    "TITLES": {
+      "SHOPPING_CART": "Carro de compras"
+    },
+    "DESCRIPTION": {
+      "CATEGORY": "Rehace tu look por menos. Si eres un atleta ávido o buscas un estilo urbano fresco, encontrarás el mejor equipo en las rebajas de ropa y calzado.",
+      "PRODUCTS": "Tienes {total}  productos en el carrito"
+    }
+  },
+  "RESUME": {
+    "FINAL_DETAILS_ORDER": "Detalles finales del pedido",
+    "ORDER_PLACED": "Pedido realizado",
+    "ORDER_NUMBERS_ROCK": "Pedido roca número",
+    "ORDER_TOTAL": "Total del pedido",
+    "PRODUCTS_PURCHASED": "Productos comprados",
+    "PAYMENT_INFORMATION": "Información de pago",
+    "METHOD_OF_PAYMENT": "Método de pago",
+    "BILLING_ADDRESS": "Dirección de facturación",
+    "TRANCKING_NUMBER": "Número de seguimiento",
+    "PRODUCTS": "Productos",
+    "SHIPPING": "Envío",
+    "TOTAL_INCLUDING_TAX": "Total (I.V.A. Incluido)",
+    "PRICE": "Precio",
+    "IVA": "IVA"
+  },
+  "BILLING": {
+    "AMOUT": "Monto",
+    "DAYS": "Días estimados",
+    "PRODUCT": "Producto",
+    "SHIPPING_INFO": "Debe completar sus datos de envío y seleccionar una tarifa",
+    "CARD": "Tarjeta",
+    "CREDIT_CARD": "Tarjeta de crédito",
+    "SHIPPING_ADDRESS": "Dirección de envío"
+  },
+  "VERIFICATION": {
+    "TITLE": "Verificación de correo",
+    "VERIFY_ACCOUNT": "Verificar cuenta",
+    "RESEND_CODE": "Reenviar código",
+    "SEND_CODE": "Hemos enviado un código a su correo electrónico ",
+    "FORWARD_CODE": "Codigo reenviado",
+    "VERIFICATION_SUCCESS": "Verificación exitosa",
+    "VERIFICATION_ERROR": "Codigo incorrecto",
+    "RESEND": "Reenviar",
+    "VERIFICATION_EMAIL": "Verificación de Email"
+  },
+  "RESET_PASSWORD": {
+    "TITLE": "Cambiar contraseña",
+    "SUCCESS": "Contraseña cambiada correctamente",
+    "PASSWORD_NOT_MATCH": "Las contraseñas no coinciden",
+    "EMAIL_NOT_EXIST": "El correo no existe",
+    "VERIFICATION_SEND": "Verificación enviada a su correo electrónico"
+  },
+  "SEARCH":{
+    "TITLE":" Resultados para:",
+    "SEARCH_PRODUCT":"Buscar productos...",
+    "RESULT_NOT_FOUND":"No se encuentran resultados para" 
+  },
+  "PROFILE":{
+    "TITLE":"Bienvendios a tu perfil",
+    "MYBUYS":" Mis Compras",
+    "MYPROFILE":"Mi perfil",
+    "ORDER":"Orden",
+    "DATE":"Fecha",
+    "STATUS":"Estado",
+    "AMOUT":"Precio",
+    "VIEWDETAILS":"Ver detalles",
+    "PERSONAL_INFORMATION":"Información personal"
   }
 }

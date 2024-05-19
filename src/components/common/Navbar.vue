@@ -75,7 +75,7 @@ watch(
       <ul class="navigation relative mx-auto flex flex-wrap items-center justify-between py-2 lg:py-0">
         <label for="check" class="open-menu"><Bars3BottomLeftIcon class="w-6 text-gray-800" /></label>
 
-        <div class="ml-14 w-1/6 xl:ml-12">
+        <div class="ml-10 w-1/6">
           <RouterLink to="/">
             <img src="@/assets/images/logo.png" class="w-28" alt="">
           </RouterLink>
@@ -143,7 +143,7 @@ watch(
             <label for="check" class="close-menu"><XMarkIcon class="w-4 text-white" /></label>
           </span>
 
-          <div class="mr-5 flex items-center gap-2 lg:mr-10">
+          <div class="mr-2 flex items-center gap-2 lg:mr-10">
             <InputSearch
               @search="search"
               class="mr-4 hidden xl:block"
@@ -170,14 +170,14 @@ watch(
                   <p>{{ $t('COMMON.PROFILE') }}</p>
                 </button>
                 <button @click="logout(closeDropdown)" class="w-28 py-2 hover:bg-gray-200">
-                  <p>Cerrar sesion</p>
+                  <p>{{ $t('COMMON.LOGOUT') }}</p>
                 </button>
               </template>
             </Dropdown>
 
             <Btn class="" color="secondary" v-else @click="register = true" with-icon :text="$t('COMMON.REGISTER')">
               <template #icon>
-                <UserIcon class="w-5" />
+                <UserIcon class="hidden md:block w-5" />
               </template>
             </Btn>
             <Btn

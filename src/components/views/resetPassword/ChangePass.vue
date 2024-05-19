@@ -52,7 +52,7 @@ const setEmailErrors = computed(() => {
 const setPasswordErrors = computed(() => {
   const validator = handlerValidate.value?.['passwordConfirm']?.$errors?.[0]?.$validator
   if (validator == 'required') return t('VALIDATIONS.REQUIRED')
-  else if (passwordHasError.value) return 'Las contraseñas no coinciden'
+  else if (passwordHasError.value) return t('RESET_PASSWORD.PASSWORD_NOT_MATCH')
 
   return undefined
 })
@@ -85,7 +85,7 @@ const sendForm = async () => {
     restorePassStore.setData(true)
     pushNotification({
       id: '',
-      title: 'Contrasena cambiada correctamente',
+      title: t('RESET_PASSWORD.SUCCESS'),
       type: 'success',
     })
     router.push({ name: 'home' })
@@ -98,7 +98,7 @@ const sendForm = async () => {
       <div class="mb-4">
         <form class="mt-4 space-y-4 md:space-y-5 lg:mt-5" @submit.prevent="sendForm">
           <h2 class="mb-1 text-center text-xl font-bold leading-tight tracking-tight text-gray-900 dark:text-white md:text-2xl">
-            Cambiar contraseña
+           {{ t('RESET_PASSWORD.TITLE') }}
           </h2>
           <div>
             <TextFields
@@ -145,7 +145,7 @@ const sendForm = async () => {
             type="submit"
             class="mx-auto flex w-5/6 justify-center rounded-xl bg-gray-900 p-3 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
           >
-            Cambiar contrasena
+            {{ t('RESET_PASSWORD.TITLE') }}
           </button>
         </form>
       </div>

@@ -3,8 +3,11 @@
   "COLOR": "Color",
   "SIZE": "Size",
   "COMMON": {
+    "DESCRIPTION": "Description",
+    "COLOR": "Color",
+    "SIZE": "Size",
     "LOADING": "Loading...",
-    "TOGGLE_DARK_MODE": "Enable dark mode", 
+    "TOGGLE_DARK_MODE": "Enable dark mode",
     "LOGOUT": "Logout",
     "CART": "Cart",
     "GIFT_CART": "Gift card",
@@ -12,12 +15,13 @@
     "REGISTER": "Register",
     "CREATE_ACCOUNT": "Create Account",
     "CREATE_AN_ACCOUNT": "Create an account",
-    "SUCCEFULLY_REGISTER": "Register successfully", 
+    "SUCCEFULLY_REGISTER": "Register successfully",
     "ERROR": "Error",
     "ERROR_REGISTER": "Error while registering",
-    "PASSWORD_NOT_SAME": "Passwords are not the same", 
-    "NEWS":"News",
-    "RECOMMENDED": "Recommended products", 
+    "PASSWORD_NOT_SAME": "Passwords are not the same",
+    "NEWS": "News",
+    "RECOMMENDED": "Recommended products",
+    "PAGINATE": "Showing {from} to {to} of {total} results",
     "POPULAR_NOW": "Popular right now",
     "SELECT": "Select",
     "NOT_AVAILABLE": "Not available",
@@ -25,13 +29,53 @@
     "OFFERS": "Offers of the day",
     "FAVORITE": "Favorites",
     "SEARCH": "Seach",
-    "PROFILE": "My profile"
-
+    "PROFILE": "My profile",
+    "HOME": "Home",
+    "NEXT": "Next",
+    "PREVIOUS": "Previous",
+    "CONTINUE": "Continue",
+    "BACK": "Back",
+    "BACK_TO_QUERY": "Back to query",
+    "CARD_NOT_FOUND": "Card not found",
+    "CONSULT_SUCCES": "Query sent to the mail",
+    "BILLING_DATA": "Billing data",
+    "YOUR_ORDER": "Your order",
+    "DETAILS": "Details",
+    "SHIPPING": "Shipping",
+    "SHIPPING_ADDRESS": "Shipping address",
+    "ALREADY_HAVE_AN_ACCOUNT": "Already have an account?",
+    "LOGIN": "Login",
+    "DONT_HAVE_AN_ACCOUNT": "Don't have an account?",
+    "ERROR_LOGIN_INVALID": "The email or password is incorrect",
+    "SUCCEFULLY_LOGIN": "Login successfully",
+    "VERIFY_EMAIL": "Verify your email",
+    "STATE": "State",
+    "OFFICE": "Office",
+    "SEND": "Send",
+    "CONSULT_BALANCE": "Consult balance",
+    "BUY_ELECTRONIC_GIFTCARD": "Buy electronic gift card",
+    "GIFTCARD_DETAILS":"Gift card details",
+    "THANKS_FOR_PURCHASE": "Thanks for your purchase",
+    "PRICE": "Price",
+    "TEXT_OFFERS":"CLOTHING, SHOES AND ACCESSORIES OFFER: UP TO 40 % OFF",
+    "TEXT_OFFERS2":"Redo your look for less. Whether you're an avid athlete or looking for a cool street style, you'll find the best gear at the apparel and footwear sales.",
+    "CATEGORY": "Category",
+    "ERROR_DELETE_PRODUCT": "Error while deleting the product",
+    "SUCCESS_DELETE_PRODUCT": "Product deleted successfully"
   },
-  "CART":{
+  "CART": {
     "ERROR": "Error while adding to cart",
     "SUCCESS": "Added to cart successfully",
     "SHOW": "Show cart"
+  },
+  "LOGIN": {
+    "LOGIN": "Login",
+    "RESET_PASSWORD": "Reset password",
+    "FORGOT_PASS": "Forgot your password?",
+    "ENTER": "Enter",
+    "SUCCESS": "Login successfully",
+    "UNAUTHORIZED": "Incorrect username or password",
+    "SESSION_EXPIRED": "Session expired, please log in again."
   },
   "VALIDATIONS": {
     "REQUIRED": "This field is required",
@@ -84,19 +128,107 @@
     "SALES_TO_FINAL_CONSUMERS": "Sales to final consumers",
     "EXTERIOR_IDENTIFICATION": "Exterior identification",
     "DATE_HOUR": "Date",
-    "PASSWORD_CONFIRM": "Confirm password"
+    "PASSWORD_CONFIRM": "Confirm password",
+    "FOR": "For",
+    "FROM": "From",
+    "FROM_TEXT":"Enter your name to send the gift card",
+    "YOURMESSAGE":"Your message",
+    "YOURMESSAGE_BUY":"I hope you enjoy your purchase...."
   },
-  "ACTIONS":{},
+  "ACTIONS": {},
   "PAYMENTS": {
-    "CARD_HOLDER":"Card holder",
-    "CARD_HOLDER_ID":"Card holder ID",
-    "CARD_NUMBER":"Card number",
+    "CARD_HOLDER": "Card holder",
+    "CARD_HOLDER_ID": "Card holder ID",
+    "CARD_NUMBER": "Card number",
     "CVC": "CVC",
     "EXPIRATION_DATE": "Expiration date",
     "COUNTRY": "Country",
     "STATE": "State",
     "ADDRESS": "Address",
     "REFERENCE": "Reference",
-    "GET_RATES": "Get rates"
+    "GET_RATES": "Get rates",
+    "RETURNS_MEMBERSHIP": " Returns are free for eRoca members.",
+    "RETURNS_MEMBERSHIP_2": "to start a free return.",
+    "GIFT_CARD_BALANCE": "To check the status of your order or initiate a return, enter your order number and email address."
+  },
+  "FOOTER": {
+    "CUSTOMER_SERVICE": "Custumer service",
+    "RECOMMENDED": "Recommended products",
+    "POPULAR_NOW": "Popular right now",
+    "ORDER_STATUS": "Order status",
+    "OUR_COMPANY": "about ROCA",
+    "PAYMENT_METHODS": "Payment methods"
+  },
+  "STEP": {
+    "SHOPPING_CART": "Shopping cart",
+    "PAYMENT": "Payment method",
+    "PRODUCT_AND_SHIPPING": "Products and shipping"
+  },
+  "PAGES": {
+    "TITLES": {
+      "SHOPPING_CART": "Shopping cart"
+    },
+    "DESCRIPTION": {
+      "CATEGORY": "Redo your look for less. Whether you're an avid athlete or looking for a cool street style, you'll find the best gear at the apparel and ",
+      "PRODUCTS": "You have {total} products in your cart"
+    }
+  },
+  "RESUME": {
+    "FINAL_DETAILS_ORDER": "Final details of your order",
+    "ORDER_PLACED": "Order placed",
+    "ORDER_NUMBERS_ROCK": "Order number",
+    "ORDER_TOTAL": "Total",
+    "PRODUCTS_PURCHASED": "Products purchased",
+    "PAYMENT_INFORMATION": "Payment information",
+    "METHOD_OF_PAYMENT": "Method of payment",
+    "BILLING_ADDRESS": "Billing address",
+    "TRANCKING_NUMBER": "Tracking number",
+    "PRODUCTS": "Products",
+    "SHIPPING": "Shipping",
+    "TOTAL_INCLUDING_TAX": "Total including tax",
+    "IVA": "TAX"
+  },
+  "BILLING": {
+    "AMOUT": "Amount",
+    "DAYS": "Days ",
+    "PRODUCT": "Product",
+    "SHIPPING_INFO": "You must fill in your shipping information and select a rate.",
+    "CARD": "Card",
+    "CREDIT_CARD": "Credit card",
+    "SHIPPING_ADDRESS": "Shipping address"
+  },
+  "VERIFICATION": {
+    "TITLE": "Verification email",
+    "VERIFY_ACCOUNT": "Verify account",
+    "RESEND_CODE": "Resend code",
+    "SEND_CODE": "We have sent a code to your email ",
+    "FORWARD_CODE": "Code re-sent",
+    "VERIFICATION_SUCCESS": "Verification successful",
+    "VERIFICATION_ERROR": "Verification error",
+    "RESEND": "Resend",
+    "VERIFICATION_EMAIL": "Verification email"
+  },
+  "RESET_PASSWORD": {
+    "TITLE": "Reset password",
+    "SUCCESS": "Password changed successfully",
+    "PASSWORD_NOT_MATCH": "Passwords do not match",
+    "EMAIL_NOT_EXIST": "Email does not exist",
+    "VERIFICATION_SEND": "Verification email sent to your email address"
+  },
+  "SEARCH":{
+    "TITLE":" Results for:",
+    "SEARCH_PRODUCT":"Search products...",
+    "RESULT_NOT_FOUND":"No results found for" 
+  },
+  "PROFILE":{
+    "TITLE":"Welcome to your profile",
+    "MYBUYS":" My purchases",
+    "MYPROFILE":"My profile",
+    "ORDER":"Order",
+    "DATE":"Date",
+    "STATUS":"Status",
+    "AMOUT":"Amount",
+    "VIEWDETAILS":"View details",
+    "PERSONAL_INFORMATION":"Personal information"
   }
 }

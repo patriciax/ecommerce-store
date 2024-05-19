@@ -72,14 +72,15 @@ import { RouterLink } from 'vue-router';
 
         <!-- <div class="w-full grid-cols-3 px-4 lg:grid-cols-1">
           <div class="mb-10 w-full">
-            <h4 class="text-dark mb-4 text-lg font-semibold dark:text-white"> SERVICIO AL CLIENTE</h4>
+            <h4 class="text-dark mb-4 text-lg font-semibold dark:text-white uppercase"> {{ $t('FOOTER.CUSTOMER_SERVICE') }}</h4>
             <ul class="space-y-3">
               <li>
                 <a
                   href="javascript:void(0)"
                   class="text-body-color hover:text-primary dark:text-dark-6 inline-block text-base leading-loose"
                 >
-                  Estado del pedido
+                {{ $t('FOOTER.ORDER_STATUS') }}
+            
                 </a>
               </li>
               <li>
@@ -119,7 +120,7 @@ import { RouterLink } from 'vue-router';
         </div>
         <div class="w-full grid-cols-3 px-4 lg:grid-cols-1">
           <div class="mb-10 w-full">
-            <h4 class="text-dark mb-4 text-lg font-semibold dark:text-white">ACERCA DE ROCA</h4>
+            <h4 class="text-dark mb-4 text-lg font-semibold dark:text-white uppercase">{{ $t('FOOTER.OUR_COMPANY') }}</h4>
             <ul class="space-y-3">
               <li>
                 <a
@@ -158,7 +159,7 @@ import { RouterLink } from 'vue-router';
         </div> -->
         <div class="w-full grid-cols-4 px-4 lg:grid-cols-1">
           <div class="mb-10 w-full">
-            <h4 class="text-dark mb-4 text-lg font-semibold dark:text-white">OPCIONES D E PAGO</h4>
+            <h4 class="text-dark mb-4 text-lg font-semibold dark:text-white uppercase">{{ $t('FOOTER.PAYMENT_METHODS') }}</h4>
             <section class="grid gap-2">
               <ul class="grid grid-cols-4 items-center gap-2">
                 <li>

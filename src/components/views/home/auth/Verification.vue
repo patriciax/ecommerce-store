@@ -2,8 +2,7 @@
 import InputsOpt from '@/components/common/InputsOpt.vue'
 import useNotifications from '@/composables/useNotifications'
 import _storeAuth from '@/stores/auth'
-import { onMounted } from 'vue'
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 const props = defineProps({
@@ -45,7 +44,7 @@ const resendCode = async() => {
   await storeAuth.resendCode({ email: storeAuth.data.user?.email })
   pushNotification({
         id: '',
-        title: 'Codigo reenviado',
+        title: t('VERIFICATION.FORWARD_CODE'),
         type: 'success',
       })
   
@@ -63,10 +62,10 @@ onMounted(() => {
     <div class="mx-auto flex w-full flex-col">
       <div class="mb-8 flex flex-col items-center justify-center space-y-2 text-center">
         <div class="text-3xl font-semibold">
-          <p>Verificacion de Email</p>
+          <p>  {{ t('VERIFICATION.TITLE') }}</p>
         </div>
         <div class="flex flex-row text-sm font-medium text-gray-400">
-          <p v-if="storeAuth?.data">Hemos enviado un código a su correo electrónico <b>{{ storeAuth?.data?.user?.email }}</b> </p>
+          <p v-if="storeAuth?.data">{{ t('VERIFICATION.SEND_CODE') }} <b>{{ storeAuth?.data?.user?.email }}</b> </p>
         </div>
       </div>
 
@@ -82,14 +81,14 @@ onMounted(() => {
             @click="verifyCode"
               class="mx-auto flex w-5/6 justify-center rounded-xl bg-indigo-600 p-3 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
             >
-              Verificar cuenta
+            {{ t('VERIFICATION.VERIFY_ACCOUNT') }}
             </button>
           </div>
 
           <div class="flex flex-row items-center justify-center space-x-1 text-center text-sm font-medium text-gray-500">
             <p v-text="'No ha recibido el código?'" />
             <!-- <p>Didn't recieve code?</p> -->
-            <p @click="resendCode" class="flex cursor-pointer flex-row items-center text-blue-600"  rel="noopener noreferrer">Reenviar</p>
+            <p @click="resendCode" class="flex cursor-pointer flex-row items-center text-blue-600"  rel="noopener noreferrer">{{ t('VERIFICATION.RESEND_CODE') }}</p>
           </div>
         </div>
       </div>

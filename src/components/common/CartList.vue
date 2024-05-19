@@ -43,21 +43,25 @@ const moreItem = (index) => {
 }
 </script>
 <template>
-  <li class="mb-6 flex items-center gap-4 rounded-2xl bg-white px-6 py-2 text-lg shadow-[0px_2px_5px_#00000038]">
-    <img :src="props.item.mainImage || props.item.product?.mainImage" alt="" class="h-24 w-24 rounded-lg object-cover" />
-    <section>
-      <RouterLink :to="`/product/${props.item.slug}`">
-        <h3 class="max-w-72 text-lg text-gray-900">
-          {{ locale === 'en_US' ? props.item.nameEnglish || props.item.product?.nameEnglish : props.item.name || props.item.product?.name }}
-        </h3>
-      </RouterLink>
+  <li class="mb-6 flex flex-col md:flex-row items-center gap-4 rounded-2xl bg-white px-6 py-2 text-lg shadow-[0px_2px_5px_#00000038]">
+    <div class="flex flex-1 items-center">
+      <img :src="props.item.mainImage || props.item.product?.mainImage" alt="" class="mr-4 h-20 lg:h-24 w-24 rounded-lg object-cover" />
+      <section>
+        <RouterLink :to="`/product/${props.item.slug}`">
+          <h3 class="max-w-72 text-lg text-gray-900">
+            {{
+              locale === 'en_US' ? props.item.nameEnglish || props.item.product?.nameEnglish : props.item.name || props.item.product?.name
+            }}
+          </h3>
+        </RouterLink>
 
-      <div class="flex items-center">
-        <p class="text-sm text-gray-700">{{ $t('COLOR') }}: {{ item?.color?.name }}</p>
-        <div v-if="item?.color?.name" class="mx-2 h-4 w-0.5 bg-gray-200" />
-        <p class="text-sm text-gray-700">{{ $t('SIZE') }}: {{ item?.size?.name }}</p>
-      </div>
-    </section>
+        <div class="flex items-center">
+          <p class="text-sm text-gray-700">{{ $t('COLOR') }}: {{ item?.color?.name }}</p>
+          <div v-if="item?.color?.name" class="mx-2 h-4 w-0.5 bg-gray-200" />
+          <p class="text-sm text-gray-700">{{ $t('SIZE') }}: {{ item?.size?.name }}</p>
+        </div>
+      </section>
+    </div>
     <div class="flex flex-1 items-center justify-end gap-16">
       <section class="flex items-center justify-between" v-if="props.isCart">
         <div class="border-burgerPrimary flex w-24 items-center justify-between rounded-md border px-3 py-1">
@@ -71,17 +75,25 @@ const moreItem = (index) => {
         </div>
       </section>
 
-      <div>
+      <div class="hidden lg:block">
         <p class="inline">${{ props.item.priceDiscount || props.item.price }}</p>
 
-        <span v-if="productStore.price" class="font-sans text-sm text-gray-500 ml-2 "> Bs.{{ (productStore.price * (props.item.priceDiscount || props.item.price)).toLocaleString() }}</span>
-
+        <span v-if="productStore.price" class="ml-2 font-sans text-sm text-gray-500">
+          Bs.{{ (productStore.price * (props.item.priceDiscount || props.item.price)).toLocaleString() }}</span
+        >
       </div>
-
 
       <button class="text-gray-600 transition hover:text-red-600" @click="removeItem(props.index)">
         <TrashIcon class="w-6" />
       </button>
+
+      <div class="block lg:hidden">
+        <p class="inline">${{ props.item.priceDiscount || props.item.price }}</p>
+
+        <span v-if="productStore.price" class="ml-2 font-sans text-sm text-gray-500">
+          Bs.{{ (productStore.price * (props.item.priceDiscount || props.item.price)).toLocaleString() }}</span
+        >
+      </div>
     </div>
   </li>
 </template>

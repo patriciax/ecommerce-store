@@ -17,7 +17,7 @@ onMounted(async () => {
 
 <template>
   <main>
-    <section class="mx-auto max-w-[1440px] px-6">
+    <section class="mx-auto max-w-[1440px] px-4">
       <Banner class="mb-16" />
       <NewProducts v-if="productStore.allProduct?.section1.length" :products="productStore.allProduct?.section1" class="mb-8" />
       <Products v-if="productStore.allProduct?.section2.length" :products="productStore.allProduct?.section2" />

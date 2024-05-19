@@ -10,7 +10,6 @@ import Card from '@/components/paymentMethods/Card.vue'
 import GiftCard from '@/components/paymentMethods/GiftCard.vue'
 import Paypal from '@/components/paymentMethods/Paypal.vue'
 import MobilePayment from '@/components/paymentMethods/mobilePayment.vue'
-import useNotifications from '@/composables/useNotifications'
 import CartStore from '@/stores/cart/cart'
 import CountryStore from '@/stores/country'
 import StorePaymentMethods from '@/stores/paymentMethods'
@@ -25,7 +24,6 @@ import { email, required, requiredIf } from '@vuelidate/validators'
 import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
-
 const emit = defineEmits(['nextStep', 'prevStep'])
 
 const { t } = useI18n()
@@ -34,14 +32,10 @@ const countryStore = CountryStore()
 const storePaymentMethods = StorePaymentMethods()
 
 const countries = ref([])
-const page = ref(1)
 const cartStore = CartStore()
 const storeUser = _storeUser()
 const zoomStore = _ZoomStore()
-const { pushNotification } = useNotifications()
-const isDisabledStock = ref(false)
 const emailHasError = ref(null)
-const selectPaymentMethod = ref(null)
 const validateFormData = ref(false)
 const selectedRateId = ref(null)
 const rates = ref([])
@@ -236,21 +230,28 @@ const handlePay = (paymentMethod) => {
 const formatTotal = computed(() => (cartStore.total ? decimalNumberFormat(cartStore.total) : 0))
 </script>
 <template>
-  <section class="grid gap-12 px-10 md:grid-cols-2 lg:px-0">
+  <section class="grid gap-12 px-6 md:grid-cols-2 lg:px-0">
     <div>
       <div class="">
         <button
-          class="group mb-4 flex items-center text-sm  text-gray-800 shadow-sm hover:bg-opacity-90"
+          class="group mb-4 flex items-center text-sm text-gray-800 shadow-sm hover:bg-opacity-90"
           type="submit"
           @click="$emit('prevStep')"
         >
-        <ArrowLeftIcon class="w-3 mr-2  mx-auto text-gray-700" />
+          <ArrowLeftIcon class="mx-auto mr-2 w-3 text-gray-700" />
 
-          Volver
+          {{ $t('COMMON.BACK') }}
         </button>
-        <p class=" text-xl font-bold" v-text="'Datos de facturación'" />
+        <p class="text-xl font-bold" v-text="$t('COMMON.BILLING_DATA')" />
       </div>
-      <p class="mb-4 font-light" v-text="`Tienes ${cartStore.cart.length} productos en el carrito`" />
+      <p
+        class="mb-4 font-light"
+        v-text="
+          $t('PAGES.DESCRIPTION.PRODUCTS', {
+            total: cartStore.cart.length,
+          })
+        "
+      />
 
       <form class="flex flex-col gap-2">
         <TextFields
@@ -312,7 +313,7 @@ const formatTotal = computed(() => (cartStore.total ? decimalNumberFormat(cartSt
         />
 
         <section class="mt-4 border-t py-4" v-if="countryStore.country == 'Venezuela'">
-          <p class="mb-3 text-lg font-bold" v-text="'Dirección de envío'" />
+          <p class="mb-3 text-lg font-bold" v-text="$t('COMMON.SHIPPING_ADDRESS')" />
 
           <div class="mb-4">
             <img class="w-32" src="@/assets/images/zoom.png" />
@@ -326,7 +327,7 @@ const formatTotal = computed(() => (cartStore.total ? decimalNumberFormat(cartSt
             "
             isRequired
             class="mb-2 w-full"
-            :label="'Estado'"
+            :label="$t('COMMON.STATE')"
             :options="statesFormated"
             @update:modelValue="handleInputStates"
           />
@@ -339,7 +340,7 @@ const formatTotal = computed(() => (cartStore.total ? decimalNumberFormat(cartSt
             "
             isRequired
             :is-disabled="!dataForm.zoomState"
-            :label="'Oficina'"
+            :label="$t('COMMON.OFFICE')"
             :options="offiecesFormated"
             @update:modelValue="(_value) => (dataForm.zoomOffice = _value)"
           />
@@ -347,7 +348,7 @@ const formatTotal = computed(() => (cartStore.total ? decimalNumberFormat(cartSt
 
         <section class="mt-4 border-t py-4" v-else>
           <div class="mb-3 flex justify-between">
-            <p class="text-lg font-bold" v-text="'Dirección de envío'" />
+            <p class="text-lg font-bold" v-text="$t('BILLING.SHIPPING_ADDRESS')" />
 
             <img class="w-20" src="@/assets/images/ups.png" />
           </div>
@@ -440,8 +441,8 @@ const formatTotal = computed(() => (cartStore.total ? decimalNumberFormat(cartSt
               @click="setChoosenRate(rate)"
               :class="{ 'bg-gray-300': rate.objectId === selectedRateId }"
             >
-              <p><strong>Amount: </strong> ${{ rate.amount }}</p>
-              <p><strong>Días estimados: </strong> {{ rate.estimatedDays }}</p>
+              <p><strong>{{ t('BILLING.AMOUNT') }}: </strong> ${{ rate.amount }}</p>
+              <p><strong>{{ t('BILLING.DAYS') }}: </strong> {{ rate.estimatedDays }}</p>
             </div>
           </div>
         </section>
@@ -449,20 +450,20 @@ const formatTotal = computed(() => (cartStore.total ? decimalNumberFormat(cartSt
     </div>
 
     <div class="h-fit rounded-lg bg-gray-100 p-6">
-      <p class="text-xl font-bold" v-text="'Tu pedido'" />
-      <p class="mb-6 font-light" v-text="'Detalles'" />
+      <p class="text-xl font-bold" v-text="$t('COMMON.YOUR_ORDER')" />
+      <p class="mb-6 font-light" v-text="$t('COMMON.DETAILS')" />
 
       <ul class="order-details-form mb-6">
-        <li class="mb-4 flex justify-between border-b pb-2"><span class="font-bold">Product</span> <span class="font-bold">Total</span></li>
+        <li class="mb-4 flex justify-between border-b pb-2"><span class="font-bold">{{t('BILLING.PRODUCT')}}</span> <span class="font-bold">Total</span></li>
         <li v-for="(item, index) in cartStore.cart" :key="index" class="mb-4 flex justify-between border-b pb-2">
           <span class="" v-text="`${item.name} x ${item.quantity}`"></span>
           <p class="font-bold">${{ item.priceDiscount || item.price }}</p>
         </li>
         <li class="mb-4 flex justify-between border-b pb-2" v-if="countryStore.country == 'Venezuela'">
-          <span class="font-bold">Envío </span> <span class="font-bold text-blue-900">ZOOM</span>
+          <span class="font-bold">{{ $t('COMMON.SHIPPING') }} </span> <span class="font-bold text-blue-900">ZOOM</span>
         </li>
         <li class="mb-4 flex justify-between border-b pb-2" v-else>
-          <span class="font-bold">Envío </span>
+          <span class="font-bold"> {{ $t('COMMON.SHIPPING') }} </span>
           <span class="font-bold text-blue-900">$ {{ decimalNumberFormat(cartStore.shippingCost) }}</span>
         </li>
         <li class="mb-4 flex justify-between border-b pb-2">
@@ -497,7 +498,7 @@ const formatTotal = computed(() => (cartStore.total ? decimalNumberFormat(cartSt
       </ul>
 
       <section v-if="(countryStore.country != 'Venezuela' && choosenRate) || countryStore.country == 'Venezuela'">
-        <p class="mb-6 text-lg font-bold" v-text="'Método de pago'" />
+        <p class="mb-6 text-lg font-bold" v-text="$t('RESUME.METHOD_OF_PAYMENT')" />
         <div>
           <accordion hidden :title="''" v-if="countryStore.country == 'Venezuela'">
             <template #img> <img class="w-32" src="@/assets/images/banesco.png" /></template>
@@ -556,7 +557,7 @@ const formatTotal = computed(() => (cartStore.total ? decimalNumberFormat(cartSt
               :carrier="carrierObject"
             />
           </accordion>
-          <accordion :title="'Tarjeta de crédito'">
+          <accordion :title="$t('BILLING.CREDIT_CARD')">
             <Card
               @validate="validateForm"
               :validate-form="validateFormData"
@@ -571,7 +572,7 @@ const formatTotal = computed(() => (cartStore.total ? decimalNumberFormat(cartSt
           </accordion>
           <accordion :title="''">
             <template #img>
-              <p class="text-lg font-semibold" v-text="'Tarjeta '" />
+              <p class="text-lg font-semibold" v-text="$t('BILLING.CARD')" />
               <img class="ml-2 w-14 object-contain" src="@/assets/images/logo.png"
             /></template>
             <GiftCard
@@ -589,8 +590,8 @@ const formatTotal = computed(() => (cartStore.total ? decimalNumberFormat(cartSt
         </div>
       </section>
       <section v-else>
-        <p class="mb-6 text-lg font-bold" v-text="'Método de pago'" />
-        <div>Debe completar sus datos de envío y seleccionar una tarifa</div>
+        <p class="mb-6 text-lg font-bold" v-text="$t('STEP.PAYMENT')" />
+        <div>{{ $t('BILLING.SHIPPING_INFO') }}</div>
       </section>
     </div>
   </section>

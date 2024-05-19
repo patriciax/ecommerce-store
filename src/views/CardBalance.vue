@@ -1,14 +1,13 @@
 <script setup>
-import TextFields from '@/components/common/TextFields.vue'
-import { ref, computed } from 'vue'
 import Btn from '@/components/common/Btn.vue'
+import TextFields from '@/components/common/TextFields.vue'
 import Login from '@/components/views/home/auth/Login.vue'
 import Register from '@/components/views/home/auth/Register.vue'
 import _storeUser from '@/stores/user'
 import useVuelidate from '@vuelidate/core'
 import { email, required } from '@vuelidate/validators'
+import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { sendGiftCardBalance } from '@/api/repositories/giftCard.repository'
 
 const storeUser = _storeUser()
 const { t } = useI18n()
@@ -48,7 +47,6 @@ const send = async () => {
   if (!_validate) return
 
   //await sendGiftCardBalance()
-
 }
 </script>
 <template>
@@ -56,9 +54,7 @@ const send = async () => {
     <p class="mb-2 text-2xl font-bold text-gray-900" v-text="'Ver o gestionar tu pedido'" />
     <p
       class="mx-auto mb-10 max-w-xl"
-      v-text="
-        'Para verificar el estado de tu pedido o iniciar una devolución, ingresa tu número de pedido y dirección de correo electrónico.'
-      "
+      v-text="$t('PAYMENTS.GIFT_CARD_BALANCE')"
     />
 
     <section class="mx-auto max-w-xl text-start">
@@ -73,7 +69,7 @@ const send = async () => {
         name="order"
         class="mb-4"
         placeholder="1234566"
-        :label="'Número de tarjeta'"
+        :label="$t('PAYMENTS.CARD_NUMBER')"
       />
       <TextFields
         id="email-order"
@@ -87,13 +83,15 @@ const send = async () => {
       />
 
       <section class="mb-10">
-        <Btn text="Enviar" isFull @click="send" />
+        <Btn :text="$t('COMMON.SEND')" isFull @click="send" />
       </section>
 
       <p class="text-center">
-        Las devoluciones son gratuitas para los miembros de eRoca
-        <span @click="login = true" class="cursor-pointer font-bold text-gray-700 underline hover:text-gray-600">Iniciar sesión</span>
-        para comenzar una devolución gratuita.
+        {{ t('PAYMENTS.RETURNS_MEMBERSHIP') }}
+        <span @click="login = true" class="cursor-pointer font-bold text-gray-700 underline hover:text-gray-600">{{
+          t('LOGIN.LOGIN')
+        }}</span>
+        {{ t('PAYMENTS.RETURNS_MEMBERSHIP_2') }}
       </p>
     </section>
   </section>

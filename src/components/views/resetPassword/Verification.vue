@@ -24,7 +24,7 @@ const verifyCode = async () => {
   if (storeResetPass.isReady) {
     pushNotification({
       id: '',
-      title: 'Verificacion exitosa',
+      title: t('VERIFICATION.VERIFICATION_SUCCESS'),
       type: 'success',
     })
     emit('close')
@@ -32,7 +32,7 @@ const verifyCode = async () => {
   } else {
     pushNotification({
       id: '',
-      title: 'Codigo incorrecto',
+      title: t('VERIFICATION.VERIFICATION_ERROR'),
       type: 'error',
     })
   }
@@ -43,7 +43,7 @@ const resendCode = async () => {
 
   pushNotification({
     id: '',
-    title: 'Codigo reenviado',
+    title: t('VERIFICATION.RESEND'),
     type: 'success',
   })
 }
@@ -55,11 +55,11 @@ const resendCode = async () => {
     <div class="mx-auto flex w-full flex-col">
       <div class="mb-8 flex flex-col items-center justify-center space-y-2 text-center">
         <div class="text-2xl font-bold">
-          <h2>Verificacion de Email</h2>
+          <h2>{{ t('VERIFICATION.VERIFICATION_EMAIL') }}</h2>
         </div>
         <div class="flex flex-row text-sm font-medium text-gray-400">
           <p v-if="storeResetPass?.data">
-            Hemos enviado un código a su correo electrónico <b>{{ props.email }}</b>
+            {{ t('VERIFICATION.SEND_CODE') }} <b>{{ props.email }}</b>
           </p>
         </div>
       </div>
@@ -77,14 +77,14 @@ const resendCode = async () => {
               @click="verifyCode"
               class="mx-auto flex w-5/6 justify-center rounded-xl p-3 text-sm font-semibold leading-6 text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
             >
-              Verificar cuenta
+            {{ t('VERIFICATION.VERIFY_ACCOUNT') }}
             </button>
           </div>
 
           <div class="flex flex-row items-center justify-center space-x-1 text-center text-sm font-medium text-gray-500">
             <p v-text="'No ha recibido el código?'" />
             <!-- <p>Didn't recieve code?</p> -->
-            <p @click="resendCode" class="flex cursor-pointer flex-row items-center text-blue-600" rel="noopener noreferrer">Reenviar</p>
+            <p @click="resendCode" class="flex cursor-pointer flex-row items-center text-blue-600" rel="noopener noreferrer">{{ t('VERIFICATION.RESEND_CODE') }}</p>
           </div>
         </div>
       </div>
