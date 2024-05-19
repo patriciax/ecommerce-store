@@ -94,13 +94,13 @@ onMounted(async () => {
       </div>
       <img class="h-[450px] w-full bg-bottom object-cover" src="@/assets/images/bannergiftcard.webp" alt="" />
     </div>
-    <p class="mb-2 text-2xl font-bold text-gray-900" v-text="$t('COMMOM.BUY_ELECTRONIC_GIFTCARD')" />
-    <p class="mx-auto mb-10 max-w-xl" v-text="$t('COMMOM.GIFTCARD_DETAILS')" />
+    <p class="mb-2 text-2xl font-bold text-gray-900" v-text="$t('COMMON.BUY_ELECTRONIC_GIFTCARD')" />
+    <p class="mx-auto mb-10 max-w-xl" v-text="$t('COMMON.GIFTCARD_DETAILS')" />
 
     <section class="m-auto grid max-w-6xl gap-2 lg:grid-cols-2 xl:gap-10">
       <section class="col-span-2 mb-10 rounded-lg bg-gray-100 p-6 text-center" v-if="successPayment">
         <CheckCircleIcon class="mx-auto w-16 text-green-500" />
-        <p class="mb-1 text-xl font-bold text-gray-900" v-text="$t('COMMOM.THANKS_FOR_PURCHASE')" />
+        <p class="mb-1 text-xl font-bold text-gray-900" v-text="$t('COMMON.THANKS_FOR_PURCHASE')" />
         <p v-text="'Se ha enviado un correo electronico a al remitente de su tarjeta de regalo.'" />
    
         <section class="text-center">
@@ -116,7 +116,7 @@ onMounted(async () => {
           <span
             :class="{ 'text-red-500': handlerValidate?.['priceGift']?.$errors?.length > 0 }"
             class="mb-1 text-sm font-bold text-gray-900 dark:text-white"
-            >{{ $t('COMMOM.PRICE') }}:</span
+            >{{ $t('COMMON.PRICE') }}:</span
           >
           <ul class="mb-4 flex w-full flex-wrap gap-4">
             <li v-for="(item, index) in prices" :key="item">

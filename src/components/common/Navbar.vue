@@ -75,7 +75,7 @@ watch(
       <ul class="navigation relative mx-auto flex flex-wrap items-center justify-between py-2 lg:py-0">
         <label for="check" class="open-menu"><Bars3BottomLeftIcon class="w-6 text-gray-800" /></label>
 
-        <div class="ml-10 w-1/6 xl:ml-12">
+        <div class="ml-10 w-1/6">
           <RouterLink to="/">
             <img src="@/assets/images/logo.png" class="w-28" alt="">
           </RouterLink>

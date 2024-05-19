@@ -56,12 +56,26 @@
     "BUY_ELECTRONIC_GIFTCARD": "Buy electronic gift card",
     "GIFTCARD_DETAILS":"Gift card details",
     "THANKS_FOR_PURCHASE": "Thanks for your purchase",
-    "PRICE": "Price"
+    "PRICE": "Price",
+    "TEXT_OFFERS":"CLOTHING, SHOES AND ACCESSORIES OFFER: UP TO 40 % OFF",
+    "TEXT_OFFERS2":"Redo your look for less. Whether you're an avid athlete or looking for a cool street style, you'll find the best gear at the apparel and footwear sales.",
+    "CATEGORY": "Category",
+    "ERROR_DELETE_PRODUCT": "Error while deleting the product",
+    "SUCCESS_DELETE_PRODUCT": "Product deleted successfully"
   },
   "CART": {
     "ERROR": "Error while adding to cart",
     "SUCCESS": "Added to cart successfully",
     "SHOW": "Show cart"
+  },
+  "LOGIN": {
+    "LOGIN": "Login",
+    "RESET_PASSWORD": "Reset password",
+    "FORGOT_PASS": "Forgot your password?",
+    "ENTER": "Enter",
+    "SUCCESS": "Login successfully",
+    "UNAUTHORIZED": "Incorrect username or password",
+    "SESSION_EXPIRED": "Session expired, please log in again."
   },
   "VALIDATIONS": {
     "REQUIRED": "This field is required",
@@ -200,5 +214,21 @@
     "PASSWORD_NOT_MATCH": "Passwords do not match",
     "EMAIL_NOT_EXIST": "Email does not exist",
     "VERIFICATION_SEND": "Verification email sent to your email address"
+  },
+  "SEARCH":{
+    "TITLE":" Results for:",
+    "SEARCH_PRODUCT":"Search products...",
+    "RESULT_NOT_FOUND":"No results found for" 
+  },
+  "PROFILE":{
+    "TITLE":"Welcome to your profile",
+    "MYBUYS":" My purchases",
+    "MYPROFILE":"My profile",
+    "ORDER":"Order",
+    "DATE":"Date",
+    "STATUS":"Status",
+    "AMOUT":"Amount",
+    "VIEWDETAILS":"View details",
+    "PERSONAL_INFORMATION":"Personal information"
   }
 }

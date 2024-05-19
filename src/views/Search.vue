@@ -37,12 +37,6 @@ const removeCategory = (category) => {
   selectedCategories.value = selectedCategories.value.filter((c) => c._id !== category._id)
 }
 
-// const searchCategory = async () => {
-//   const selectedCategoryIds = selectedCategories.value.map((category) => category._id)
-
-//   await storeSearch.getSearch({ textSearch: router.currentRoute.value.params.search, categories: selectedCategoryIds })
-// }
-
 const searchPrice = async () => {
   const selectedCategoryIds = selectedCategories.value.map((category) => category._id)
   await storeSearch.getSearch({ textSearch: router.currentRoute.value.params.search,categories: selectedCategoryIds }, priceMax.value, priceMin.value)
@@ -59,7 +53,7 @@ watch(
     <section class="flex gap-9">
       <section class="w-96">
         <p class="mb-4 mr-8 max-w-4xl text-xl font-bold text-gray-900">
-          Resultados para:
+          {{ $t('SEARCH.TITLE') }}
           <span>"{{ router.currentRoute.value.params.search }}"</span>
         </p>
         <InputSearch
@@ -68,12 +62,12 @@ watch(
           id="search"
           v-model="filter"
           name="Search"
-          :placeholder="'Buscar productos...'"
+          :placeholder="$t('SEARCH.SEARCH_PRODUCT')"
           @clear="filter = ''"
         />
 
         <section>
-          <p v-text="'Categorias'" class="text-gray-900' mb-4 border-b pb-2 text-xl font-bold" />
+          <p v-text="$t('COMMON.CATEGORY')" class="text-gray-900' mb-4 border-b pb-2 text-xl font-bold" />
           <div class="max-h-64 overflow-y-auto">
             <button
               @click="selectCategory({ name: finalCategory?.name, englishName: finalCategory?.englishName, _id: finalCategory?._id })"
@@ -95,19 +89,17 @@ watch(
               <span @click="removeCategory(category)">x</span>
             </button>
           </div>
-          <!-- <button v-if="selectedCategories.length" class="mt-4 rounded-md bg-gray-900 px-3 py-1.5 text-white" @click="searchCategory">
-            Buscar por categoria
-          </button> -->
+       
         </section>
 
         <section class="mt-6">
-          <p v-text="'Precio'" class="text-gray-900' text-md mb-4 border-b pb-2 font-bold" />
+          <p v-text="$t('FORM.PRICE')" class="text-gray-900' text-md mb-4 border-b pb-2 font-bold" />
           <section class="flex items-center justify-center">
             <TextFields label=" " type="number" placeholder="$10" v-model="priceMin" />
             <span class="mx-2" v-text="'-'" />
             <TextFields label=" " type="number" placeholder="$500" v-model="priceMax" />
           </section>
-          <button class="mt-6 w-full rounded-md bg-gray-800 px-3 py-1.5 text-white" @click="searchPrice">Buscar</button>
+          <button class="mt-6 w-full rounded-md bg-gray-800 px-3 py-1.5 text-white" @click="searchPrice">{{ $t('COMMON.SEARCH') }}</button>
         </section>
       </section>
 
@@ -117,7 +109,7 @@ watch(
         </template>
 
         <section v-else-if="!storeSearch.search?.length" class="col-span-full flex flex-col items-center justify-center rounded-lg bg-gray-100">
-          <p v-text="'No se encuentran resultados para:'" class="text-2xl font-bold text-gray-900" />
+          <p v-text="`${$t('SEARCH.RESULT_NOT_FOUND')}:`" class="text-2xl font-bold text-gray-900" />
           <p class="text-2xl">"{{ router.currentRoute.value.params.search }}"</p>
         </section>
 

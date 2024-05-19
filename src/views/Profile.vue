@@ -29,20 +29,20 @@ const formatDateTime = (dateString) => {
   <section class="min-h-[80vh]">
     <p class="text-center text-lg font-bold text-gray-900">
       <span class="text-gray-500">Hello, {{ `${storeUser.currentUser?.name} ${storeUser.currentUser?.lastname ?? ''}` }}</span> <br />
-      Welcome to your Profile
+      {{ $t('PROFILE.TITLE') }}
     </p>
     <div class="my-8 text-center">
       <button
         @click="(orderInfo = true), (personalInfo = false)"
         class="mb-1 mr-6 rounded-lg bg-gray-900 p-2 px-4 text-base font-bold text-white"
       >
-        Mis Compras
+       {{ $t('PROFILE.MYBUYS') }}
       </button>
       <button
         @click="(orderInfo = false), (personalInfo = true)"
         class="rounded-lg bg-gray-100 p-2 px-4 text-base font-bold text-gray-900 hover:bg-gray-900 hover:text-white"
       >
-        My Profile
+       {{ $t('PROFILE.MYPROFILE') }}
       </button>
     </div>
     <section class="flex justify-center gap-10">
@@ -52,10 +52,10 @@ const formatDateTime = (dateString) => {
             <table class="w-full text-left text-sm text-gray-500 dark:text-gray-400">
               <tbody>
                 <tr class="text-qgray default-border-bottom whitespace-nowrap border-b px-2 text-base">
-                  <td class="block whitespace-nowrap py-4 text-center">Order</td>
-                  <td class="whitespace-nowrap py-4 text-center">Date</td>
-                  <td class="whitespace-nowrap py-4 text-center">Status</td>
-                  <td class="whitespace-nowrap py-4 text-center">Amount</td>
+                  <td class="block whitespace-nowrap py-4 text-center">{{ $t('PROFILE.ORDER') }}</td>
+                  <td class="whitespace-nowrap py-4 text-center">{{ $t('PROFILE.DATE') }}</td>
+                  <td class="whitespace-nowrap py-4 text-center">{{ $t('PROFILE.STATUS') }}</td>
+                  <td class="whitespace-nowrap py-4 text-center">{{ $t('PROFILE.AMOUT') }}</td>
                   <!-- <td class="whitespace-nowrap py-4 text-center">Action</td> -->
                 </tr>
                 <tr class="border-b bg-white hover:bg-gray-50" v-for="(item , index) in storeInvoices.invoice" :key="index">
@@ -64,7 +64,7 @@ const formatDateTime = (dateString) => {
                   <td class="px-2 py-4 text-center"><span class="rounded bg-green-100 p-2 text-sm text-green-500">{{ item.payment.status }}</span></td>
                   <td class="px-2 py-4 text-center"><p class="text-qblack whitespace-nowrap px-2 text-base">${{ item.payment.total }}</p></td>
                   <td class="py-4 text-center">
-                    <button type="button" class="bg-gray-400 text-white rounded-lg h-[46px] w-[116px] font-bold">View Details</button>
+                    <button type="button" class="bg-gray-400 text-white rounded-lg h-[46px] w-[116px] font-bold">{{ $t('PROFILE.VIEWDETAILS') }}</button>
                   </td>
                 </tr>
               </tbody>
@@ -73,25 +73,25 @@ const formatDateTime = (dateString) => {
         </div>
         <div v-if="personalInfo" class="dashboard-info flex max-w-3xl items-center justify-between rounded-lg bg-gray-100 px-7 py-7">
           <div class="">
-            <p class="title text-[22px] font-semibold">Parsonal Information</p>
+            <p class="title text-[22px] font-semibold">{{ $t('PROFILE.PERSONALINFORMATION') }}</p>
             <div class="mt-5">
               <table>
                 <tr class="mb-5 inline-flex">
-                  <td class="text-qgraytwo block w-[100px] text-base"><div>Name:</div></td>
+                  <td class="text-qgraytwo block w-[100px] text-base"><div>{{ $t('FORM.NAME') }}:</div></td>
                   <td class="text-qblack text-base font-medium">
                     {{ `${storeUser.currentUser?.name} ${storeUser.currentUser?.lastname ?? ''}` }}
                   </td>
                 </tr>
                 <tr class="mb-5 inline-flex">
-                  <td class="text-qgraytwo block w-[100px] text-base"><div>Email:</div></td>
+                  <td class="text-qgraytwo block w-[100px] text-base"><div>{{ $t('FORM.EMAIL') }}:</div></td>
                   <td class="text-qblack text-base font-medium">{{ storeUser.currentUser?.email }}</td>
                 </tr>
                 <tr class="mb-5 inline-flex">
-                  <td class="text-qgraytwo block w-[100px] text-base"><div>Phone:</div></td>
+                  <td class="text-qgraytwo block w-[100px] text-base"><div>{{ $t('FORM.PHONE') }}:</div></td>
                   <td class="text-qblack text-base font-medium">{{ storeUser.currentUser?.phone }}</td>
                 </tr>
                 <tr class="mb-5 inline-flex">
-                  <td class="text-qgraytwo block w-[100px] text-base"><div>Addres:</div></td>
+                  <td class="text-qgraytwo block w-[100px] text-base"><div>{{ $t('FORM.ADDRESS') }}:</div></td>
                   <td class="text-qblack text-base font-medium">{{ storeUser.currentUser?.address }}</td>
                 </tr>
               </table>

@@ -37,18 +37,18 @@ let dateFormatted = `${day} de ${meses[month - 1]} de ${year}`
   <section>
     <p
       class="mb-10 text-center text-2xl font-bold"
-      v-text="$t('COMMOM.RESUME.FINAL_DETAILS_ORDER') +' #' + storePaymentMethods?._data?.invoice?.transactionOrder"
+      v-text="$t('COMMON.RESUME.FINAL_DETAILS_ORDER') +' #' + storePaymentMethods?._data?.invoice?.transactionOrder"
     />
     <div class="text-md mb-6 items-center gap-1 border-b border-gray-900 pb-6 text-base font-bold text-gray-900">
-      <p><strong>{{ $t('COMMOM.RESUME.ORDER_PLACED') }}:</strong> {{ dateFormatted }}</p>
-      <p><strong>{{ $t('COMMOM.RESUME.ORDER_NUMBER_ROCK') }}:</strong> {{ storePaymentMethods?._data?.invoice?.transactionOrder }}</p>
-      <p><strong>{{ $t('COMMOM.RESUME.ORDER_TOTAL') }}:</strong> ${{ total }}</p>
+      <p><strong>{{ $t('COMMON.RESUME.ORDER_PLACED') }}:</strong> {{ dateFormatted }}</p>
+      <p><strong>{{ $t('COMMON.RESUME.ORDER_NUMBER_ROCK') }}:</strong> {{ storePaymentMethods?._data?.invoice?.transactionOrder }}</p>
+      <p><strong>{{ $t('COMMON.RESUME.ORDER_TOTAL') }}:</strong> ${{ total }}</p>
     </div>
 
     <section>
       <div class="mb-6 flex justify-between">
-        <p class="text-lg font-bold" v-text="$t('COMMOM.RESUME.PRODUCTS_PURCHASED')" />
-        <p class="text-lg font-bold" v-text="$t('COMMOM.RESUME.PRICE')" />
+        <p class="text-lg font-bold" v-text="$t('COMMON.RESUME.PRODUCTS_PURCHASED')" />
+        <p class="text-lg font-bold" v-text="$t('COMMON.RESUME.PRICE')" />
       </div>
 
       <div v-for="(item, index) in storePaymentMethods?._data?.cart" :key="index">
@@ -82,40 +82,40 @@ let dateFormatted = `${day} de ${meses[month - 1]} de ${year}`
     </section>
 
     <section class="border-t border-gray-900 pb-6">
-      <p class="mb-10 mt-6 text-center text-2xl font-bold" v-text="$t('COMMOM.RESUME.PAYMENT_INFORMATION')" />
+      <p class="mb-10 mt-6 text-center text-2xl font-bold" v-text="$t('COMMON.RESUME.PAYMENT_INFORMATION')" />
 
       <section class="grid lg:grid-cols-2 gap-10 lg:gap-32">
         <section>
           <div class="mb-4">
-            <p class="text-lg font-bold" v-text="$t('COMMOM.RESUME.METHOD_OF_PAYMENT')+':'" />
+            <p class="text-lg font-bold" v-text="$t('COMMON.RESUME.METHOD_OF_PAYMENT')+':'" />
             <p class="text-lg capitalize" v-text="storePaymentMethods?.paymentMethod" />
           </div>
 
           <div>
-            <p class="text-lg font-bold" v-text="$t('COMMOM.RESUME.BILLING_ADDRESS')+':'" />
+            <p class="text-lg font-bold" v-text="$t('COMMON.RESUME.BILLING_ADDRESS')+':'" />
             <p class="capitalize" v-text="storePaymentMethods?._data?.invoice?.carrier?.address" />
           </div>
 
           <div v-if="storePaymentMethods?._data?.invoice?.shippingTracking">
-            <p class="text-lg font-bold" v-text="$t('COMMOM.RESUME.TRACKING_NUMBER')+':'" />
+            <p class="text-lg font-bold" v-text="$t('COMMON.RESUME.TRACKING_NUMBER')+':'" />
             <p class="capitalize" v-text="storePaymentMethods?._data?.invoice?.shippingTracking" />
           </div>
         </section>
         <div>
           <div class="mb-2 flex justify-between">
-            <p class="text-lg" v-text="$t('COMMOM.RESUME.PRODUCTS')+':'" />
+            <p class="text-lg" v-text="$t('COMMON.RESUME.PRODUCTS')+':'" />
             <p class="text-lg capitalize" v-text="'$' + total" />
           </div>
           <div class="mb-2 flex justify-between">
-            <p class="text-lg" v-text="$t('COMMOM.RESUME.SHIPPING')+':'" />
+            <p class="text-lg" v-text="$t('COMMON.RESUME.SHIPPING')+':'" />
             <p class="text-lg capitalize" v-text="'$' + cartStore.shippingCost" />
           </div>
           <div class="mb-6 flex justify-between">
-            <p class="text-lg" v-text="$t('COMMOM.RESUME.IVA')+':'" />
+            <p class="text-lg" v-text="$t('COMMON.RESUME.IVA')+':'" />
             <p class="text-lg capitalize" v-text="'$'+decimalNumberFormat(justTax(cartStore.total))" />
           </div>
           <div class="mb-4 flex justify-between font-bold">
-            <p class="text-lg font-bold" v-text="$t('COMMOM.RESUME.TOTAL_INCLUDING_TAX')+':'" />
+            <p class="text-lg font-bold" v-text="$t('COMMON.RESUME.TOTAL_INCLUDING_TAX')+':'" />
             <p
               class="text-lg font-bold capitalize"
               v-text="

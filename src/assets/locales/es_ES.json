@@ -56,7 +56,13 @@
     "BUY_ELECTRONIC_GIFTCARD": "Comprar tarjeta de regalo electronica",
     "GIFTCARD_DETAILS":"Escribe los detalles de la tarjeta de regalo",
     "THANKS_FOR_PURCHASE": "Gracias por tu compra",
-    "PRICE": "Importe"
+    "PRICE": "Importe",
+    "TEXT_OFFERS":"OFERTA DE ROPA, ZAPATOS Y ACCESORIOS: HASTA UN 40 % DE DESCUENTO",
+    "TEXT_OFFERS2":"Rehace tu look por menos. Si eres un atleta ávido o buscas un estilo urbano fresco, encontrarás el mejor equipo en las rebajas de ropa y calzado",
+    "CATEGORY": "Categorias",
+    "ERROR_DELETE_PRODUCT": "Error al eliminar el producto",
+    "SUCCESS_DELETE_PRODUCT": "Eliminado correctamente"
+
   },
 
   "CART": {
@@ -211,5 +217,21 @@
     "PASSWORD_NOT_MATCH": "Las contraseñas no coinciden",
     "EMAIL_NOT_EXIST": "El correo no existe",
     "VERIFICATION_SEND": "Verificación enviada a su correo electrónico"
+  },
+  "SEARCH":{
+    "TITLE":" Resultados para:",
+    "SEARCH_PRODUCT":"Buscar productos...",
+    "RESULT_NOT_FOUND":"No se encuentran resultados para" 
+  },
+  "PROFILE":{
+    "TITLE":"Bienvendios a tu perfil",
+    "MYBUYS":" Mis Compras",
+    "MYPROFILE":"Mi perfil",
+    "ORDER":"Orden",
+    "DATE":"Fecha",
+    "STATUS":"Estado",
+    "AMOUT":"Precio",
+    "VIEWDETAILS":"Ver detalles",
+    "PERSONAL_INFORMATION":"Información personal"
   }
 }

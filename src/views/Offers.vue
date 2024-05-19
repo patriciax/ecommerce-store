@@ -25,7 +25,7 @@ onMounted(async () => {
         </router-link>
         <li>
           <div class="flex items-center">
-            <div class="mr-2 text-sm font-medium text-gray-900">{{ $t('COMMOM.HOME') }}</div>
+            <div class="mr-2 text-sm font-medium text-gray-900">{{ $t('COMMON.HOME') }}</div>
             <svg width="16" height="20" viewBox="0 0 16 20" fill="currentColor" aria-hidden="true" class="h-5 w-4 text-gray-300">
               <path d="M5.697 4.34L8.98 16.532h1.327L7.025 4.341H5.697z" />
             </svg>
@@ -33,15 +33,15 @@ onMounted(async () => {
         </li>
         <li>
           <div class="flex items-center">
-            <div class="mr-2 text-sm font-medium text-gray-900">{{ $t('COMMOM.OFFERS') }}</div>
+            <div class="mr-2 text-sm font-medium text-gray-900">{{ $t('COMMON.OFFERS') }}</div>
           </div>
         </li>
       </ol>
     </nav>
-    <p class="mt-6 text-2xl font-bold" v-text="$t('COMMOM.TEXT_OFFERS')" />
+    <p class="mt-6 text-2xl font-bold" v-text="$t('COMMON.TEXT_OFFERS')" />
     <p
       class="mb-14 max-w-2xl font-light"
-      v-text="$t('COMMOM.TEXT_OFFERS2')"
+      v-text="$t('COMMON.TEXT_OFFERS2')"
     />
 
     <section class="relative mb-10 grid grid-cols-1 gap-2 sm:grid-cols-2 sm:gap-8 lg:grid-cols-3 xl:grid-cols-4">

@@ -19,14 +19,14 @@ const removeItem = async (item) => {
     if (cartStore.isError) {
       pushNotification({
         id: '',
-        title: 'Error al eliminar el producto. ',
+        title: t('COMMON.ERROR_DELETE_PRODUCT'),
         type: 'error',
       })
     }
     if (cartStore.isReady) {
       pushNotification({
         id: '',
-        title: 'Producto eliminado del carrito. ',
+        title: t('COMMON.SUCCESS_DELETE_PRODUCT'),
         type: 'success',
       })
     }
@@ -130,7 +130,7 @@ onMounted(async () => {
       type="submit"
       @click="$emit('nextStep')"
     >
-{{$t('COMMON.CONTINUE')}}
+      {{ $t('COMMON.CONTINUE') }}
     </button>
   </div>
 </template>
