@@ -68,6 +68,8 @@ watch(
     if (restorePassStore.login) login.value = true
   }
 )
+
+
 </script>
 <template>
   <header>
@@ -88,11 +90,12 @@ watch(
             class="menu m-auto flex lg:gap-4 [&>li>a]:relative [&>li>a]:text-center [&>li>a]:text-lg [&>li>a]:font-medium [&>li>a]:transition [&>li>a]:duration-200 [&>li>a]:ease-in-out"
           >
             <li class="group inline-block" v-for="mainCategory in mainCategories">
-              <button class="h-full border-b-4 border-transparent p-3 uppercase hover:border-b-4 hover:border-gray-900">
+              
+              <button class="md:h-full w-full border-b-4 border-transparent p-3 uppercase hover:border-b-4 hover:border-gray-900">
                 <!---CATEGORIA PADRE------>
                 <h4>{{ $i18n.locale.toLowerCase() == 'es_es' ? mainCategory?.name : mainCategory?.englishName }}</h4>
               </button>
-              <ul class="absolute left-0 hidden w-full border-y bg-gray-100 text-gray-800 ring-0 group-hover:block">
+              <ul class="md:absolute left-0 hidden w-full border-y bg-transparent lg:bg-gray-100 text-white lg:text-gray-800 ring-0 group-hover:block">
                 <div class="m-auto mx-auto grid max-w-screen-xl px-4 py-5 text-sm dark:text-gray-400 md:grid-cols-6 md:px-6">
                   <ul
                     v-for="subCategory in subCategories.filter((category) => category.parent_id == mainCategory._id)"
@@ -107,6 +110,7 @@ watch(
                     </li>
                     <li class="flex flex-col gap-2 text-sm">
                       <!---ITEMS DE SUBCATEGORIA------>
+
                       <router-link
                         v-for="finalCategory in finalCategories.filter((category) => category.parent_id == subCategory._id)"
                         :to="{
@@ -118,7 +122,12 @@ watch(
                           },
                         }"
                         class="hover:underline"
-                        >{{ $i18n.locale.toLowerCase() == 'es_es' ? finalCategory?.name : finalCategory?.englishName }}</router-link
+                        >
+
+                        
+                        {{ $i18n.locale.toLowerCase() == 'es_es' ? finalCategory?.name : finalCategory?.englishName }}
+
+                        </router-link
                       >
                     </li>
                   </ul>
