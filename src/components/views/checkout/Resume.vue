@@ -14,7 +14,7 @@ const cartStore = CartStore()
 const total = computed(() => {
   let total = 0
   storePaymentMethods?._data?.cart?.forEach((item) => {
-    total += item.priceDiscount || item.price * item.quantity
+    total += (item.priceDiscount || item.price) * item.quantity
   })
   return total
 })

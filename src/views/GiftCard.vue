@@ -15,8 +15,11 @@ import useVuelidate from '@vuelidate/core'
 import { email, required } from '@vuelidate/validators'
 import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
+import ProductStore from '@/stores/product'
+import { decimalNumberFormat } from '@/utils/numberFormat'
 
 const countryStore = CountryStore()
+const productStore = ProductStore()
 const { t } = useI18n()
 const login = ref(false)
 const register = ref(false)
@@ -73,9 +76,11 @@ const validateForm = async (paymentMethod) => {
 }
 
 const handleBack = () => {
+  handlerValidate.value.$reset()
   successPayment.value = false
 }
 onMounted(async () => {
+  await productStore.getPrice()
   const response = await getPrice()
   if (response?.status === 'success') prices.value = response.data.giftCards
   dataForm.value.priceGift = prices.value[0].amount
@@ -136,6 +141,7 @@ onMounted(async () => {
               >
                 <div class="block">
                   <div class="w-full text-sm font-semibold">US $ {{ item.amount }}</div>
+                  <div v-if="countryStore.country == 'Venezuela'" class="w-full text-[10px] font-semibold">Bs. {{ decimalNumberFormat(item.amount * productStore.price) }}</div>
                 </div>
 
                 <GiftIcon class="h-5 w-5" />
@@ -240,7 +246,7 @@ onMounted(async () => {
                     message: dataForm.message,
                     date: dataForm.date,
                   }"
-                  @nextStep="successPayment = true"
+                  @nextStep="successPayment = true; dataForm.emailTo = ''; dataForm.name = ''; dataForm.message = ''"
                   endpoint="gift-cards/purchase"
                 />
               </Accordion>
@@ -249,7 +255,7 @@ onMounted(async () => {
                 <Paypal
                   @validate="validateForm"
                   :validate-form="validateFormData"
-                  @nextStep="successPayment = true"
+                  @nextStep="successPayment = true; dataForm.emailTo = ''; dataForm.name = ''; dataForm.message = ''"
                   endpoint="gift-cards/purchase"
                   :isCard="true"
                   :card="{
@@ -267,7 +273,7 @@ onMounted(async () => {
                   :validate-form="validateFormData"
                   @validate="validateForm"
                   endpoint="gift-cards/purchase"
-                  @nextStep="successPayment = true"
+                  @nextStep="successPayment = true; dataForm.emailTo = ''; dataForm.name = ''; dataForm.message = ''"
                   :paymentMethod="'zelle'"
                   isCard
                   :card="{
@@ -283,7 +289,7 @@ onMounted(async () => {
                 <Card
                   @validate="validateForm"
                   :validate-form="validateFormData"
-                  @nextStep="successPayment = true"
+                  @nextStep="successPayment = true; dataForm.emailTo = ''; dataForm.name = ''; dataForm.message = ''"
                   endpoint="gift-cards/purchase"
                   :isCard="true"
                   :card="{
@@ -300,7 +306,7 @@ onMounted(async () => {
                   :validate-form="validateFormData"
                   @validate="validateForm"
                   endpoint="gift-cards/purchase"
-                  @nextStep="successPayment = true"
+                  @nextStep="successPayment = true; dataForm.emailTo = ''; dataForm.name = ''; dataForm.message = ''"
                   isCard
                   :card="{
                     total: dataForm.priceGift,
