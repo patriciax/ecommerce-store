@@ -6,6 +6,7 @@ import InputPhoneNumber from '@/components/common/InputPhoneNumber.vue'
 import SelectField from '@/components/common/SelectField.vue'
 import TextFields from '@/components/common/TextFields.vue'
 import Banesco from '@/components/paymentMethods/Banesco.vue'
+import Mercantil from '@/components/paymentMethods/Mercantil.vue'
 import Card from '@/components/paymentMethods/Card.vue'
 import GiftCard from '@/components/paymentMethods/GiftCard.vue'
 import Paypal from '@/components/paymentMethods/Paypal.vue'
@@ -544,6 +545,22 @@ const formatTotal = computed(() => (cartStore.total ? decimalNumberFormat(cartSt
               :email="dataForm.email"
               :phone="dataForm.phone"
               :carrier="carrierObject"
+            />
+          </accordion>
+
+          <accordion hidden :title="''" v-if="countryStore.country == 'Venezuela'">
+            <template #img> <img class="w-32" src="@/assets/images/banesco.png" /></template>
+            <Mercantil 
+              @validate="validateForm"
+              :validate-form="validateFormData"
+              :cart="cartStore.cart"
+              :userIdentification="dataForm.identification"
+              :name="dataForm.name"
+              :email="dataForm.email"
+              :phone="dataForm.phone"
+              @nextStep="handlePay('Mercantil')"
+              :carrier="carrierObject"
+              :carrierRate="choosenRate"
             />
           </accordion>
 

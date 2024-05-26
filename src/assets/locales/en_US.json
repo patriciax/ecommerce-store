@@ -61,7 +61,8 @@
     "TEXT_OFFERS2":"Redo your look for less. Whether you're an avid athlete or looking for a cool street style, you'll find the best gear at the apparel and footwear sales.",
     "CATEGORY": "Category",
     "ERROR_DELETE_PRODUCT": "Error while deleting the product",
-    "SUCCESS_DELETE_PRODUCT": "Product deleted successfully"
+    "SUCCESS_DELETE_PRODUCT": "Product deleted successfully",
+    "SOMETHING_WENT_WRONG": "Something went wrong"
   },
   "CART": {
     "ERROR": "Error while adding to cart",
@@ -152,7 +153,12 @@
     "RETURNS_MEMBERSHIP_2": "to start a free return.",
     "GIFT_CARD_BALANCE": "To check the status of your order or initiate a return, enter your order number and email address.",
     "ZIP_CODE": "Zip code",
-    "EMPTY_UPS": "La dirección no pudo ser encontrada"
+    "EMPTY_UPS": "Address not found",
+    "ACCOUNT_TYPE": "Account type",
+    "PAY": "Pay",
+    "GET_SMS_CODE": "Get SMS code",
+    "RESEND_SMS_CODE": "Resend SMS code",
+    "CODE_SENT": "Code sent"
   },
   "FOOTER": {
     "CUSTOMER_SERVICE": "Custumer service",

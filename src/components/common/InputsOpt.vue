@@ -70,16 +70,21 @@ const updateCodeValue = () => {
     emit('update:modelValue', '')
   }
 }
+
 </script>
 
 <template>
-  <section class="relative grid grid-cols-6 gap-x-2 lg:gap-x-4">
+  <section class="relative grid gap-x-2 lg:gap-x-2" :class="`grid-cols-${props.codeLength}`">
     <input
       v-for="(item, index) in props.codeLength"
       :key="index"
-      :class="props.errorMessage ? 'border border-red-500  dark:border-red-500 ' : ''"
+      :class="[
+        props.errorMessage ? 'border border-red-500  dark:border-red-500 ' : '',
+        props.codeLength == 6 ? 'w-12' : 'w-10',
+        props.codeLength == 6 ? 'h-12' : 'h-10',
+      ]"
       :value="code[index]"
-      class="block h-12 w-12 rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-center text-sm text-gray-900 outline-none dark:border-gray-600 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+      class="block rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-center text-sm text-gray-900 outline-none dark:border-gray-600 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
       placeholder="0"
       maxlength="1"
       :disabled="props.isDisabled"

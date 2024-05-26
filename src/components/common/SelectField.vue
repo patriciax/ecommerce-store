@@ -67,6 +67,9 @@ const handleChange = (_event) => {
         >{{ label }} <span v-if="isRequired" class="text-red-500">*</span>
       </label>
     </div>
+    <div v-else class="h-5">
+
+    </div>
     <select
       :id="id"
       :name="props.name"
@@ -86,7 +89,7 @@ const handleChange = (_event) => {
     </select>
     <ChevronDownIcon
       class="text-midgray peer pointer-events-none absolute right-2 w-5 rotate-0 transition-all"
-      :class="{ 'top-[27%]': hiddenLabel, 'top-[52%]': !hiddenLabel, 'rotate-180': isOpen }"
+      :class="{ 'top-7': hiddenLabel, 'top-[52%]': !hiddenLabel, 'rotate-180': isOpen }"
     />
 
     <p v-if="props.errorMessage" class="absolute right-0 mt-0.5 text-xs font-medium text-red-500" v-text="props.errorMessage" />

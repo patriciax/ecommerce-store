@@ -71,12 +71,12 @@ const goToProduct = (slug: any) => router.push({ name: 'singleProduct', params: 
     </div>
     <section class="flex w-full items-center justify-between text-base">
       <div class="w-full">
-        <p class="truncate-wrap truncate-wrap__lines truncate-wrap__lines_2 mb-1" v-text="locale === 'en_US' ? props.data.nameEnglish : props.data.name" />
-        <p class="text-xl font-bold flex items-center" >
+        <p class="truncate-wrap truncate-wrap__lines truncate-wrap__lines_2 mb-1" v-text="locale === 'en_US' ? props.data.nameEnglish : props.data.name"/>
+        <div class="text-xl font-bold flex items-center" >
           <p v-if="props.data.priceDiscount" class="line-through text-sm mr-2">${{ props.data.price }}</p>
           <p>${{ props.data.priceDiscount ? props.data.priceDiscount : props.data.price }}</p>
           <span v-if="productStore.price" class="font-sans text-sm text-gray-500 ml-2 "> Bs.{{ (productStore.price * (props.data.priceDiscount ? props.data.priceDiscount : props.data.price)).toLocaleString() }}</span>
-        </p>
+        </div>
       </div>
       <Btn color="cart"  with-icon @click="goToProduct(props.data.slug)">
         <template #icon>

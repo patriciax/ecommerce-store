@@ -12,5 +12,10 @@ export default {
           },
       },
     },
+    safelist: [
+      {
+        pattern: /grid-cols-./,
+      }
+    ],
     plugins: [],
   }

@@ -16,6 +16,10 @@ const props = defineProps({
   isRequired: {
     type: Boolean,
   },
+  useMinDate: {
+    default: true,
+    type: Boolean,
+  }
 })
 
 const emit = defineEmits(['changedDate'])
@@ -25,16 +29,6 @@ const handleDate = (modelData) => {
   emit('changedDate', modelData)
 }
 
-const minDate = computed(() => {
-  // Obtiene la fecha actual
-  const fechaActual = new Date()
-
-  // Obtiene el año y el mes del mes anterior
-  const year = fechaActual.getFullYear()
-  const month = fechaActual.getMonth() - 1 // Resta 1 al mes actual
-
-  return new Date()
-})
 </script>
 
 <template>
@@ -49,7 +43,7 @@ const minDate = computed(() => {
       v-model="date"
       month-picker
       @update:model-value="handleDate"
-      :min-date="`${new Date().getFullYear()}-${new Date().getMonth() + 2}-01`"
+      :min-date="props.useMinDate ? `${new Date().getFullYear()}-${new Date().getMonth() + 2}-01` : undefined"
       auto-apply
     />
     <div>
