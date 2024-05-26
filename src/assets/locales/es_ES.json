@@ -61,8 +61,8 @@
     "TEXT_OFFERS2":"Rehace tu look por menos. Si eres un atleta ávido o buscas un estilo urbano fresco, encontrarás el mejor equipo en las rebajas de ropa y calzado",
     "CATEGORY": "Categorias",
     "ERROR_DELETE_PRODUCT": "Error al eliminar el producto",
-    "SUCCESS_DELETE_PRODUCT": "Eliminado correctamente"
-
+    "SUCCESS_DELETE_PRODUCT": "Eliminado correctamente",
+    "SOMETHING_WENT_WRONG": "Algo ha ido mal"
   },
 
   "CART": {
@@ -139,8 +139,8 @@
   },
   "ACTIONS": {},
   "PAYMENTS": {
-    "CARD_HOLDER": "Nombre del titular de la tarjeta",
-    "CARD_HOLDER_ID": "Cédula del titular de la tarjeta",
+    "CARD_HOLDER": "Nombre del titular",
+    "CARD_HOLDER_ID": "Cédula del titular",
     "CARD_NUMBER": "Número de tarjeta",
     "CVC": "CVC",
     "EXPIRATION_DATE": "Fecha de expiración",
@@ -154,7 +154,12 @@
     "RETURNS_MEMBERSHIP_2": "para comenzar una devolución gratuita.",
     "GIFT_CARD_BALANCE":"Para verificar el estado de tu pedido o iniciar una devolución, ingresa tu número de pedido y dirección de correo electrónico.",
     "ZIP_CODE": "Código postal",
-    "EMPTY_UPS": "La dirección no pudo ser encontrada"
+    "EMPTY_UPS": "La dirección no pudo ser encontrada",
+    "ACCOUNT_TYPE": "Tipo de cuenta",
+    "PAY": "Pagar",
+    "GET_SMS_CODE": "Código SMS",
+    "RESEND_SMS_CODE": "Reenviar código SMS",
+    "CODE_SENT": "Código enviado"
   },
   "FOOTER": {
     "CUSTOMER_SERVICE": "Servicio al cliente",

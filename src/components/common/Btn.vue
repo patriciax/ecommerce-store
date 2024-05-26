@@ -49,6 +49,10 @@ const props = defineProps({
     default: false,
     type: Boolean,
   },
+  type: {
+    default: 'submit',
+    type: String,
+  }
 })
 
 const classBtn = computed(() => {
@@ -59,7 +63,7 @@ const classBtn = computed(() => {
 })
 </script>
 <template>
-  <button :class="classBtn" :disabled="props.isDisabled || props.isLoading">
+  <button :class="classBtn" :disabled="props.isDisabled || props.isLoading" :type="props.type">
     <template v-if="props.isLoading">
       <span class="loadingBtn" v-text="$t('COMMON.LOADING')" />
     </template>

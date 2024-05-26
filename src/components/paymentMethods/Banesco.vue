@@ -76,7 +76,7 @@ const completePay = async() => {
         cardHolderId: dataPayment.value.document,
         cardNumber: dataPayment.value.cardNumber,
         cvc: dataPayment.value.cvc,
-        expirationDate: `${dataPayment.value.date.month < 10 ? `0${dataPayment.value.date.month}` : dataPayment.value.date.month}/${dataPayment.value.date.year}`,
+        expirationDate: `${dataPayment.value.date.month < 10 ? `0${dataPayment.value.date.month + 1}` : dataPayment.value.date.month}/${dataPayment.value.date.year}`,
       }
 
       let data = {}
@@ -227,8 +227,9 @@ watch(() => props.validateForm, () => {
           :label="$t('PAYMENTS.EXPIRATION_DATE')"
         />
       </div>
+      
       <div class="col-span-2">
-        <Btn text="Pagar" :is-loading="isLoading" :is-disabled="isLoading" isFull />
+        <Btn :text="$t('PAYMENTS.PAY')" :is-loading="isLoading" :is-disabled="isLoading" isFull />
       </div>
     </div>
   </form>

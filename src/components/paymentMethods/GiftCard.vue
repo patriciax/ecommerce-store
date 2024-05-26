@@ -185,7 +185,7 @@ watch(() => props.validateForm, () => {
             </div>
 
             <div class="col-span-2 mt-3">
-                <Btn :is-loading="isLoading" text="Pagar" isFull/>
+                <Btn type="submit" :is-loading="isLoading" :text="$t('PAYMENTS.PAY')" isFull/>
             </div>
 
         </form>
