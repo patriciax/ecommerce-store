@@ -1,6 +1,7 @@
 <script setup>
 import _storeInvoice from '@/stores/profile'
 import _storeUser from '@/stores/user'
+import { decimalNumberFormat } from '@/utils/numberFormat';
 import { onMounted, ref } from 'vue'
 
 const storeInvoices = _storeInvoice()
@@ -61,8 +62,13 @@ const formatDateTime = (dateString) => {
                 <tr class="border-b bg-white hover:bg-gray-50" v-for="(item , index) in storeInvoices.invoice" :key="index">
                   <td class="py-4 text-center"><p class="text-qgray text-lg font-medium">#{{ item.transactionOrder }}</p></td>
                   <td class="px-2 py-4 text-center"><span class="text-qgray whitespace-nowrap text-base">{{ formatDateTime(item.created) }}</span></td>
-                  <td class="px-2 py-4 text-center"><span class="rounded bg-green-100 p-2 text-sm text-green-500">{{ item.payment.status }}</span></td>
-                  <td class="px-2 py-4 text-center"><p class="text-qblack whitespace-nowrap px-2 text-base">${{ item.payment.total }}</p></td>
+                  <td class="px-2 py-4 text-center">
+                    <span :class="item.payment.status == 'approved' ? 'text-green-500 bg-green-100' : 'text-red-500 bg-red-100'" class="rounded  p-2 text-sm">{{ item.payment.status }}</span>
+                  </td>
+                  <td class="px-2 py-4 text-center"><p class="text-qblack whitespace-nowrap px-2 text-base">{{ pagosToShow?.payment?.type == 'banesco' ||pagosToShow?.payment?.type == 'pagoMovil' ? 'Bs.' : '$' }}
+                    {{ decimalNumberFormat(item.payment?.total + (item.payment?.carrierRate ? item.payment?.carrierRate?.amount * 1 : 0) + item.payment.taxAmount) }}
+                    
+                  </p></td>
                   <td class="py-4 text-center">
                     <button type="button" class="bg-gray-400 text-white rounded-lg h-[46px] w-[116px] font-bold">{{ $t('PROFILE.VIEWDETAILS') }}</button>
                   </td>

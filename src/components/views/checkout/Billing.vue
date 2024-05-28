@@ -313,7 +313,6 @@ const formatTotal = computed(() => (cartStore.total ? decimalNumberFormat(cartSt
           id="identification"
           v-model="dataForm.identification"
           isRequired
-          :is-disabled="storeUser.currentUser?.email"
           :errorMessage="setIdentificationErrors"
           name="identification"
           placeholder="12345678"

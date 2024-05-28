@@ -1,6 +1,5 @@
 import axios from 'axios'
 import { defineStore } from 'pinia'
-import { _getPrice } from '@/api/repositories/product.repository'
 
 export default defineStore({
   id: 'country',
