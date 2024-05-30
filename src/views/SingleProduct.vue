@@ -130,15 +130,15 @@ const sizesToShow = computed(() => {
   const sizes = []
   if (color.value) {
     variations.value
-      ?.filter((variation) => variation.color[0]._id == color.value)
+      ?.filter((variation) => variation?.color[0]?._id == color.value)
       .forEach((item) => {
-        if (!sizes.find((size) => size?._id == item.size[0]._id)) {
+        if (!sizes.find((size) => size?._id == item?.size[0]?._id) && item?.size[0]) {
           sizes.push(item.size[0])
         }
       })
   }
 
-  maxAmount.value = variations.value?.find((item) => item.color[0]._id == color.value && item.size[0]._id == size.value)?.stock ?? 0
+  maxAmount.value = variations.value?.find((item) => item.color[0]?._id == color.value && item.size[0]?._id == size.value)?.stock ?? 0
   return sizes
 })
 
@@ -152,14 +152,17 @@ onMounted(async () => {
 
   variations.value = productStore.product?.productVariations
   variations.value?.forEach((item) => {
-    if (!availableColors.value.find((color) => color?._id == item.color[0]._id)) {
-      availableColors.value.push(item.color[0])
+    if(item?.color?.length > 0){
+      if (!availableColors.value.find((color) => color?._id == item?.color[0]?._id)) {
+        availableColors.value.push(item.color[0])
+      }
     }
+    
   })
 
   color.value = availableColors.value[0]?._id ?? null
-  size.value = sizesToShow.value[0]?._id ?? null
-  maxAmount.value = variations.value?.find((item) => item.color[0]._id == color.value && item.size[0]._id == size.value)?.stock ?? 0
+  size.value = sizesToShow?.value[0]?._id ?? null
+  maxAmount.value = variations.value?.find((item) => item?.color[0]?._id == color?.value && item?.size[0]?._id == size?.value)?.stock ?? 0
 })
 
 watch(
@@ -288,16 +291,16 @@ watch(
                     "
                   />
                 </div>
-                <div class="flex gap-2">
+                <div class="flex gap-2" v-if="sizesToShow">
                   <RadioCheck
                     v-for="(item, index) in sizesToShow"
                     :key="index"
-                    :is-checked="item.name === size"
-                    :color="item.hex"
-                    :label="item.name"
-                    :value="item._id"
+                    :is-checked="item?.name === size"
+                    :color="item?.hex"
+                    :label="item?.name"
+                    :value="item?._id"
                     v-model="size"
-                    @update:modelValue="size = item._id"
+                    @update:modelValue="size = item?._id"
                   />
                 </div>
               </section>
