@@ -1,7 +1,7 @@
 <script setup>
 import _storeInvoice from '@/stores/profile'
 import _storeUser from '@/stores/user'
-import { decimalNumberFormat } from '@/utils/numberFormat';
+import { decimalNumberFormat } from '@/utils/numberFormat'
 import { onMounted, ref } from 'vue'
 
 const storeInvoices = _storeInvoice()
@@ -34,23 +34,28 @@ const formatDateTime = (dateString) => {
     </p>
     <div class="my-8 text-center">
       <button
+      :class="orderInfo ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-900'"
+
         @click="(orderInfo = true), (personalInfo = false)"
-        class="mb-1 mr-6 rounded-lg bg-gray-900 p-2 px-4 text-base font-bold text-white"
+        class="mb-1 mr-6 rounded-lg p-2 px-4 text-base font-bold "
       >
-       {{ $t('PROFILE.MYBUYS') }}
+        {{ $t('PROFILE.MYBUYS') }}
       </button>
       <button
+      :class="personalInfo ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-900'"
         @click="(orderInfo = false), (personalInfo = true)"
         class="rounded-lg bg-gray-100 p-2 px-4 text-base font-bold text-gray-900 hover:bg-gray-900 hover:text-white"
       >
-       {{ $t('PROFILE.MYPROFILE') }}
+        {{ $t('PROFILE.MYPROFILE') }}
       </button>
     </div>
     <section class="flex justify-center gap-10">
       <section class="mx-auto w-full max-w-3xl">
         <div v-if="orderInfo" class="item-body dashboard-wrapper w-full">
           <div class="relative w-full overflow-x-auto sm:rounded-lg">
-            <table class="w-full text-left text-sm text-gray-500 dark:text-gray-400">
+            <p class="text-center text-lg font-bold border p-6 rounded-lg  text-gray-500" v-if="storeInvoices.invoice?.length == 0" v-text="$t('PROFILE.NO_ORDERS')"/>
+
+            <table v-else class="w-full text-left text-sm text-gray-500 dark:text-gray-400">
               <tbody>
                 <tr class="text-qgray default-border-bottom whitespace-nowrap border-b px-2 text-base">
                   <td class="block whitespace-nowrap py-4 text-center">{{ $t('PROFILE.ORDER') }}</td>
@@ -59,48 +64,71 @@ const formatDateTime = (dateString) => {
                   <td class="whitespace-nowrap py-4 text-center">{{ $t('PROFILE.AMOUT') }}</td>
                   <!-- <td class="whitespace-nowrap py-4 text-center">Action</td> -->
                 </tr>
-                <tr class="border-b bg-white hover:bg-gray-50" v-for="(item , index) in storeInvoices.invoice" :key="index">
-                  <td class="py-4 text-center"><p class="text-qgray text-lg font-medium">#{{ item.transactionOrder }}</p></td>
-                  <td class="px-2 py-4 text-center"><span class="text-qgray whitespace-nowrap text-base">{{ formatDateTime(item.created) }}</span></td>
-                  <td class="px-2 py-4 text-center">
-                    <span :class="item.payment.status == 'approved' ? 'text-green-500 bg-green-100' : 'text-red-500 bg-red-100'" class="rounded  p-2 text-sm">{{ item.payment.status }}</span>
-                  </td>
-                  <td class="px-2 py-4 text-center"><p class="text-qblack whitespace-nowrap px-2 text-base">{{ pagosToShow?.payment?.type == 'banesco' ||pagosToShow?.payment?.type == 'pagoMovil' ? 'Bs.' : '$' }}
-                    {{ decimalNumberFormat(item.payment?.total + (item.payment?.carrierRate ? item.payment?.carrierRate?.amount * 1 : 0) + item.payment.taxAmount) }}
-                    
-                  </p></td>
+                <tr class="border-b bg-white hover:bg-gray-50" v-for="(item, index) in storeInvoices.invoice" :key="index">
                   <td class="py-4 text-center">
-                    <button type="button" class="bg-gray-400 text-white rounded-lg h-[46px] w-[116px] font-bold">{{ $t('PROFILE.VIEWDETAILS') }}</button>
+                    <p class="text-qgray text-lg font-medium">#{{ item.transactionOrder }}</p>
+                  </td>
+                  <td class="px-2 py-4 text-center">
+                    <span class="text-qgray whitespace-nowrap text-base">{{ formatDateTime(item.created) }}</span>
+                  </td>
+                  <td class="px-2 py-4 text-center">
+                    <span
+                      :class="item.payment.status == 'approved' ? 'bg-green-100 text-green-500' : 'bg-red-100 text-red-500'"
+                      class="rounded p-2 text-sm"
+                      >{{ item.payment.status }}</span
+                    >
+                  </td>
+                  <td class="px-2 py-4 text-center">
+                    <p class="text-qblack whitespace-nowrap px-2 text-base">
+                      {{ pagosToShow?.payment?.type == 'banesco' || pagosToShow?.payment?.type == 'pagoMovil' ? 'Bs.' : '$' }}
+                      {{
+                        decimalNumberFormat(
+                          item.payment?.total +
+                            (item.payment?.carrierRate ? item.payment?.carrierRate?.amount * 1 : 0) +
+                            item.payment.taxAmount
+                        )
+                      }}
+                    </p>
+                  </td>
+                  <td class="py-4 text-center">
+                    <button type="button" class="h-[46px] w-[116px] rounded-lg bg-gray-400 font-bold text-white">
+                      {{ $t('PROFILE.VIEWDETAILS') }}
+                    </button>
                   </td>
                 </tr>
               </tbody>
             </table>
+
           </div>
         </div>
         <div v-if="personalInfo" class="dashboard-info flex max-w-3xl items-center justify-between rounded-lg bg-gray-100 px-7 py-7">
           <div class="">
-            <p class="title text-[22px] font-semibold">{{ $t('PROFILE.PERSONALINFORMATION') }}</p>
+            <p class="title text-[22px] font-semibold">{{ $t('PROFILE.PERSONAL_INFORMATION') }}</p>
             <div class="mt-5">
-              <table>
-                <tr class="mb-5 inline-flex">
-                  <td class="text-qgraytwo block w-[100px] text-base"><div>{{ $t('FORM.NAME') }}:</div></td>
-                  <td class="text-qblack text-base font-medium">
+              <section class="">
+                  <div class=" flex gap-2 mb-2 text-base">
+                    <div>{{ $t('FORM.NAME') }}:</div>
                     {{ `${storeUser.currentUser?.name} ${storeUser.currentUser?.lastname ?? ''}` }}
-                  </td>
-                </tr>
-                <tr class="mb-5 inline-flex">
-                  <td class="text-qgraytwo block w-[100px] text-base"><div>{{ $t('FORM.EMAIL') }}:</div></td>
-                  <td class="text-qblack text-base font-medium">{{ storeUser.currentUser?.email }}</td>
-                </tr>
-                <tr class="mb-5 inline-flex">
-                  <td class="text-qgraytwo block w-[100px] text-base"><div>{{ $t('FORM.PHONE') }}:</div></td>
-                  <td class="text-qblack text-base font-medium">{{ storeUser.currentUser?.phone }}</td>
-                </tr>
-                <tr class="mb-5 inline-flex">
-                  <td class="text-qgraytwo block w-[100px] text-base"><div>{{ $t('FORM.ADDRESS') }}:</div></td>
-                  <td class="text-qblack text-base font-medium">{{ storeUser.currentUser?.address }}</td>
-                </tr>
-              </table>
+
+                  </div>
+               
+                  <div class=" flex gap-2 mb-2 text-base">
+                    <div>{{ $t('FORM.EMAIL') }}:</div>
+
+                    <div class="text-qblack text-base font-medium">{{ storeUser.currentUser?.email }}</div>
+
+                  </div>
+                  <div class=" flex gap-2 mb-2 text-base">
+                    <div>{{ $t('FORM.PHONE') }}:</div>
+                    <div class="text-qblack text-base font-medium">{{ storeUser.currentUser?.phone }}</div>
+
+                  </div>
+                  <div class=" flex gap-2 mb-2 text-base">
+                    <div>{{ $t('FORM.ADDRESS') }}:</div>
+                    <div class="text-qblack text-base font-medium">{{ storeUser.currentUser?.address }}</div>
+
+                  </div>
+              </section>
             </div>
           </div>
         </div>

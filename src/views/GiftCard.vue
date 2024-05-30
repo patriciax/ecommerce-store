@@ -10,13 +10,13 @@ import MobilePayment from '@/components/paymentMethods/mobilePayment.vue'
 import Login from '@/components/views/home/auth/Login.vue'
 import Register from '@/components/views/home/auth/Register.vue'
 import CountryStore from '@/stores/country'
+import ProductStore from '@/stores/product'
+import { decimalNumberFormat } from '@/utils/numberFormat'
 import { CheckCircleIcon, ChevronRightIcon, GiftIcon } from '@heroicons/vue/24/outline'
 import useVuelidate from '@vuelidate/core'
 import { email, required } from '@vuelidate/validators'
 import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import ProductStore from '@/stores/product'
-import { decimalNumberFormat } from '@/utils/numberFormat'
 
 const countryStore = CountryStore()
 const productStore = ProductStore()
@@ -87,7 +87,7 @@ onMounted(async () => {
 })
 </script>
 <template>
-  <section class="-mt-12 text-center lg:h-[130vh]">
+  <section class="-mt-12 text-center lg:min-h-[130vh]">
     <div class="relative mb-6">
       <div class="absolute left-0 top-0 flex h-full w-full flex-col items-start justify-end p-20">
         <p class="text-4xl font-bold uppercase text-white" v-text="'El regalo perfecto'" />

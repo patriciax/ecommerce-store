@@ -44,11 +44,11 @@ const nextDisabled = computed(() => props.pagination.page === props.pagination.t
       @click="changePage(-1)"
     >
       <ChevronLeftIcon class="w-5" />
-    {{  $t('COMMON.PREVIOUS') }}
+<span class="hidden lg:block" v-text="  $t('COMMON.PREVIOUS')"/>
     </button>
 
     <p
-      class="dark:text-light text-center dark:text-white"
+      class="dark:text-light text-center dark:text-white text-sm lg:text-lg"
       v-text="
         $t('COMMON.PAGINATE', {
           from: props.pagination.page,
@@ -62,7 +62,8 @@ const nextDisabled = computed(() => props.pagination.page === props.pagination.t
       class="px-3 py-2 flex font-bold  items-center underline"
       :class="[{ 'hover:text-primary': !nextDisabled }, { 'text-gray-300 dark:text-gray-400': nextDisabled }]"
       @click="changePage(1)"
-    >     {{  $t('COMMON.NEXT') }}
+    >    
+    <span class="hidden lg:block" v-text="  $t('COMMON.NEXT')"/>
 
       <ChevronRightIcon class="w-4" />
     </button>

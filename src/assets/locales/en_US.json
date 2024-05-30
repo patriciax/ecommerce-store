@@ -46,7 +46,7 @@
     "ALREADY_HAVE_AN_ACCOUNT": "Already have an account?",
     "LOGIN": "Login",
     "DONT_HAVE_AN_ACCOUNT": "Don't have an account?",
-    "ERROR_LOGIN_INVALID": "The email or password is incorrect",
+    "ERROR_LOGIN": "The email or password is incorrect",
     "SUCCEFULLY_LOGIN": "Login successfully",
     "VERIFY_EMAIL": "Verify your email",
     "STATE": "State",
@@ -239,6 +239,7 @@
     "STATUS":"Status",
     "AMOUT":"Amount",
     "VIEWDETAILS":"View details",
-    "PERSONAL_INFORMATION":"Personal information"
+    "PERSONAL_INFORMATION":"Personal information",
+    "NO_ORDERS":"No orders"
   }
 }

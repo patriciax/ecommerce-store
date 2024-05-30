@@ -46,7 +46,7 @@
     "ALREADY_HAVE_AN_ACCOUNT": "¿Ya tienes una cuenta?",
     "LOGIN": "Inicia sesion",
     "DONT_HAVE_AN_ACCOUNT": "¿No tienes una cuenta?",
-    "ERROR_LOGIN_INVALID": "El email o la contrasena son incorrectos",
+    "ERROR_LOGIN": "El email o la contrasena son incorrectos",
     "SUCCEFULLY_LOGIN": "Iniciaste sesion correctamente",
     "VERIFY_EMAIL": "Debes verificar tu email",
     "STATE": "Estado",
@@ -233,7 +233,7 @@
     "RESULT_NOT_FOUND":"No se encuentran resultados para" 
   },
   "PROFILE":{
-    "TITLE":"Bienvendios a tu perfil",
+    "TITLE":"Bienvenido a tu perfil",
     "MYBUYS":" Mis Compras",
     "MYPROFILE":"Mi perfil",
     "ORDER":"Orden",
@@ -241,6 +241,7 @@
     "STATUS":"Estado",
     "AMOUT":"Precio",
     "VIEWDETAILS":"Ver detalles",
-    "PERSONAL_INFORMATION":"Información personal"
+    "PERSONAL_INFORMATION":"Información personal",
+    "NO_ORDERS":"No hay pedidos"
   }
 }
