@@ -548,7 +548,7 @@ const formatTotal = computed(() => (cartStore.total ? decimalNumberFormat(cartSt
           </accordion>
 
           <accordion hidden :title="''" v-if="countryStore.country == 'Venezuela'">
-            <template #img> <img class="w-32" src="@/assets/images/banesco.png" /></template>
+            <template #img> <img class="w-32" src="@/assets/images/mercantil.png" /></template>
             <Mercantil 
               @validate="validateForm"
               :validate-form="validateFormData"
