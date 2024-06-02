@@ -14,8 +14,9 @@ export default defineStore({
     _paginate: {
       results: null,
       currentPage: 0,
-      totalPages: null
-    }
+      totalPages: null,
+    },
+    _detailInvoice: null,
   }),
   getters: {
     isLoading: (state) => state._status === 'loading',
@@ -25,21 +26,19 @@ export default defineStore({
     error: (state) => state._error,
     invoice: (state) => state._invoice,
     pagination: (state) => state._paginate,
-
+    detailInvoice: (state) => state._detailInvoice,
   },
   actions: {
- 
-
     async getInvoices(page = 1, limit = 10) {
       this.changeStatus('loading')
       try {
-        const response = await  _getInvoices( page, limit)
+        const response = await _getInvoices(page, limit)
         if (response) {
           this._invoice = response.data.invoices
           this._paginate = {
             results: response.results,
             totalPages: response.totalPages,
-            page: page
+            page: page,
           }
           this.changeStatus('ready')
         }
@@ -47,7 +46,10 @@ export default defineStore({
         console.error(error)
       }
     },
- 
+    setInvoice(invoice) {
+      this._detailInvoice = invoice
+    },
+
     changeStatus(status, error = null) {
       this._status = status
       if (status === 'error') this._error = error

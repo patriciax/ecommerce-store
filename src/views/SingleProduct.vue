@@ -183,6 +183,7 @@ watch(
           </li>
           <li>
             <div class="flex items-center">
+
               <div class="mr-2 w-32 truncate text-sm font-medium text-gray-900 md:w-auto">
                 {{ locale === 'en_US' ? productStore.product?.nameEnglish : productStore.product?.name }}
               </div>
@@ -202,28 +203,33 @@ watch(
       </nav>
 
       <section class="reverse grid grid-cols-1 gap-8 lg:grid-cols-2">
-        <section class="col-span-1" v-if="isDesktop ">
-          <Gallery v-if="productStore.product" :photos="productsImg"></Gallery>
+        <section class="col-span-1" v-if="isDesktop">
+          <Gallery :is-loading="productStore.isLoading" v-if="productStore.product" :photos="productsImg"></Gallery>
         </section>
 
         <!-- Product info -->
         <div class="relative max-w-2xl px-4 pb-0 pt-0 sm:px-6 lg:max-w-7xl lg:gap-x-8 lg:px-8 lg:pb-24 lg:pt-0">
           <button @click="addFavorite" class="group absolute right-4 top-0 rounded-full bg-gray-100 p-2 lg:p-3">
-            <HeartIcon class="w-4 lg:w-6 group-hover:text-red-600" :class="{ 'text-red-600': favorite }" v-if="!isFavorite" />
+            <HeartIcon class="w-4 group-hover:text-red-600 lg:w-6" :class="{ 'text-red-600': favorite }" v-if="!isFavorite" />
             <SolidHeartIcon class="w-6" v-else />
           </button>
           <div class="lg:col-span-1">
+            <section v-if="productStore.isLoading">
+              <div class="h-4 mb-2  max-w-4xl animate-pulse rounded-md bg-gray-200" ></div>
+              <div class="h-4 mb-2  max-w-4xl animate-pulse rounded-md bg-gray-200" ></div>
+            </section>
+
             <p
+            v-else
               v-text="locale === 'en_US' ? productStore.product?.nameEnglish : productStore.product?.name"
-              class="mb-4 mr-8 max-w-4xl text-base lg:text-3xl font-bold text-gray-900"
+              class="mb-4 mr-8 max-w-4xl text-base font-bold text-gray-900 lg:text-3xl"
             />
-            <section class="col-span-1" v-if="isMobile|| isTablet">
-              <Gallery v-if="productStore.product" :photos="productsImg"></Gallery>
+            <section class="col-span-1" v-if="isMobile || isTablet">
+              <Gallery :is-loading="productStore.isLoading" v-if="productStore.product" :photos="productsImg"></Gallery>
             </section>
             <p class="text-2xl tracking-tight text-gray-900">
               ${{ productStore.product?.priceDiscount ? productStore.product?.priceDiscount : productStore.product?.price }}
-            
-        
+
               <span v-if="productStore.price" class="ml-2 font-sans text-sm text-gray-500">
                 Bs.{{
                   (
@@ -233,7 +239,6 @@ watch(
                 }}</span
               >
             </p>
-    
           </div>
 
           <div class="pb-10 lg:col-span-2 lg:col-start-1 lg:pb-16 lg:pt-6">
@@ -264,13 +269,15 @@ watch(
                 <!-- Reviews -->
                 <div class="mb-4 flex gap-2">
                   <RadioCheck
+                    :id="item._id"
+                    :name="item.name"
                     v-for="(item, index) in availableColors"
                     :key="index"
                     :color="item.hex"
+                    :is-checked="item.name === color"
                     :value="item._id"
                     v-model="color"
-                    @click="size = null,quantity = 1
-                    "
+                    @click="(size = null), (quantity = 1)"
                     @update:modelValue="color = item._id"
                   />
                 </div>
@@ -290,6 +297,8 @@ watch(
                 </div>
                 <div class="flex gap-2">
                   <RadioCheck
+                    :id="item._id"
+                    :name="item.name"
                     v-for="(item, index) in sizesToShow"
                     :key="index"
                     :is-checked="item.name === size"

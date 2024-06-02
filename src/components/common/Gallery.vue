@@ -1,10 +1,13 @@
 <script lang="ts" setup>
-import { ArrowLeftIcon, ArrowRightIcon } from '@heroicons/vue/24/outline';
-import { onMounted, ref } from 'vue';
+import { ArrowLeftIcon, ArrowRightIcon } from '@heroicons/vue/24/outline'
+import { onMounted, ref } from 'vue'
 
 const props = defineProps({
   photos: {
     type: Array,
+  },
+  isLoading: {
+    type: Boolean,
   },
 })
 
@@ -26,7 +29,15 @@ onMounted(() => {
 })
 </script>
 <template>
-  <div class="vueGallery flex   gap-2">
+  <div class="flex gap-2" v-if="props.isLoading">
+    <div class="w-1/5 hidden lg:block ">
+      <div class="h-28 mb-2 w-28 animate-pulse rounded-md bg-gray-200" ></div>
+      <div class="h-28 mb-2 w-28 animate-pulse rounded-md bg-gray-200" ></div>
+      <div class="h-28 mb-2 w-28 animate-pulse rounded-md bg-gray-200" ></div>
+    </div>
+    <div class=" w-full h-56 lg:h-[500px] animate-pulse rounded-md bg-gray-200 activePhoto" />
+  </div>
+  <div class="vueGallery flex gap-2" v-else>
     <div class="thumbnails hidden lg:block" v-if="props.photos.length > 1">
       <div
         v-for="(photo, index) in props.photos"
@@ -39,12 +50,11 @@ onMounted(() => {
     </div>
     <div class="activePhoto" :style="'background-image: url(' + props.photos[activePhoto] + ');'">
       <button v-if="props.photos.length > 1" type="button" aria-label="Previous Photo" class="previous" @click="previousPhoto()">
-        <ArrowLeftIcon class="w-4 mx-auto text-gray-900" />
+        <ArrowLeftIcon class="mx-auto w-4 text-gray-900" />
       </button>
       <button v-if="props.photos.length > 1" type="button" aria-label="Next Photo" class="next" @click="nextPhoto()">
-        <ArrowRightIcon  class="w-4 mx-auto text-gray-900" />
+        <ArrowRightIcon class="mx-auto w-4 text-gray-900" />
       </button>
     </div>
- 
   </div>
 </template>

@@ -62,7 +62,9 @@
     "CATEGORY": "Categorias",
     "ERROR_DELETE_PRODUCT": "Error al eliminar el producto",
     "SUCCESS_DELETE_PRODUCT": "Eliminado correctamente",
-    "SOMETHING_WENT_WRONG": "Algo ha ido mal"
+    "SOMETHING_WENT_WRONG": "Algo ha ido mal",
+    "PRODUCT":"Producto",
+    "INVOICE_TITLE":"Detalles de compra"
   },
 
   "CART": {
