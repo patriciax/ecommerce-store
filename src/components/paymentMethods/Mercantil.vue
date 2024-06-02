@@ -1,18 +1,18 @@
 <script lang="ts" setup>
     import { _submitPay } from '@/api/repositories/banesco.repository'
-    import { showNotification } from '@/composables/useNotification'
-    import useNotifications from '@/composables/useNotifications'
-    import PaymentMethods from '@/stores/paymentMethods'
-    import useVuelidate from '@vuelidate/core'
-    import { required } from '@vuelidate/validators'
-    import { computed, ref, watch } from 'vue'
-    import Btn from '../common/Btn.vue'
-    import DateCard from '../common/DateCard.vue'
-    import Document from '../common/Document.vue'
-    import SelectField from '../common/SelectField.vue'
-    import {_getOTPCode } from '@/api/repositories/mercantil.repository'
-    import { useI18n } from 'vue-i18n'
-    import InputsOpt from '../common/InputsOpt.vue'
+import { _getOTPCode } from '@/api/repositories/mercantil.repository'
+import { showNotification } from '@/composables/useNotification'
+import useNotifications from '@/composables/useNotifications'
+import PaymentMethods from '@/stores/paymentMethods'
+import useVuelidate from '@vuelidate/core'
+import { required } from '@vuelidate/validators'
+import { computed, ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
+import Btn from '../common/Btn.vue'
+import DateCard from '../common/DateCard.vue'
+import Document from '../common/Document.vue'
+import InputsOpt from '../common/InputsOpt.vue'
+import SelectField from '../common/SelectField.vue'
 
     const {t} = useI18n()
     const emit = defineEmits(['nextStep', 'validate'])
@@ -221,7 +221,7 @@
 <template>
     <form @submit.prevent="submitPay">
     <div class="grid lg:grid-cols-2 gap-4">
-        <div  class="col-span-2 lg:col-span-2"> 
+        <div  class="col-span-2"> 
         <Document
           :errorMessage="
             handlerValidateMercantil?.['cardNumber']?.$errors?.length > 0
@@ -234,7 +234,7 @@
           :maxLength="18"
         />
       </div>
-      <div class="col-span-4 lg:col-span-2 flex">
+      <div class="col-span-2 gap-2 flex">
         <div class="w-1/4">
             <SelectField 
             v-model="dataPayment.nationality"
@@ -269,7 +269,7 @@
         />
       </div>
 
-      <div class="col-span-1">
+      <div class="col-span-2 lg:col-span-1">
         <DateCard
           :use-min-date="false"
           :errorMessage="

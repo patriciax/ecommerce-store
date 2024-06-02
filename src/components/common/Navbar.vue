@@ -4,6 +4,7 @@ import Btn from '@/components/common/Btn.vue'
 import InputSearch from '@/components/common/InputSearch.vue'
 import Login from '@/components/views/home/auth/Login.vue'
 import Register from '@/components/views/home/auth/Register.vue'
+import useNotifications from '@/composables/useNotifications'
 import router from '@/router'
 import CartStore from '@/stores/cart/cart'
 import RestorePassword from '@/stores/resetPassword.js'
@@ -15,11 +16,11 @@ import Dropdown from './Dropdown.vue'
 import LanguageSelector from './LanguageSelector.vue'
 
 const restorePassStore = RestorePassword()
+const { pushNotification } = useNotifications()
 
 const storeSearch = _stroreSearch()
 const cartStore = CartStore()
 const storeUser = _storeUser()
-
 
 const filter = ref('')
 const mainCategories = ref([])
@@ -27,6 +28,7 @@ const subCategories = ref([])
 const finalCategories = ref([])
 const register = ref(false)
 const login = ref(false)
+const isChecked = ref(false)
 
 const logout = (_closeDropdown: () => void) => {
   router.push({ name: 'home' })
@@ -40,10 +42,18 @@ const goToCart = () => {
 const profile = (_closeDropdown: () => void) => {
   router.push({ name: 'profile' })
   _closeDropdown()
-
 }
 const goToFavorite = () => {
-  router.push({ name: 'favorites' })
+  if (storeUser.currentUser) {
+    router.push({ name: 'favorites' })
+    return
+  }
+
+  pushNotification({
+    id: '',
+    title: 'Inicia sesion para agregar a favoritos',
+    type: 'warning',
+  })
 }
 
 const search = () => {
@@ -57,9 +67,6 @@ onMounted(async () => {
     subCategories.value = response.data?.subCategories
     finalCategories.value = response.data?.finalCategories
   }
-
-
-
 })
 
 watch(
@@ -68,8 +75,6 @@ watch(
     if (restorePassStore.login) login.value = true
   }
 )
-
-
 </script>
 <template>
   <header>
@@ -77,25 +82,26 @@ watch(
       <ul class="navigation relative mx-auto flex flex-wrap items-center justify-between py-2 lg:py-0">
         <label for="check" class="open-menu"><Bars3BottomLeftIcon class="w-6 text-gray-800" /></label>
 
-        <div class="ml-10 w-1/6">
+        <div class="ml-10 w-1/6 py-1">
           <RouterLink to="/">
-            <img src="@/assets/images/logo.png" class="w-28" alt="">
+            <img src="@/assets/images/iso.png" class="w-12" alt="" />
           </RouterLink>
         </div>
 
         <section class="flex justify-between xl:w-4/5">
-          <input type="checkbox" id="check" />
+          <input type="checkbox" id="check" :checked="isChecked" />
 
           <span
             class="menu m-auto flex lg:gap-4 [&>li>a]:relative [&>li>a]:text-center [&>li>a]:text-lg [&>li>a]:font-medium [&>li>a]:transition [&>li>a]:duration-200 [&>li>a]:ease-in-out"
           >
             <li class="group inline-block" v-for="mainCategory in mainCategories">
-              
-              <button class="md:h-full w-full border-b-4 border-transparent p-3 uppercase hover:border-b-4 hover:border-gray-900">
+              <button class="w-full border-b-4 border-transparent p-3 hover:border-b-4 hover:border-gray-900 md:h-full">
                 <!---CATEGORIA PADRE------>
                 <h4>{{ $i18n.locale.toLowerCase() == 'es_es' ? mainCategory?.name : mainCategory?.englishName }}</h4>
               </button>
-              <ul class="md:absolute left-0 hidden w-full border-y bg-transparent lg:bg-gray-100 text-white lg:text-gray-800 ring-0 group-hover:block">
+              <ul
+                class="left-0 hidden w-full border-y bg-transparent text-white ring-0 group-hover:block md:absolute lg:bg-gray-100 lg:text-gray-800"
+              >
                 <div class="m-auto mx-auto grid max-w-screen-xl px-4 py-5 text-sm dark:text-gray-400 md:grid-cols-6 md:px-6">
                   <ul
                     v-for="subCategory in subCategories.filter((category) => category.parent_id == mainCategory._id)"
@@ -104,13 +110,12 @@ watch(
                   >
                     <li>
                       <!---SUBCATEGORIA------>
-                      <h3 href="#" class="font-bold uppercase">
+                      <h3 href="#" class="font-bold">
                         {{ $i18n.locale.toLowerCase() == 'es_es' ? subCategory?.name : subCategory?.englishName }}
                       </h3>
                     </li>
-                    <li class="flex flex-col gap-2 text-sm">
+                    <li class="flex flex-col gap-2 text-sm" @click="isChecked = !isChecked">
                       <!---ITEMS DE SUBCATEGORIA------>
-
                       <router-link
                         v-for="finalCategory in finalCategories.filter((category) => category.parent_id == subCategory._id)"
                         :to="{
@@ -122,13 +127,9 @@ watch(
                           },
                         }"
                         class="hover:underline"
-                        >
-
-                        
-                        {{ $i18n.locale.toLowerCase() == 'es_es' ? finalCategory?.name : finalCategory?.englishName }}
-
-                        </router-link
                       >
+                        {{ $i18n.locale.toLowerCase() == 'es_es' ? finalCategory?.name : finalCategory?.englishName }}
+                      </router-link>
                     </li>
                   </ul>
                 </div>
@@ -137,14 +138,17 @@ watch(
 
             <li>
               <router-link to="/offers"
-                ><h4 class="h-full border-b-4 border-transparent p-3 text-base uppercase hover:border-b-4 hover:border-gray-900">
+              @click="isChecked = !isChecked"
+
+                ><h4 class="h-full border-b-4 border-transparent p-3 text-base hover:border-b-4 hover:border-gray-900">
                   {{ $t('COMMON.OFFERS') }}
                 </h4></router-link
               >
             </li>
             <li v-if="storeUser.currentUser">
               <RouterLink to="/gift-card"
-                ><h4 class="h-full border-b-4 border-transparent p-3 text-base uppercase hover:border-b-4 hover:border-gray-900">
+              @click="isChecked = !isChecked"
+                ><h4 class="h-full border-b-4 border-transparent p-3 text-base hover:border-b-4 hover:border-gray-900">
                   {{ $t('COMMON.GIFT_CART') }}
                 </h4></RouterLink
               >
@@ -155,7 +159,7 @@ watch(
           <div class="mr-2 flex items-center gap-2 lg:mr-10">
             <InputSearch
               @search="search"
-              class="mr-4 hidden xl:block"
+              class="md :block mr-4 hidden"
               id="search"
               v-model="filter"
               name="Search"
@@ -164,6 +168,26 @@ watch(
             />
 
             <LanguageSelector />
+
+            <!-- <Btn class="" color="secondary" v-else @click="register = true" with-icon :text="$t('COMMON.REGISTER')">
+              <template #icon>
+                <UserIcon class="hidden md:block w-5" />
+              </template>
+            </Btn> -->
+            <Btn @click="goToFavorite" position=" -right-5" color="secondary" is-tooltip with-icon :text="$t('COMMON.FAVORITE')">
+              <template #icon>
+                <HeartIcon class="w-5" />
+              </template>
+            </Btn>
+            <Btn @click="goToCart" color="secondary" is-tooltip with-icon :text="$t('COMMON.CART')" isFull>
+              <template #icon>
+                <ShoppingCartIcon class="w-5" />
+              </template>
+              <span
+                class="text-md h-5 w-5 rounded-full bg-gray-800 text-white group-hover:bg-white group-hover:text-gray-900"
+                v-text="cartStore.quantityInCar"
+              ></span>
+            </Btn>
             <Dropdown v-if="storeUser.currentUser">
               <template v-slot:trigger="{ openDropdown, isOpen }">
                 <button
@@ -184,33 +208,10 @@ watch(
               </template>
             </Dropdown>
 
-            <Btn class="" color="secondary" v-else @click="register = true" with-icon :text="$t('COMMON.REGISTER')">
+            <Btn v-else @click="register = true" is-tooltip color="secondary" with-icon :text="$t('COMMON.REGISTER')" isFull>
               <template #icon>
-                <UserIcon class="hidden md:block w-5" />
+                <UserIcon class="w-5" />
               </template>
-            </Btn>
-            <Btn
-              @click="goToFavorite"
-              color="secondary"
-              class="hidden lg:block"
-              is-tooltip
-              with-icon
-              :text="$t('COMMON.FAVORITE')"
-              isFull
-              v-if="storeUser.currentUser"
-            >
-              <template #icon>
-                <HeartIcon class="w-5" />
-              </template>
-            </Btn>
-            <Btn @click="goToCart" color="secondary" is-tooltip with-icon :text="$t('COMMON.CART')" isFull>
-              <template #icon>
-                <ShoppingCartIcon class="w-5" />
-              </template>
-              <span
-                class="text-md h-5 w-5 rounded-full bg-gray-800 text-white group-hover:bg-white group-hover:text-gray-900"
-                v-text="cartStore.quantityInCar"
-              ></span>
             </Btn>
           </div>
         </section>

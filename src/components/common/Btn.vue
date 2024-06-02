@@ -52,6 +52,9 @@ const props = defineProps({
   type: {
     default: 'submit',
     type: String,
+  },
+  position: {
+    type: String,
   }
 })
 
@@ -74,9 +77,9 @@ const classBtn = computed(() => {
       <slot name="icon" />
       <slot />
       <template v-if="props.isTooltip">
-        <div class="absolute -bottom-8 hidden w-max group-hover:block">
+        <div class="absolute -bottom-8 hidden w-max group-hover:block" :class="props.position" >
           <div class="mx-auto -mb-1 h-2 w-2 rotate-45 bg-gray-700"></div>
-          <p class="rounded-md bg-gray-700 px-4 py-1 text-xs text-white" v-text="props.text" />
+          <p class="rounded-md bg-gray-700 px-4 py-1 text-xs text-white " v-text="props.text" />
         </div>
       </template>
       <template v-else>
