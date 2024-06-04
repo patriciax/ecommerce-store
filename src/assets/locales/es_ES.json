@@ -64,7 +64,8 @@
     "SUCCESS_DELETE_PRODUCT": "Eliminado correctamente",
     "SOMETHING_WENT_WRONG": "Algo ha ido mal",
     "PRODUCT":"Producto",
-    "INVOICE_TITLE":"Detalles de compra"
+    "INVOICE_TITLE":"Detalles de compra",
+    "CONSULT_SUCCESS":"Hemos enviado un correo con tu balance"
   },
 
   "CART": {
@@ -161,7 +162,8 @@
     "PAY": "Pagar",
     "GET_SMS_CODE": "Código SMS",
     "RESEND_SMS_CODE": "Reenviar código SMS",
-    "CODE_SENT": "Código enviado"
+    "CODE_SENT": "Código enviado",
+    "CARDPIN":"Pin"
   },
   "FOOTER": {
     "CUSTOMER_SERVICE": "Servicio al cliente",

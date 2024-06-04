@@ -105,7 +105,7 @@ const sendForm = async () => {
                 : undefined
             "
             v-model="dataForm.cardPin"
-            :label="$t('PAYMENTS.cardPin')"
+            :label="$t('PAYMENTS.CARDPIN')"
             :maxLength="4"
           />
         </div>

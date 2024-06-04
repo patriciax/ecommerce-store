@@ -64,8 +64,8 @@
     "SUCCESS_DELETE_PRODUCT": "Product deleted successfully",
     "SOMETHING_WENT_WRONG": "Something went wrong",
     "PRODUCTS": "Product",
-    "INVOICE_TITLE":"Details of your order"
-
+    "INVOICE_TITLE":"Details of your order",
+    "CONSULT_SUCCESS":"We have sent an email with your balance"
   },
   "CART": {
     "ERROR": "Error while adding to cart",
@@ -161,7 +161,8 @@
     "PAY": "Pay",
     "GET_SMS_CODE": "Get SMS code",
     "RESEND_SMS_CODE": "Resend SMS code",
-    "CODE_SENT": "Code sent"
+    "CODE_SENT": "Code sent",
+    "CARDPIN":"Pin"
   },
   "FOOTER": {
     "CUSTOMER_SERVICE": "Custumer service",
